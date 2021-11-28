@@ -77,7 +77,7 @@ function clippingPath(polygon: number[][], img: HTMLImageElement, x: number, y: 
   // stroke the path
   // half of the stroke is outside the path
   // the outside stroke will survive the clipping that follows
-  ctx.lineWidth = 2
+  ctx.lineWidth = 4
   ctx.stroke()
 
   // make the current path a clipping path

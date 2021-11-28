@@ -6,7 +6,22 @@ import Layout from '../common/components/Layout'
 import React, { FC, useMemo } from 'react'
 
 const ProjectsPage: FC<{ data: AllProjectsDataQuery }> = ({ data: { allStrapiProject } }) => {
-  const projects = d3.shuffle([...allStrapiProject.edges.map((edge) => edge.node), 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
+  const projects = d3.shuffle([
+    ...allStrapiProject.edges.map((edge) => edge.node),
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16
+  ])
   const rows = 4
   const columns = 4
   const imagePositions = projects.map((_, idx) => {
