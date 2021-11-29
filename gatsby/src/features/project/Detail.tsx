@@ -44,6 +44,7 @@ export const ProjectDetail: FC<{
 
 export const query = graphql`
   fragment ProjectDetails on StrapiProject {
+    strapiId
     slug
     title
     description

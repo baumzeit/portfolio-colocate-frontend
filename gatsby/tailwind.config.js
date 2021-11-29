@@ -20,6 +20,12 @@ module.exports = {
         secondary: 'var(--text-secondary)',
         tertiary: 'var(--text-tertiary)'
       },
+      stroke: {
+        primary: 'var(--text-primary)',
+        secondary: 'var(--text-secondary)',
+        tertiary: 'var(--text-tertiary)',
+        highlight: 'var(--color-highlight)'
+      },
       fontFamily: {
         display: 'Rubik',
         body: 'Karla'

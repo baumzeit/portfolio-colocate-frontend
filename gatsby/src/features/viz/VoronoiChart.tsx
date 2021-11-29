@@ -55,7 +55,7 @@ export const VoronoiChart = ({ data, margin = 0 }: VoronoiChartProps) => {
   const canvasRef = useCanvas2D(draw(particles, { strokeStyle, images }), memoOptions)
 
   return (
-    <div ref={chartRef} className="h-full w-full">
+    <div ref={chartRef} className="h-full">
       {width && height && <canvas ref={canvasRef} />}
     </div>
   )

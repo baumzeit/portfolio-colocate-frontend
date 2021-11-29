@@ -51,7 +51,6 @@ function getRandomData([width, height]: number[]) {
 }
 
 function updateGraph(svg, data, prevData = [{ x: 0, y: 0 }], { width = 0, height = 0 }) {
-  console.log('update graph')
   const circles = svg.selectAll('circle').data(data)
   circles
     .enter()
