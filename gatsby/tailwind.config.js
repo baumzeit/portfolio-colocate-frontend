@@ -9,7 +9,12 @@ module.exports = {
     extend: {
       colors: {
         highlight: 'var(--color-highlight)',
-        brand: 'var(--color-brand)'
+        brand: 'var(--color-brand)',
+        'text-primary': 'var(--text-primary)',
+        'text-secondary': 'var(--text-secondary)',
+        'text-tertiary': 'var(--text-primary)',
+        'bg-primary': 'var(--bg-primary)',
+        'bg-secondary': 'var(--bg-secondary)'
       },
       backgroundColor: {
         primary: 'var(--bg-primary)',
@@ -19,12 +24,6 @@ module.exports = {
         primary: 'var(--text-primary)',
         secondary: 'var(--text-secondary)',
         tertiary: 'var(--text-tertiary)'
-      },
-      stroke: {
-        primary: 'var(--text-primary)',
-        secondary: 'var(--text-secondary)',
-        tertiary: 'var(--text-tertiary)',
-        highlight: 'var(--color-highlight)'
       },
       fontFamily: {
         display: 'Rubik',
