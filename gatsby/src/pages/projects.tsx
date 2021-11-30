@@ -40,7 +40,7 @@ const ProjectsPage: FC<{ data: AllProjectsDataQuery }> = ({ data: { allStrapiPro
         y: imagePositions[idx][1] + d3.randomNormal(0, 0.03)(),
         imageUrl: images
           ? process.env.GATSBY_API_URL + images[0].url
-          : 'https://picsum.photos/600/' + (idx % 2 ? '500' : '600'),
+          : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
         title,
         id: strapiId
       })),

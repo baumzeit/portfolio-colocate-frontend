@@ -45,6 +45,9 @@ export const VoronoiChartSvg = ({ data: unscaledData, margin = 0 }: VoronoiChart
     <div ref={chartRef} className="h-full w-full">
       <svg ref={svgRef} width={width} height={height}>
         <defs></defs>
+        <g className="base-layer"></g>
+        <g className="definition-layer"></g>
+        <g className="content-layer"></g>
       </svg>
     </div>
   )
@@ -54,6 +57,7 @@ type Dimensions = { width: number; height: number }
 type VoronoiOptions = {
   deltaField?: { index: number; delta: { x: number; y: number }[] }
   offset?: number
+  transitionDuration?: number
 }
 type VoronoiDrawFn = (
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
@@ -63,15 +67,15 @@ type VoronoiDrawFn = (
 ) => any
 
 const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }, options = {}) => {
-  const configuredOptions = { offset: 50, ...options }
-
-  const pushScale = d3
-    .scalePow()
-    .domain([0, Math.hypot(width, height)])
-    .range([configuredOptions.offset, 0])
+  const configuredOptions = { offset: 50, transitionDuration: 550, ...options }
 
   const update = (data: VoronoiDatum[], options: VoronoiOptions = {}) => {
-    const { deltaField } = options
+    const { deltaField, transitionDuration, offset } = options
+
+    const pushScale = d3
+      .scalePow()
+      .domain([0, Math.hypot(width, height)])
+      .range([offset, 0])
 
     const currentData = deltaField
       ? d3.zip<VoronoiDatum>(data, deltaField.delta).map(([d, delta]) => ({ ...d, x: d.x + delta.x, y: d.y + delta.y }))
@@ -84,9 +88,48 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
     )
     const voronoi = delaunay.voronoi([-1, -1, width + 1, height + 1])
 
-    svg.on('mousemove', (e, d) => {
+    svg.on('wheel', (e) => {
+      const index = delaunay.find(e.x, e.y, deltaField?.index)
+      const { x, y } = currentData[index]
+
+      const zoomScale = d3.scaleLinear().domain([-100, 100]).clamp(true).range([-0.6, 1.2])
+
+      const zoomFactor = zoomScale(e.deltaY)
+      console.log(zoomFactor)
+
+      const newDelta = currentData.map((point, idx) => {
+        const alpha = Math.atan2(point.y - y, point.x - x)
+        const hyp = Math.hypot(point.y - y, point.x - x) * zoomFactor
+        return idx !== index
+          ? {
+              x: Math.cos(alpha) * hyp,
+              y: Math.sin(alpha) * hyp
+            }
+          : { x: 0, y: 0 }
+      })
+
+      d3.transition()
+        .duration(transitionDuration)
+        .tween('voronoi', (d) => {
+          return (tweenValue) => {
+            const tweenDelta = newDelta.map((d) => ({ x: d.x * tweenValue, y: d.y * tweenValue }))
+            update(currentData, {
+              ...options,
+              deltaField: { index, delta: tweenDelta }
+            })
+          }
+        })
+    })
+
+    svg.on('mousemove', (e) => {
       const index = delaunay.find(e.x, e.y, deltaField?.index)
       const cellChanged = index !== deltaField?.index
+      d3.selectAll('.base-layer path.cell-gap').each(function (d, idx) {
+        d3.select(this)
+          .transition()
+          .duration(350)
+          .attr('fill', idx === index ? 'transparent' : 'rgba(0,0,0,0.2)')
+      })
       if (cellChanged) {
         const { x, y } = currentData[index]
         const newDelta = currentData.map((point, idx) => {
@@ -108,7 +151,7 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
           .map(([fresh, restore]) => ({ x: fresh.x - restore.x, y: fresh.y - restore.y }))
 
         d3.transition()
-          .duration(450)
+          .duration(transitionDuration)
           .tween('voronoi', (d) => {
             return (tweenValue) => {
               const tweenDelta = mergedDelta.map((d) => ({ x: d.x * tweenValue, y: d.y * tweenValue }))
@@ -136,15 +179,15 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       .attr('d', (d) => d.path)
       .attr('stroke-linejoin', 'round')
 
-    const cells = svg
-      .selectAll('g.cell')
-      .data(currentData.map((d, i) => ({ ...d, path: voronoi.renderCell(i), id: d.id })))
-      .join('g')
-      .classed('cell', true)
+    const currentDataWithPaths = currentData.map((d, i) => ({ ...d, path: voronoi.renderCell(i), id: d.id }))
 
-    cells
+    const baseLayer = svg.select('g.base-layer')
+    const definitionLayer = svg.select('g.definition-layer')
+    const contentLayer = svg.select('g.content-layer')
+
+    baseLayer
       .selectAll('image')
-      .data((d) => [d])
+      .data(currentData)
       .join('image')
       .attr('xlink:href', (d) => d.imageUrl)
       .attr('x', (d) => d.x - 300)
@@ -152,43 +195,47 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       .attr('width', 600)
       .attr('height', 600)
       .attr('preserveAspectRatio', 'xMidYMid slice')
-      .style('background-repeat', 'repeat-x')
       .attr('clip-path', (d) => `url(#clip-${d.id})`)
 
-    cells
+    baseLayer
       .selectAll('path.cell-gap')
-      .data((d) => [d])
+      .data(currentDataWithPaths)
       .join('path')
       .attr('d', (d) => d.path)
       .classed('cell-gap stroke-current text-bg-primary', true)
-      .style('stroke-width', '36')
+      .attr('stroke-width', '32')
 
-    cells
+    definitionLayer
       .selectAll('path.definition')
-      .data((d) => [d])
+      .data(currentDataWithPaths)
       .join('path')
       .attr('d', (d) => d.path)
-      .classed('definition stroke-current text-tertiary', true)
-      .style('stroke-width', '2')
+      .attr('stroke-width', '1')
+      .classed('definition stroke-current text-brand opacity-10', true)
 
-    cells
+    contentLayer
       .selectAll('circle')
-      .data((d) => [d])
+      .data(currentData)
       .join('circle')
       .attr('cx', (d) => d.x)
       .attr('cy', (d) => d.y)
-      .attr('r', 5)
-      .classed('fill-current text-brand', true)
+      .attr('r', 8)
+      .attr('stroke', 'rgba(0,0,0,0.2)')
+      .attr('stroke-width', 0.5)
+      .classed('fill-current text-brand opacity-90', true)
 
-    cells
+    contentLayer
       .selectAll('text')
-      .data((d) => [d])
+      .data(currentData)
       .join('text')
-      .attr('x', (d) => d.x + 8)
-      .attr('y', (d) => d.y - 14)
+      .attr('x', (d) => d.x + 16)
+      .attr('y', (d) => d.y - 18)
       .text((d) => d.title)
       .style('text-anchor', 'middle')
-      .classed('text-xl fill-current text-primary', true)
+      .classed('fill-current text-xl xl:text-2xl text-primary font-semibold', true)
+
+    // definitionLayer.raise()
+    // contentLayer.raise()
   }
 
   update(originalData, configuredOptions)

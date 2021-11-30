@@ -19,7 +19,7 @@ const Nav = () => {
           {siteName}
         </div>
       </Link>
-      <Link to="projects">Projects</Link>
+      <Link to="/projects">Projects</Link>
       <div>
         Theme
         <select
