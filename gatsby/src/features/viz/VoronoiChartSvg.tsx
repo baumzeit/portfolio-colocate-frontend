@@ -92,10 +92,9 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       const index = delaunay.find(e.x, e.y, deltaField?.index)
       const { x, y } = currentData[index]
 
-      const zoomScale = d3.scaleLinear().domain([-100, 100]).clamp(true).range([-0.6, 1.2])
+      const zoomScale = d3.scaleLinear().domain([-50, 100]).clamp(true).range([-0.6, 1.2])
 
       const zoomFactor = zoomScale(e.deltaY)
-      console.log(zoomFactor)
 
       const newDelta = currentData.map((point, idx) => {
         const alpha = Math.atan2(point.y - y, point.x - x)
