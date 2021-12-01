@@ -34,5 +34,5 @@ module.exports = {
   variants: {
     extend: {}
   },
-  plugins: [require('tailwindcss-text-fill-stroke')()]
+  plugins: [require('tailwindcss-text-fill-stroke')(), require('@tailwindcss/custom-forms')]
 }

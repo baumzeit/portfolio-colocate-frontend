@@ -50,7 +50,7 @@ const ProjectsPage: FC<{ data: AllProjectsDataQuery }> = ({ data: { allStrapiPro
   return (
     <Layout>
       <div className="absolute top-0 left-0 w-full h-full">
-        <VoronoiChartSvg data={chartData} />
+        <VoronoiChartSvg data={chartData} padding={{ top: 3.5 * 16, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 }} />
       </div>
     </Layout>
   )

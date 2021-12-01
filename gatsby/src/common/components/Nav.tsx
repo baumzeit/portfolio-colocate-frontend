@@ -1,4 +1,6 @@
 import { Link, graphql, useStaticQuery } from 'gatsby'
+
+import { PATH } from '../constants/paths'
 import { ThemeContext } from './ThemeContextProvider'
 import React, { useContext } from 'react'
 
@@ -19,12 +21,16 @@ const Nav = () => {
           {siteName}
         </div>
       </Link>
-      <Link to="/projects">Projects</Link>
+      <div>
+        <Link to="/projects">Projects</Link>
+        <div></div>
+        {window.location.pathname === PATH.PROJECTS}
+      </div>
       <div>
         Theme
         <select
           onChange={(event) => setTheme(event.target.value)}
-          className="text-brand bg-transparent mx-1"
+          className="text-brand bg-transparent form-select"
           value={theme}
         >
           <option value="dark">dark</option>

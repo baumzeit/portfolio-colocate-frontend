@@ -1,3 +1,7 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
 :root {
   --color-brand: #963d72;
   --color-highlight: #e79e4f;
@@ -21,10 +25,6 @@
     --bg-secondary: #1e1e1e;
   }
 }
-
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
 
 body {
   @apply transition-colors;

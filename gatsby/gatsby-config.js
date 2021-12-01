@@ -1,6 +1,8 @@
+/* eslint-disable @typescript-eslint/no-var-requires */
 require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`
 })
+const path = require('path')
 
 module.exports = {
   siteMetadata: {
