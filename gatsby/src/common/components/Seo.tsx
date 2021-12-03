@@ -1,6 +1,6 @@
+import { useStaticQuery, graphql } from 'gatsby'
 import React, { FC } from 'react'
 import { Helmet } from 'react-helmet'
-import { useStaticQuery, graphql } from 'gatsby'
 
 const SEO: FC<{ seo?: any }> = ({ seo = {} }) => {
   const { strapiGlobal } = useStaticQuery(query)

@@ -2,11 +2,10 @@
 require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`
 })
-const path = require('path')
 
 module.exports = {
   siteMetadata: {
-    siteUrl: 'https://www.yourdomain.tld',
+    siteURL: process.env.GATSBY_ROOT_URL,
     title: 'Portfolio Canopies'
   },
   plugins: [

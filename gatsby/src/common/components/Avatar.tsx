@@ -1,5 +1,6 @@
-import { generateColorStopClasses } from '../utility/generateColorStopClasses'
 import React, { FC, useMemo } from 'react'
+
+import { generateColorStopClasses } from '../utility/generateColorStopClasses'
 
 export const Avatar: FC<{ name: string; highlight?: boolean }> = ({ name, highlight }) => {
   const colorStopClasses = useMemo(() => generateColorStopClasses(name), [name])

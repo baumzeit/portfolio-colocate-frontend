@@ -1,38 +1,28 @@
-import React, {
-  useState,
-  useEffect,
-  createContext,
-  Dispatch,
-  SetStateAction,
-} from 'react';
+import React, { useState, useEffect, createContext, Dispatch, SetStateAction, FC } from 'react'
 
 export const ThemeContext = createContext<{
-  theme: string;
-  setTheme: Dispatch<SetStateAction<string>>;
+  theme: string
+  setTheme: Dispatch<SetStateAction<string>>
 }>({
   theme: '',
-  setTheme: () => {},
-});
+  setTheme: () => {}
+})
 
-export const ThemeContextProvider = ({ children }) => {
-  const [theme, setTheme] = useState('');
+export const ThemeContextProvider: FC = ({ children }) => {
+  const [theme, setTheme] = useState('')
 
   useEffect(() => {
-    const theme = localStorage.getItem('theme') || 'dark';
-    setTheme(theme);
-  }, []);
+    const theme = localStorage.getItem('theme') || 'dark'
+    setTheme(theme)
+  }, [])
 
   useEffect(() => {
     if (theme) {
-      localStorage.setItem('theme', theme);
-      const root = document.getElementsByTagName('html')[0];
-      root.className = theme;
+      localStorage.setItem('theme', theme)
+      const root = document.getElementsByTagName('html')[0]
+      root.className = theme
     }
-  }, [theme]);
+  }, [theme])
 
-  return (
-    <ThemeContext.Provider value={{ theme, setTheme }}>
-      {children}
-    </ThemeContext.Provider>
-  );
-};
+  return <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>
+}

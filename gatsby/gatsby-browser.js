@@ -1,6 +1,8 @@
-import React from 'react'
-import { ThemeContextProvider } from './src/common/components/ThemeContextProvider'
 import './src/scss/index.scss'
+import React from 'react'
+
+import { ProjectContextProvider } from './src/common/components/ProjectContextProvider'
+import { ThemeContextProvider } from './src/common/components/ThemeContextProvider'
 
 import '@fontsource/karla/200.css'
 import '@fontsource/karla/400.css'
@@ -11,8 +13,8 @@ import '@fontsource/rubik/600.css'
 
 export const wrapRootElement = ({ element }) => {
   return (
-      <ThemeContextProvider>
-        {element}
-      </ThemeContextProvider>
+    <ThemeContextProvider>
+      <ProjectContextProvider>{element}</ProjectContextProvider>
+    </ThemeContextProvider>
   )
 }

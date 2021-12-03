@@ -2,25 +2,25 @@
   "globals": {
     "__PATH_PREFIX__": true
   },
-  "root": true,
-  "parser": "@typescript-eslint/parser",
-  "extends": [
-    "react-app",
-    "plugin:react-hooks/recommended",
-    "prettier",
-    "plugin:@typescript-eslint/eslint-recommended",
-    "plugin:@typescript-eslint/recommended"
-  ],
-  "plugins": ["sort-imports-es6-autofix", "@typescript-eslint"],
+  "extends": ["react-app"],
+  "plugins": ["import"],
   "rules": {
-    "sort-imports-es6-autofix/sort-imports-es6": [
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "import/order": [
       "warn",
       {
-        "ignoreCase": false,
-        "ignoreMemberSort": false,
-        "memberSyntaxSortOrder": ["none", "all", "multiple", "single"]
+        "pathGroupsExcludedImportTypes": ["builtin"],
+        "groups": [
+          ["builtin", "external"],
+          ["index", "parent", "sibling"]
+        ],
+        "newlines-between": "always",
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
       }
-    ],
-    "@typescript-eslint/explicit-module-boundary-types": "off"
+    ]
   }
 }

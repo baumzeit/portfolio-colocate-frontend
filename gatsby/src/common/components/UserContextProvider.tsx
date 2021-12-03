@@ -1,5 +1,6 @@
-import { useLocalStorage } from '../hooks/useLocalStorage'
 import React, { FC, createContext } from 'react'
+
+import { useLocalStorage } from '../hooks/useLocalStorage'
 
 export const UserContext = createContext({ name: '', setName: (x: any) => {} })
 

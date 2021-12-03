@@ -1,154 +1,375 @@
-import * as d3 from 'd3'
-import { UseCanvas2DDrawFn, useCanvas2D } from '../../common/hooks/useCanvas'
-import { useAsyncEffect } from '@react-hook/async'
-import { useDebounce } from '@react-hook/debounce'
-import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import chunk from 'lodash.chunk'
+import { useDebounceCallback } from '@react-hook/debounce'
 import useSize from '@react-hook/size'
+import * as d3 from 'd3'
+import React, { FocusEvent, memo, MouseEvent, MouseEventHandler, useEffect, useMemo, useRef } from 'react'
 
+import { StrapiProject } from '../../../graphql-types'
+
+type VoronoiDatum = {
+  x: number
+  y: number
+  title: string
+  imageUrl: string
+  id: string | number
+  color: string | undefined
+}
 type VoronoiChartProps = {
-  data: { x: number; y: number; imageUrl: string }[]
-  margin?: number
+  data: VoronoiDatum[]
+  padding?: {
+    top?: number
+    right?: number
+    bottom?: number
+    left?: number
+  }
+  width: number
+  height: number
 }
 
-export const VoronoiChart = ({ data, margin = 0 }: VoronoiChartProps) => {
-  const chartRef = useRef()
-  const [liveWidth, liveHeight] = useSize(chartRef)
+export const VoronoiChart = memo(({ data: unscaledData, padding, width, height }: VoronoiChartProps) => {
+  const svgRef = useRef<SVGSVGElement>(null)
 
-  const [[width, height], setDimensions] = useDebounce([liveWidth, liveHeight], 400)
-
-  const strokeStyle = {
-    tertiary: getComputedStyle(document.documentElement).getPropertyValue('--text-tertiary'),
-    primary: getComputedStyle(document.documentElement).getPropertyValue('--text-primary')
-  }
-
-  const {
-    status,
-    cancel,
-    error,
-    value: images
-  } = useAsyncEffect(() => Promise.all(data.map(({ imageUrl }) => (imageUrl ? loadImage(imageUrl) : null))), [])
-
-  const particles = useMemo(() => data.map(({ x, y }) => [x * width, y * height]), [data, width, height])
-
-  useEffect(() => {
-    setDimensions([liveWidth, liveHeight])
-  }, [liveHeight, liveWidth, setDimensions])
-
-  const memoOptions = useMemo(
-    () => ({
-      width,
-      height
-    }),
-    [height, width]
+  const data = useMemo(
+    () => unscaledData.map((datum) => ({ ...datum, x: datum.x * width, y: datum.y * height })),
+    [height, unscaledData, width]
   )
 
-  useEffect(() => {
-    console.log(status, images)
-  }, [images, status])
+  const updateGraphDebounce = useDebounceCallback(drawVoronoi, 300)
 
   useEffect(() => {
-    console.log('particles', particles)
-    console.log('memoOptions', memoOptions)
-  }, [particles, memoOptions])
+    if (svgRef.current) {
+      const svg = d3
+        .select(svgRef.current)
+        .attr('fill', 'none')
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-linecap', 'round')
 
-  const canvasRef = useCanvas2D(draw(particles, { strokeStyle, images }), memoOptions)
+      updateGraphDebounce(
+        svg,
+        data,
+        { width, height },
+        {
+          offset: Math.min(width, height) / Math.sqrt(data.length),
+          padding
+        }
+      )
+    }
+  }, [updateGraphDebounce, data, width, height, padding])
 
   return (
-    <div ref={chartRef} className="h-full">
-      {width && height && <canvas ref={canvasRef} />}
-    </div>
+    <svg ref={svgRef} width={width} height={height}>
+      <defs>
+        <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" patternTransform="scale(1)" width="4" height="4">
+          <path
+            d="M-1,1 l2,-2
+           M0,4 l4,-4
+           M3,5 l2,-2"
+            className="stroke-current text-bg-secondary stroke-1"
+          />
+        </pattern>
+        {Array.from(new Set(data.map((p) => p.color))).map((color) => (
+          <pattern
+            key={color}
+            id={'diagonalHatchHighlight-' + color}
+            patternUnits="userSpaceOnUse"
+            patternTransform="scale(1)"
+            width="4"
+            height="4"
+          >
+            <path
+              d="M-1,1 l2,-2
+           M0,4 l4,-4
+           M3,5 l2,-2"
+              strokeWidth="1"
+              stroke={color}
+            />
+          </pattern>
+        ))}
+      </defs>
+      <g className="base-layer"></g>
+      <g className="definition-layer"></g>
+      <g className="content-layer"></g>
+    </svg>
   )
+})
+
+const DEFAULT_PADDING = {
+  top: 0,
+  right: 0,
+  bottom: 0,
+  left: 0
 }
 
-function clippingPath(polygon: number[][], img: HTMLImageElement, x: number, y: number, ctx) {
-  const minSize = 600
-  // save the unclipped context
-  ctx.save()
+type Position = { x: number; y: number }
 
-  // define the path that will be clipped to
-  ctx.beginPath()
-  ctx.moveTo(polygon[0][0], polygon[0][1])
-  for (let i = 0; i < polygon.length; i++) {
-    ctx.lineTo(polygon[i][0], polygon[i][1])
-  }
-  ctx.closePath()
+type Delta = Position[]
 
-  // stroke the path
-  // half of the stroke is outside the path
-  // the outside stroke will survive the clipping that follows
-  ctx.lineWidth = 4
-  ctx.stroke()
-
-  // make the current path a clipping path
-  ctx.clip()
-
-  // draw the image which will be clipped except in the clipping path
-  const aspectRatio = img.width / img.height
-  const isLandscape = aspectRatio > 1
-  const baseSize = Math.min(img.width, img.height, minSize)
-  const imgWidth = isLandscape ? baseSize * aspectRatio : baseSize
-  const imgHeight = isLandscape ? baseSize : baseSize / aspectRatio
-  ctx.drawImage(img, x - imgWidth / 2, y - imgHeight / 2, imgWidth, imgHeight)
-
-  // restore the unclipped context (==undo the clipping path)
-  ctx.restore()
+export type EnrichedDatum = VoronoiDatum & {
+  path: string
+  index: number
 }
-const draw =
-  (particles, { strokeStyle, images }): UseCanvas2DDrawFn =>
-  (ctx) => {
-    const width = ctx.canvas.width
-    const height = ctx.canvas.height
 
-    function update() {
-      const delaunay = d3.Delaunay.from(particles)
+type Dimensions = { width: number; height: number }
+type VoronoiOptions = {
+  offset?: number
+  transitionDuration?: number
+  cellGap?: number
+  padding?: VoronoiChartProps['padding']
+}
+type VoronoiContext = {
+  delta: Delta | null
+  transitioning: string | null
+  selectedIndex: number | null
+}
+type VoronoiDrawFn = (
+  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
+  data: VoronoiDatum[],
+  { width, height }: Dimensions,
+  options?: VoronoiOptions
+) => any
 
-      const voronoi = delaunay.voronoi([-1, -1, width + 1, height + 1])
-      ctx.clearRect(0, 0, width, height)
+const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }, options = {}) => {
+  const mergedPadding = { padding: { ...DEFAULT_PADDING, ...options.padding } }
+  const opts = { offset: 50, transitionDuration: 550, cellGap: 32, ...options, ...mergedPadding }
 
-      ctx.beginPath()
-      delaunay.render(ctx)
-      ctx.strokeStyle = strokeStyle.tertiary
-      ctx.stroke()
+  const zoomScale = d3.scaleLinear().domain([-30, 60]).clamp(true).range([-0.6, 1.2])
+  const pushScale = d3
+    .scalePow()
+    .domain([0, Math.hypot(width, height)])
+    .range([opts.offset, 0])
 
-      ctx.beginPath()
-      voronoi.render(ctx)
-      voronoi.renderBounds(ctx)
-      ctx.strokeStyle = strokeStyle.primary
-      ctx.stroke()
+  const update = (currentData: VoronoiDatum[], ctx: VoronoiContext) => {
+    const animate = (name: string, animateContext: VoronoiContext) => {
+      const { delta } = animateContext
+      if (delta) {
+        d3.transition(name)
+          .duration(opts.transitionDuration)
+          .tween('tween-' + name, (d) => {
+            return (tweenValue) => {
+              const tweenDelta = delta.map((d) => ({ x: d.x * tweenValue, y: d.y * tweenValue }))
+              const tweenData = d3
+                .zip<VoronoiDatum>(currentData, tweenDelta as VoronoiDatum[])
+                .map(([d, delta]) => ({ ...d, x: d.x + delta.x, y: d.y + delta.y }))
 
-      ctx.beginPath()
-      delaunay.renderPoints(ctx, 2)
-      ctx.fill()
-
-      const centers = Array.from(delaunay.points)
-      const polygons = Array.from(voronoi.cellPolygons())
-      const bundle = d3.transpose([images, polygons, chunk(centers, 2)])
-      for (const [image, polygon, center] of bundle) {
-        if (image) {
-          clippingPath(polygon, image, center[0], center[1], ctx)
-        }
+              update(tweenData, { ...animateContext, delta: tweenDelta, transitioning: tweenValue < 1 ? name : null })
+            }
+          })
       }
     }
 
-    ctx.canvas.ontouchmove = ctx.canvas.onmousemove = (event) => {
-      event.preventDefault()
-      particles[0] = [event.layerX, event.layerY]
-      update()
+    const zoomCell = (index: number, deltaY: number) => {
+      const newDelta = createDelta(index, currentData, (scalar) => scalar * zoomScale(deltaY))
+      animate('zoom', { ...ctx, delta: newDelta, selectedIndex: index })
     }
 
-    update()
+    const highlightCell = (index: number) => {
+      // console.log('highlight', index)
+      d3.selectAll(`.base-layer path.cell-gap`)
+        .transition('highlight-fill-opacity')
+        .duration(450)
+        .style('fill-opacity', (d: any) => (d?.index === index ? 0 : 0.9))
 
-    return ctx.canvas
+      const newDelta = createDelta(index, currentData, pushScale)
+      const restoreDelta = d3
+        .zip(currentData, originalData)
+        .map(([curr, original]) => ({ x: curr.x - original.x, y: curr.y - original.y }))
+
+      const delta = d3
+        .zip(newDelta, restoreDelta)
+        .map(([fresh, restore]) => ({ x: fresh.x - restore.x, y: fresh.y - restore.y }))
+
+      animate('highlight', { ...ctx, delta, selectedIndex: index })
+    }
+
+    const delaunay = d3.Delaunay.from(
+      currentData,
+      (d) => d.x,
+      (d) => d.y
+    )
+
+    const voronoi = delaunay.voronoi([
+      Number(opts.padding.left) - opts.cellGap / 2,
+      Number(opts.padding.top) - opts.cellGap / 2,
+      width - Number(opts.padding.left) + opts.cellGap / 2,
+      height - Number(opts.padding.left) + opts.cellGap / 2
+    ])
+
+    const currentDataWithPaths: EnrichedDatum[] = currentData.map((d, idx) => ({
+      ...d,
+      path: voronoi.renderCell(idx),
+      index: idx
+    }))
+
+    const defs = svg
+      .select('defs')
+      .selectAll('clipPath')
+      .data(currentDataWithPaths)
+      .join('clipPath')
+      .attr('id', (d) => `clip-${d.index}`)
+
+    defs
+      .selectAll('path')
+      .data((d) => [d])
+      .join('path')
+      .attr('fill', 'none')
+      .attr('d', (d) => d.path)
+      .attr('stroke-linejoin', 'round')
+
+    const baseLayer = svg.select('g.base-layer')
+    const definitionLayer = svg.select('g.definition-layer')
+    const contentLayer = svg.select('g.content-layer')
+
+    const baseLayerCell = baseLayer
+      .selectAll('g.cell')
+      .data(currentDataWithPaths)
+      .join('g')
+      .attr('class', (d, idx) => 'cell cell-' + idx)
+
+    const definitionLayerCell = definitionLayer
+      .selectAll('g.cell')
+      .data(currentDataWithPaths)
+      .join('g')
+      .attr('class', (d, idx) => 'cell cell-' + idx)
+
+    const contentLayerCell = contentLayer
+      .selectAll('g.cell')
+      .data(currentDataWithPaths)
+      .join('g')
+      .attr('class', (d, idx) => 'cell cell-' + idx)
+
+    baseLayerCell
+      .selectAll('image')
+      .data((d) => [d])
+      .join('image')
+      .attr('xlink:href', (d) => d.imageUrl)
+      .attr('x', (d) => d.x - 300)
+      .attr('y', (d) => d.y - 300)
+      .attr('width', 600)
+      .attr('height', 600)
+      .attr('preserveAspectRatio', 'xMidYMid slice')
+      .attr('clip-path', (d) => `url(#clip-${d.index})`)
+
+    baseLayerCell
+      .selectAll('path.cell-gap')
+      .data((d) => [d])
+      .join('path')
+      .attr('d', (d) => d.path)
+      .classed('cell-gap stroke-current text-bg-primary', true)
+      .attr('stroke-width', opts.cellGap)
+      .attr('fill', (d) => 'url(#diagonalHatch)')
+      .attr('fill-opacity', 0.9)
+      .on('mouseenter', function (e: MouseEvent, d) {
+        if (ctx.transitioning === 'zoom' || svg.node()?.contains(document.activeElement)) {
+          return
+        }
+        if (typeof d.index === 'number' && d.index !== ctx.selectedIndex) {
+          // console.log('mousemove', ctx.selectedIndex, '-->', index)
+          highlightCell(d.index)
+        }
+      })
+
+    definitionLayerCell
+      .selectAll('path.definition')
+      .data((d) => [d])
+      .join('path')
+      .attr('d', (d) => d.path)
+      .attr('stroke-width', '1')
+      .attr('stroke-opacity', 0.1)
+      .classed('definition stroke-current text-brand', true)
+
+    definitionLayer
+      .selectAll('path.bounds')
+      .data([voronoi.renderBounds()])
+      .join('path')
+      .attr('d', (d) => d)
+      .attr('stroke-width', '2')
+      .classed('bounds stroke-current text-bg-primary', true)
+
+    const circles = contentLayerCell
+      .selectAll('circle')
+      .data((d) => [d])
+      .join('circle')
+      .attr('cx', (d) => d.x)
+      .attr('cy', (d) => d.y)
+      .attr('r', 8)
+      .classed('fill-current text-brand', true)
+      .attr('tabindex', (d) => 10 + d.index)
+
+    if (ctx.transitioning !== 'highlight') {
+      circles.on('focus', function (e: FocusEvent<SVGElement>) {
+        const datum = d3.select<SVGElement, EnrichedDatum>(e.target).datum()
+        // console.log('focus', datum.index)
+        highlightCell(datum.index)
+      })
+    }
+
+    if (ctx.transitioning !== 'highlight') {
+      svg.on('wheel', (e) => {
+        const index = e?.target ? d3.select<SVGElement, EnrichedDatum>(e.target).datum()?.index : null
+        const deltaY = e?.deltaY
+        // console.log('wheel', index, 'deltaY', deltaY)
+        if (typeof index === 'number' && typeof deltaY === 'number') {
+          zoomCell(index, deltaY)
+        }
+      })
+    }
+
+    contentLayerCell
+      .selectAll('text')
+      .data((d) => [d])
+      .join('text')
+      .attr('x', (d) => d.x + 16)
+      .attr('y', (d) => d.y - 18)
+      .text((d) => d.title)
+      .style('text-anchor', 'middle')
+      .classed('fill-current text-xl xl:text-2xl text-primary font-semibold', true)
   }
 
-const loadImage = (url: string) => {
-  return new Promise<HTMLImageElement>(function (resolve) {
-    const img = new Image()
+  update(originalData, { selectedIndex: null, delta: null, transitioning: null })
+}
 
-    img.onload = (event) => resolve(event.path[0])
-    img.onerror = resolve
-
-    img.src = url
+const createDelta = (index: number, data: Position[], transformScalar: (scalar: number) => number): Delta => {
+  const { x, y } = data[index]
+  return data.map((point, idx) => {
+    const alpha = Math.atan2(point.y - y, point.x - x)
+    const hyp = transformScalar(Math.hypot(point.y - y, point.x - x))
+    return idx !== index
+      ? {
+          x: Math.cos(alpha) * hyp,
+          y: Math.sin(alpha) * hyp
+        }
+      : { x: 0, y: 0 }
   })
+}
+
+export const highlightCells = (projects: StrapiProject[]): MouseEventHandler => {
+  return () => {
+    const projectIds = projects?.map((p) => p?.id)
+    const cells = d3.selectAll<SVGGElement, EnrichedDatum>('.base-layer .cell')
+
+    cells.each(function (d) {
+      const group = d3.select(this)
+      const cellPath = group.select('.cell-gap')
+
+      const shouldHighlight = !!projectIds?.includes(d.id)
+      const highlightChanged = group.classed('highlighted') !== shouldHighlight
+      if (highlightChanged) {
+        cellPath
+          .transition()
+          .duration(450)
+          .style('fill-opacity', 0)
+          .on('end', () => cellPath.remove())
+        console.log.apply(`url(#diagonalHatchHighlight-${d.color})`)
+        const cloneCell = cellPath
+          .clone()
+          .style('fill', shouldHighlight ? `url(#diagonalHatchHighlight-${d.color})` : 'url(#diagonalHatch)')
+          .style('fill-opacity', 0)
+          .transition()
+          .duration(450)
+          .style('fill-opacity', 1)
+
+        group.append(() => cloneCell.node())
+      }
+      group.classed('highlighted', shouldHighlight)
+    })
+  }
 }
