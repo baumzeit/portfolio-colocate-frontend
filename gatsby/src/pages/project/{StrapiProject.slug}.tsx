@@ -4,7 +4,7 @@ import React, { FC, useMemo } from 'react'
 import { ProjectDataQuery } from '../../../graphql-types'
 import Layout from '../../common/components/Layout'
 // import { ProjectDetail } from '../../features/project/Detail'
-import { VoronoiChart } from '../../features/viz/VoronoiChart'
+import { VoronoiChart } from '../../features/viz/Voronoi/VoronoiChart'
 
 const ProjectPage = ({ location, data: { strapiProject } }: PageProps<ProjectDataQuery>) => {
   const particles = useMemo(() => Array.from({ length: 4 }, () => ({ x: Math.random(), y: Math.random() })), [])

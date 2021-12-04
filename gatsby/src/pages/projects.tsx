@@ -6,8 +6,9 @@ import React, { useEffect, useMemo, useRef } from 'react'
 import { ProjectsPageDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
 import { useJitterGrid } from '../common/hooks/useJitterGrid'
+import { useSpiralLayout } from '../common/hooks/useSpiralLayout'
 import notEmpty from '../common/utility/notEmpty'
-import { VoronoiChart } from '../features/viz/VoronoiChart'
+import { VoronoiChart } from '../features/viz/Voronoi/VoronoiChart'
 
 const chartPadding = { top: 3.5 * 16, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 }
 const jitter = d3.randomNormal(0, 0.05)
@@ -20,7 +21,7 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
     minItems: allStrapiProject.totalCount,
     width,
     height,
-    relMargin: { top: 0.25, right: 0.2, bottom: 0.2, left: 0.2 },
+    relMargin: { top: 0.25, right: 0.15, bottom: 0.2, left: 0.15 },
     jitter
   })
 

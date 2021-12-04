@@ -3,7 +3,7 @@ import { navigate } from 'gatsby-link'
 import React, { useContext, useState } from 'react'
 
 import { NavDataQuery } from '../../../graphql-types'
-import { highlightCellsByFieldId } from '../../features/viz/VoronoiChart'
+import { highlightCellsByFieldId } from '../../features/viz/Voronoi/VoronoiChart'
 import { PATH } from '../constants/paths'
 import { ThemeContext } from './ThemeContextProvider'
 
@@ -22,7 +22,7 @@ export const Nav = ({ location }: { location?: Location }) => {
   const fields = edges.map((d) => d.node)
   const { siteName, logo } = strapiGlobal
   return (
-    <div className="px-8 flex h-14 items-center justify-between relative z-50">
+    <div className="relative z-50 flex items-center justify-between px-8 bg-primary bg-opacity-10 h-14">
       <Link to="/" className="font-bold">
         <div className="flex align-center">
           {logo?.url && (
@@ -45,12 +45,12 @@ export const Nav = ({ location }: { location?: Location }) => {
                 key={strapiId}
                 onClick={(e) => {
                   e.preventDefault()
-                  setSelectedFieldId(strapiId)
-                  highlightCellsByFieldId(strapiId)
+                  setSelectedFieldId(strapiId === selectedFieldId ? undefined : strapiId)
+                  highlightCellsByFieldId(strapiId === selectedFieldId ? undefined : strapiId)
                 }}
                 style={{ color: color || 'inherit' }}
-                className={`ml-5 animate-fadeIn animate-delay-${100 + 100 * idx} cursor-pointer font-mono ${
-                  strapiId === selectedFieldId ? 'underline' : 'no-underline'
+                className={`ml-5 animate-fadeIn px-2 py-1 animate-delay-${100 + 100 * idx} cursor-pointer rounded-sm ${
+                  strapiId === selectedFieldId ? 'bg-secondary' : 'initial'
                 }`}
               >
                 {name}
@@ -63,7 +63,7 @@ export const Nav = ({ location }: { location?: Location }) => {
         Theme
         <select
           onChange={(event) => setTheme(event.target.value)}
-          className="text-brand bg-transparent form-select"
+          className="bg-transparent text-brand form-select"
           value={theme}
         >
           <option value="dark">dark</option>
