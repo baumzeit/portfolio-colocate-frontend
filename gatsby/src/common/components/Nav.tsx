@@ -1,8 +1,9 @@
 import { Link, graphql, useStaticQuery } from 'gatsby'
-import React, { useContext } from 'react'
+import { navigate } from 'gatsby-link'
+import React, { useContext, useState } from 'react'
 
 import { NavDataQuery } from '../../../graphql-types'
-import { highlightCells } from '../../features/viz/VoronoiChart'
+import { highlightCellsByFieldId } from '../../features/viz/VoronoiChart'
 import { PATH } from '../constants/paths'
 import { ThemeContext } from './ThemeContextProvider'
 
@@ -13,6 +14,7 @@ export const Nav = ({ location }: { location?: Location }) => {
   } = useStaticQuery<NavDataQuery>(query)
 
   const { theme, setTheme } = useContext(ThemeContext)
+  const [selectedFieldId, setSelectedFieldId] = useState()
 
   if (!strapiGlobal) {
     return <p>no data</p>
@@ -36,16 +38,23 @@ export const Nav = ({ location }: { location?: Location }) => {
       <div className="flex">
         <Link to="/projects">Projects</Link>
         {location && location.pathname.startsWith(PATH.PROJECTS) && (
-          <div className="ml-4">
-            {fields.map(({ strapiId, name, projects, color }, idx) => (
-              <span
+          <div className="ml-4 text-brand">
+            {fields.map(({ strapiId, color, name }, idx) => (
+              <a
+                href={'#field' + strapiId}
                 key={strapiId}
-                onClick={projects ? highlightCells(projects) : () => {}}
-                style={{ color }}
-                className={`ml-5 animate-fadeIn animate-delay-${100 + 200 * idx}`}
+                onClick={(e) => {
+                  e.preventDefault()
+                  setSelectedFieldId(strapiId)
+                  highlightCellsByFieldId(strapiId)
+                }}
+                style={{ color: color || 'inherit' }}
+                className={`ml-5 animate-fadeIn animate-delay-${100 + 100 * idx} cursor-pointer font-mono ${
+                  strapiId === selectedFieldId ? 'underline' : 'no-underline'
+                }`}
               >
                 {name}
-              </span>
+              </a>
             ))}
           </div>
         )}

@@ -1,18 +1,20 @@
 import { useDebounceCallback } from '@react-hook/debounce'
-import useSize from '@react-hook/size'
 import * as d3 from 'd3'
-import React, { FocusEvent, memo, MouseEvent, MouseEventHandler, useEffect, useMemo, useRef } from 'react'
-
-import { StrapiProject } from '../../../graphql-types'
+import React, { FC, FocusEvent, MouseEvent, MouseEventHandler, useEffect, useRef } from 'react'
 
 type VoronoiDatum = {
   x: number
   y: number
-  title: string
   imageUrl: string
-  id: string | number
-  color: string | undefined
+  id: number | null | undefined
+  title: string | null | undefined
+  fields: {
+    color?: string | null | undefined
+    name?: string | null | undefined
+    id?: number | null | undefined
+  }[]
 }
+
 type VoronoiChartProps = {
   data: VoronoiDatum[]
   padding?: {
@@ -25,13 +27,8 @@ type VoronoiChartProps = {
   height: number
 }
 
-export const VoronoiChart = memo(({ data: unscaledData, padding, width, height }: VoronoiChartProps) => {
+export const VoronoiChart: FC<VoronoiChartProps> = ({ data, padding, width, height, children }) => {
   const svgRef = useRef<SVGSVGElement>(null)
-
-  const data = useMemo(
-    () => unscaledData.map((datum) => ({ ...datum, x: datum.x * width, y: datum.y * height })),
-    [height, unscaledData, width]
-  )
 
   const updateGraphDebounce = useDebounceCallback(drawVoronoi, 300)
 
@@ -56,7 +53,7 @@ export const VoronoiChart = memo(({ data: unscaledData, padding, width, height }
   }, [updateGraphDebounce, data, width, height, padding])
 
   return (
-    <svg ref={svgRef} width={width} height={height}>
+    <svg id="voronoiSvg" ref={svgRef} width={width} height={height}>
       <defs>
         <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" patternTransform="scale(1)" width="4" height="4">
           <path
@@ -66,31 +63,14 @@ export const VoronoiChart = memo(({ data: unscaledData, padding, width, height }
             className="stroke-current text-bg-secondary stroke-1"
           />
         </pattern>
-        {Array.from(new Set(data.map((p) => p.color))).map((color) => (
-          <pattern
-            key={color}
-            id={'diagonalHatchHighlight-' + color}
-            patternUnits="userSpaceOnUse"
-            patternTransform="scale(1)"
-            width="4"
-            height="4"
-          >
-            <path
-              d="M-1,1 l2,-2
-           M0,4 l4,-4
-           M3,5 l2,-2"
-              strokeWidth="1"
-              stroke={color}
-            />
-          </pattern>
-        ))}
+        {children}
       </defs>
       <g className="base-layer"></g>
       <g className="definition-layer"></g>
       <g className="content-layer"></g>
     </svg>
   )
-})
+}
 
 const DEFAULT_PADDING = {
   top: 0,
@@ -161,12 +141,12 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       animate('zoom', { ...ctx, delta: newDelta, selectedIndex: index })
     }
 
-    const highlightCell = (index: number) => {
-      // console.log('highlight', index)
-      d3.selectAll(`.base-layer path.cell-gap`)
-        .transition('highlight-fill-opacity')
+    const selectCell = (index: number) => {
+      d3.selectAll<SVGPathElement, EnrichedDatum>(`.pattern`)
+        .classed('hover-selected', (d) => d.index === index)
+        .transition()
         .duration(450)
-        .style('fill-opacity', (d: any) => (d?.index === index ? 0 : 0.9))
+        .style('fill-opacity', (d) => (d.index === index ? 0 : 0.9))
 
       const newDelta = createDelta(index, currentData, pushScale)
       const restoreDelta = d3
@@ -177,7 +157,7 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
         .zip(newDelta, restoreDelta)
         .map(([fresh, restore]) => ({ x: fresh.x - restore.x, y: fresh.y - restore.y }))
 
-      animate('highlight', { ...ctx, delta, selectedIndex: index })
+      animate('select', { ...ctx, delta, selectedIndex: index })
     }
 
     const delaunay = d3.Delaunay.from(
@@ -222,7 +202,7 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       .selectAll('g.cell')
       .data(currentDataWithPaths)
       .join('g')
-      .attr('class', (d, idx) => 'cell cell-' + idx)
+      .attr('class', (d, idx) => `cell cell-${idx}`)
 
     const definitionLayerCell = definitionLayer
       .selectAll('g.cell')
@@ -253,19 +233,10 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       .data((d) => [d])
       .join('path')
       .attr('d', (d) => d.path)
-      .classed('cell-gap stroke-current text-bg-primary', true)
+      .classed('cell-gap pattern stroke-current text-bg-primary', true)
       .attr('stroke-width', opts.cellGap)
       .attr('fill', (d) => 'url(#diagonalHatch)')
       .attr('fill-opacity', 0.9)
-      .on('mouseenter', function (e: MouseEvent, d) {
-        if (ctx.transitioning === 'zoom' || svg.node()?.contains(document.activeElement)) {
-          return
-        }
-        if (typeof d.index === 'number' && d.index !== ctx.selectedIndex) {
-          // console.log('mousemove', ctx.selectedIndex, '-->', index)
-          highlightCell(d.index)
-        }
-      })
 
     definitionLayerCell
       .selectAll('path.definition')
@@ -274,7 +245,17 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       .attr('d', (d) => d.path)
       .attr('stroke-width', '1')
       .attr('stroke-opacity', 0.1)
+      .attr('fill', 'transparent')
       .classed('definition stroke-current text-brand', true)
+      .on('mouseenter', function (e: MouseEvent, d) {
+        if (ctx.transitioning === 'zoom' || svg.node()?.contains(document.activeElement)) {
+          return
+        }
+        if (typeof d.index === 'number' && d.index !== ctx.selectedIndex) {
+          // console.log('mousemove', ctx.selectedIndex, '-->', index)
+          selectCell(d.index)
+        }
+      })
 
     definitionLayer
       .selectAll('path.bounds')
@@ -294,15 +275,15 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       .classed('fill-current text-brand', true)
       .attr('tabindex', (d) => 10 + d.index)
 
-    if (ctx.transitioning !== 'highlight') {
+    if (ctx.transitioning !== 'select') {
       circles.on('focus', function (e: FocusEvent<SVGElement>) {
         const datum = d3.select<SVGElement, EnrichedDatum>(e.target).datum()
         // console.log('focus', datum.index)
-        highlightCell(datum.index)
+        selectCell(datum.index)
       })
     }
 
-    if (ctx.transitioning !== 'highlight') {
+    if (ctx.transitioning !== 'select' && ctx.transitioning !== 'zoom') {
       svg.on('wheel', (e) => {
         const index = e?.target ? d3.select<SVGElement, EnrichedDatum>(e.target).datum()?.index : null
         const deltaY = e?.deltaY
@@ -319,7 +300,7 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       .join('text')
       .attr('x', (d) => d.x + 16)
       .attr('y', (d) => d.y - 18)
-      .text((d) => d.title)
+      .text((d) => d.title || '')
       .style('text-anchor', 'middle')
       .classed('fill-current text-xl xl:text-2xl text-primary font-semibold', true)
   }
@@ -341,35 +322,26 @@ const createDelta = (index: number, data: Position[], transformScalar: (scalar: 
   })
 }
 
-export const highlightCells = (projects: StrapiProject[]): MouseEventHandler => {
-  return () => {
-    const projectIds = projects?.map((p) => p?.id)
-    const cells = d3.selectAll<SVGGElement, EnrichedDatum>('.base-layer .cell')
+export const highlightCellsByFieldId = (highlightFieldId: number | null | undefined): MouseEventHandler => {
+  d3.selectAll<SVGGElement, EnrichedDatum>('.pattern').each(function (d) {
+    const group = d3.select(this.parentElement)
+    const cellPath = group.select('.pattern')
+    const shouldHighlight = Boolean(d.fields.find((field) => field.id === highlightFieldId))
+    cellPath
+      .transition()
+      .duration(450)
+      .style('fill-opacity', 0)
+      .on('end', () => cellPath.remove())
 
-    cells.each(function (d) {
-      const group = d3.select(this)
-      const cellPath = group.select('.cell-gap')
-
-      const shouldHighlight = !!projectIds?.includes(d.id)
-      const highlightChanged = group.classed('highlighted') !== shouldHighlight
-      if (highlightChanged) {
-        cellPath
-          .transition()
-          .duration(450)
-          .style('fill-opacity', 0)
-          .on('end', () => cellPath.remove())
-        console.log.apply(`url(#diagonalHatchHighlight-${d.color})`)
-        const cloneCell = cellPath
-          .clone()
-          .style('fill', shouldHighlight ? `url(#diagonalHatchHighlight-${d.color})` : 'url(#diagonalHatch)')
-          .style('fill-opacity', 0)
-          .transition()
-          .duration(450)
-          .style('fill-opacity', 1)
-
-        group.append(() => cloneCell.node())
-      }
-      group.classed('highlighted', shouldHighlight)
-    })
-  }
+    cellPath
+      .clone()
+      .style('fill', shouldHighlight ? `url(#diagonalHatchHighlight-${highlightFieldId})` : 'url(#diagonalHatch)')
+      .style('fill-opacity', 0)
+      .classed('field-highlight', shouldHighlight)
+      .transition()
+      .duration(450)
+      .style('fill-opacity', function (d) {
+        return d3.select(this).classed('hover-selected') ? 0 : 1
+      })
+  })
 }

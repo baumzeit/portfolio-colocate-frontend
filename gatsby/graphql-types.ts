@@ -708,12 +708,23 @@ export type StrapiTagProjectsImagesUpdated_AtArgs = {
 
 export type StrapiTagProjectsImagesFormats = {
   thumbnail?: Maybe<StrapiTagProjectsImagesFormatsThumbnail>;
+  small?: Maybe<StrapiTagProjectsImagesFormatsSmall>;
   large?: Maybe<StrapiTagProjectsImagesFormatsLarge>;
   medium?: Maybe<StrapiTagProjectsImagesFormatsMedium>;
-  small?: Maybe<StrapiTagProjectsImagesFormatsSmall>;
 };
 
 export type StrapiTagProjectsImagesFormatsThumbnail = {
+  name?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  ext?: Maybe<Scalars['String']>;
+  mime?: Maybe<Scalars['String']>;
+  width?: Maybe<Scalars['Int']>;
+  height?: Maybe<Scalars['Int']>;
+  size?: Maybe<Scalars['Float']>;
+  url?: Maybe<Scalars['String']>;
+};
+
+export type StrapiTagProjectsImagesFormatsSmall = {
   name?: Maybe<Scalars['String']>;
   hash?: Maybe<Scalars['String']>;
   ext?: Maybe<Scalars['String']>;
@@ -736,17 +747,6 @@ export type StrapiTagProjectsImagesFormatsLarge = {
 };
 
 export type StrapiTagProjectsImagesFormatsMedium = {
-  name?: Maybe<Scalars['String']>;
-  hash?: Maybe<Scalars['String']>;
-  ext?: Maybe<Scalars['String']>;
-  mime?: Maybe<Scalars['String']>;
-  width?: Maybe<Scalars['Int']>;
-  height?: Maybe<Scalars['Int']>;
-  size?: Maybe<Scalars['Float']>;
-  url?: Maybe<Scalars['String']>;
-};
-
-export type StrapiTagProjectsImagesFormatsSmall = {
   name?: Maybe<Scalars['String']>;
   hash?: Maybe<Scalars['String']>;
   ext?: Maybe<Scalars['String']>;
@@ -3926,12 +3926,23 @@ export type StrapiTagProjectsImagesFilterInput = {
 
 export type StrapiTagProjectsImagesFormatsFilterInput = {
   thumbnail?: InputMaybe<StrapiTagProjectsImagesFormatsThumbnailFilterInput>;
+  small?: InputMaybe<StrapiTagProjectsImagesFormatsSmallFilterInput>;
   large?: InputMaybe<StrapiTagProjectsImagesFormatsLargeFilterInput>;
   medium?: InputMaybe<StrapiTagProjectsImagesFormatsMediumFilterInput>;
-  small?: InputMaybe<StrapiTagProjectsImagesFormatsSmallFilterInput>;
 };
 
 export type StrapiTagProjectsImagesFormatsThumbnailFilterInput = {
+  name?: InputMaybe<StringQueryOperatorInput>;
+  hash?: InputMaybe<StringQueryOperatorInput>;
+  ext?: InputMaybe<StringQueryOperatorInput>;
+  mime?: InputMaybe<StringQueryOperatorInput>;
+  width?: InputMaybe<IntQueryOperatorInput>;
+  height?: InputMaybe<IntQueryOperatorInput>;
+  size?: InputMaybe<FloatQueryOperatorInput>;
+  url?: InputMaybe<StringQueryOperatorInput>;
+};
+
+export type StrapiTagProjectsImagesFormatsSmallFilterInput = {
   name?: InputMaybe<StringQueryOperatorInput>;
   hash?: InputMaybe<StringQueryOperatorInput>;
   ext?: InputMaybe<StringQueryOperatorInput>;
@@ -3954,17 +3965,6 @@ export type StrapiTagProjectsImagesFormatsLargeFilterInput = {
 };
 
 export type StrapiTagProjectsImagesFormatsMediumFilterInput = {
-  name?: InputMaybe<StringQueryOperatorInput>;
-  hash?: InputMaybe<StringQueryOperatorInput>;
-  ext?: InputMaybe<StringQueryOperatorInput>;
-  mime?: InputMaybe<StringQueryOperatorInput>;
-  width?: InputMaybe<IntQueryOperatorInput>;
-  height?: InputMaybe<IntQueryOperatorInput>;
-  size?: InputMaybe<FloatQueryOperatorInput>;
-  url?: InputMaybe<StringQueryOperatorInput>;
-};
-
-export type StrapiTagProjectsImagesFormatsSmallFilterInput = {
   name?: InputMaybe<StringQueryOperatorInput>;
   hash?: InputMaybe<StringQueryOperatorInput>;
   ext?: InputMaybe<StringQueryOperatorInput>;
@@ -5799,10 +5799,10 @@ export type ProjectDataQueryVariables = Exact<{
 
 export type ProjectDataQuery = { strapiProject?: { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, images?: Array<{ url?: string | null | undefined } | null | undefined> | null | undefined, strapiFields?: Array<{ name?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined };
 
-export type AllProjectsDataQueryVariables = Exact<{ [key: string]: never; }>;
+export type ProjectsPageDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type AllProjectsDataQuery = { allStrapiProject: { edges: Array<{ node: { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, strapiFields?: Array<{ color?: string | null | undefined, name?: string | null | undefined } | null | undefined> | null | undefined, images?: Array<{ url?: string | null | undefined } | null | undefined> | null | undefined } }> } };
+export type ProjectsPageDataQuery = { allStrapiProject: { totalCount: number, edges: Array<{ node: { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, strapiFields?: Array<{ id?: number | null | undefined, name?: string | null | undefined, color?: string | null | undefined } | null | undefined> | null | undefined, images?: Array<{ url?: string | null | undefined } | null | undefined> | null | undefined } }> }, allStrapiField: { edges: Array<{ node: { strapiId?: number | null | undefined, name?: string | null | undefined, color?: string | null | undefined } }> } };
 
 export type GatsbyImageSharpFixedFragment = { base64?: string | null | undefined, width: number, height: number, src: string, srcSet: string };
 
