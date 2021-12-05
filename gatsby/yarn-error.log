@@ -1,5 +1,5 @@
 Arguments: 
-  /Users/baumzeit/.nvm/versions/node/v14.17.6/bin/node /Users/baumzeit/.nvm/versions/node/v14.17.6/bin/yarn add esling-plugin-import
+  /Users/baumzeit/.nvm/versions/node/v14.17.6/bin/node /Users/baumzeit/.nvm/versions/node/v14.17.6/bin/yarn add lodash.cloneDeep @types/lodash.cloneDeep
 
 PATH: 
   /Users/baumzeit/gems/bin:/Users/baumzeit/.nvm/versions/node/v14.17.6/bin:/Users/baumzeit/bin:/usr/local/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin:/opt/X11/bin:/Users/baumzeit/gems/bin:/Users/baumzeit/.nvm/versions/node/v14.17.6/bin:/Users/baumzeit/bin
@@ -14,7 +14,7 @@ Platform:
   darwin x64
 
 Trace: 
-  Error: https://registry.yarnpkg.com/esling-plugin-import: Not found
+  Error: https://registry.yarnpkg.com/lodash.cloneDeep: Not found
       at Request.params.callback [as _callback] (/Users/baumzeit/.nvm/versions/node/v14.17.6/lib/node_modules/yarn/lib/cli.js:67029:18)
       at Request.self.callback (/Users/baumzeit/.nvm/versions/node/v14.17.6/lib/node_modules/yarn/lib/cli.js:140883:22)
       at Request.emit (events.js:400:28)
@@ -31,7 +31,7 @@ npm manifest:
     "name": "@cs-present/frontend",
     "version": "1.0.0",
     "private": true,
-    "description": "CS Present",
+    "description": "Portfolio Canopies",
     "author": "Philip Hradecsni",
     "keywords": [
       "gatsby"
@@ -94,12 +94,7 @@ npm manifest:
       "eslint": "^7.5.0",
       "eslint-config-prettier": "^8.3.0",
       "eslint-config-react-app": "^6.0.0",
-      "eslint-plugin-flowtype": "^5.2.0",
       "eslint-plugin-import": "^2.22.0",
-      "eslint-plugin-jsx-a11y": "^6.3.1",
-      "eslint-plugin-react": "^7.20.3",
-      "eslint-plugin-react-hooks": "^4.0.8",
-      "eslint-plugin-sort-imports-es6-autofix": "^0.6.0",
       "prettier": "2.4.1",
       "prettier-eslint": "13.0.0"
     }
@@ -5701,7 +5696,7 @@ Lockfile:
       find-up "^2.1.0"
       pkg-dir "^2.0.0"
   
-  eslint-plugin-flowtype@^5.10.0, eslint-plugin-flowtype@^5.2.0:
+  eslint-plugin-flowtype@^5.10.0:
     version "5.10.0"
     resolved "https://registry.yarnpkg.com/eslint-plugin-flowtype/-/eslint-plugin-flowtype-5.10.0.tgz#7764cc63940f215bf3f0bd2d9a1293b2b9b2b4bb"
     integrity sha512-vcz32f+7TP+kvTUyMXZmCnNujBQZDNmcqPImw8b9PZ+16w1Qdm6ryRuYZYVaG9xRqqmAPr2Cs9FAX5gN+x/bjw==
@@ -5738,7 +5733,7 @@ Lockfile:
       resolve "^1.20.0"
       tsconfig-paths "^3.11.0"
   
-  eslint-plugin-jsx-a11y@^6.3.1, eslint-plugin-jsx-a11y@^6.4.1:
+  eslint-plugin-jsx-a11y@^6.4.1:
     version "6.5.1"
     resolved "https://registry.yarnpkg.com/eslint-plugin-jsx-a11y/-/eslint-plugin-jsx-a11y-6.5.1.tgz#cdbf2df901040ca140b6ec14715c988889c2a6d8"
     integrity sha512-sVCFKX9fllURnXT2JwLN5Qgo24Ug5NF6dxhkmxsMEUZhXRcGg+X3e1JbJ84YePQKBl5E0ZjAH5Q4rkdcGY99+g==
@@ -5756,12 +5751,12 @@ Lockfile:
       language-tags "^1.0.5"
       minimatch "^3.0.4"
   
-  eslint-plugin-react-hooks@^4.0.8, eslint-plugin-react-hooks@^4.2.0:
+  eslint-plugin-react-hooks@^4.2.0:
     version "4.3.0"
     resolved "https://registry.yarnpkg.com/eslint-plugin-react-hooks/-/eslint-plugin-react-hooks-4.3.0.tgz#318dbf312e06fab1c835a4abef00121751ac1172"
     integrity sha512-XslZy0LnMn+84NEG9jSGR6eGqaZB3133L8xewQo3fQagbQuGt7a63gf+P1NGKZavEYEC3UXaWEAA/AqDkuN6xA==
   
-  eslint-plugin-react@^7.20.3, eslint-plugin-react@^7.26.1:
+  eslint-plugin-react@^7.26.1:
     version "7.27.1"
     resolved "https://registry.yarnpkg.com/eslint-plugin-react/-/eslint-plugin-react-7.27.1.tgz#469202442506616f77a854d91babaae1ec174b45"
     integrity sha512-meyunDjMMYeWr/4EBLTV1op3iSG3mjT/pz5gti38UzfM4OPpNc2m0t2xvKCOMU5D6FSdd34BIMFOvQbW+i8GAA==
@@ -5780,11 +5775,6 @@ Lockfile:
       resolve "^2.0.0-next.3"
       semver "^6.3.0"
       string.prototype.matchall "^4.0.6"
-  
-  eslint-plugin-sort-imports-es6-autofix@^0.6.0:
-    version "0.6.0"
-    resolved "https://registry.yarnpkg.com/eslint-plugin-sort-imports-es6-autofix/-/eslint-plugin-sort-imports-es6-autofix-0.6.0.tgz#b8cd8639d7a54cefce6b17898b102fd5ec31e52b"
-    integrity sha512-2NVaBGF9NN+727Fyq+jJYihdIeegjXeUUrZED9Q8FVB8MsV3YQEyXG96GVnXqWt0pmn7xfCZOZf3uKnIhBrfeQ==
   
   eslint-scope@5.1.1, eslint-scope@^5.0.0, eslint-scope@^5.1.1:
     version "5.1.1"

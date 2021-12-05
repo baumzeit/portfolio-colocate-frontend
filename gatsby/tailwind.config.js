@@ -19,6 +19,7 @@ module.exports = {
       },
       backgroundColor: {
         primary: 'var(--bg-primary)',
+        primaryLayer: 'var(--bg-primary-layer)',
         secondary: 'var(--bg-secondary)'
       },
       textColor: {

@@ -51,7 +51,6 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
               key={color}
               id={'diagonalHatchHighlight-' + strapiId}
               patternUnits="userSpaceOnUse"
-              patternTransform="scale(1)"
               width="4"
               height="4"
             >
@@ -60,6 +59,7 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
              M0,4 l4,-4
              M3,5 l2,-2"
                 strokeWidth="1"
+                strokeOpacity="0.4"
                 stroke={color || 'black'}
               />
             </pattern>

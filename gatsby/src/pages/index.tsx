@@ -27,7 +27,7 @@ const HomePage = ({ data: { strapiHome, allStrapiField }, location }: PageProps<
             <ContourChart data={[{ x: 30, y: 30 }]} margin={200} />
           </div>
           <div className="relative z-10">
-            <h1 className="text-3xl font-semibold mb-4 color-primary tracking-wider">{title}</h1>
+            <h1 className="mb-4 text-3xl font-semibold tracking-wider color-primary">{title}</h1>
             <div>{subtitle}</div>
             <div>{intro}</div>
             {displayFields.map(({ node: field }) => (

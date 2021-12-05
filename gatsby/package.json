@@ -17,6 +17,7 @@
   "dependencies": {
     "@fontsource/karla": "^4.5.0",
     "@fontsource/rubik": "^4.5.0",
+    "@heroicons/react": "^1.0.5",
     "@react-hook/async": "^3.1.1",
     "@react-hook/debounce": "^4.0.0",
     "@react-hook/previous": "^1.0.1",
@@ -27,6 +28,7 @@
     "@types/d3": "^7.1.0",
     "@types/isomorphic-fetch": "^0.0.35",
     "@types/lodash.chunk": "^4.2.6",
+    "@types/lodash.clonedeep": "^4.5.6",
     "@types/node": "^16.11.7",
     "@types/react-helmet": "^6.1.4",
     "@types/tailwindcss": "^2.2.4",
@@ -46,6 +48,7 @@
     "gatsby-transformer-sharp": "^4.2.0",
     "isomorphic-fetch": "^3.0.0",
     "lodash.chunk": "^4.2.0",
+    "lodash.clonedeep": "^4.5.0",
     "postcss": "^8.3.11",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",

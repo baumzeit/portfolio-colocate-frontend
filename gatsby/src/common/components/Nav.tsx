@@ -1,12 +1,11 @@
+import { ArrowSmRightIcon } from '@heroicons/react/solid'
 import { Link, graphql, useStaticQuery } from 'gatsby'
-import { navigate } from 'gatsby-link'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useMemo, useState } from 'react'
 
 import { NavDataQuery } from '../../../graphql-types'
-import { highlightCellsByFieldId } from '../../features/viz/Voronoi/VoronoiChart'
+import { highlightCellsByFieldId } from '../../features/viz/Voronoi/highlightCellsByField'
 import { PATH } from '../constants/paths'
 import { ThemeContext } from './ThemeContextProvider'
-
 export const Nav = ({ location }: { location?: Location }) => {
   const {
     strapiGlobal,
@@ -14,15 +13,19 @@ export const Nav = ({ location }: { location?: Location }) => {
   } = useStaticQuery<NavDataQuery>(query)
 
   const { theme, setTheme } = useContext(ThemeContext)
-  const [selectedFieldId, setSelectedFieldId] = useState()
+  const [selectedFieldId, setSelectedFieldId] = useState<number | null>(null)
+  const fields = edges.map((d) => d.node)
+
+  useEffect(() => {
+    highlightCellsByFieldId(selectedFieldId)
+  }, [selectedFieldId])
 
   if (!strapiGlobal) {
     return <p>no data</p>
   }
-  const fields = edges.map((d) => d.node)
   const { siteName, logo } = strapiGlobal
   return (
-    <div className="relative z-50 flex items-center justify-between px-8 bg-primary bg-opacity-10 h-14">
+    <div className="relative z-50 flex items-center justify-between px-8 bg-primaryLayer h-14">
       <Link to="/" className="font-bold">
         <div className="flex align-center">
           {logo?.url && (
@@ -35,28 +38,34 @@ export const Nav = ({ location }: { location?: Location }) => {
           {siteName}
         </div>
       </Link>
-      <div className="flex">
-        <Link to="/projects">Projects</Link>
-        {location && location.pathname.startsWith(PATH.PROJECTS) && (
-          <div className="ml-4 text-brand">
-            {fields.map(({ strapiId, color, name }, idx) => (
-              <a
-                href={'#field' + strapiId}
-                key={strapiId}
-                onClick={(e) => {
-                  e.preventDefault()
-                  setSelectedFieldId(strapiId === selectedFieldId ? undefined : strapiId)
-                  highlightCellsByFieldId(strapiId === selectedFieldId ? undefined : strapiId)
-                }}
-                style={{ color: color || 'inherit' }}
-                className={`ml-5 animate-fadeIn px-2 py-1 animate-delay-${100 + 100 * idx} cursor-pointer rounded-sm ${
-                  strapiId === selectedFieldId ? 'bg-secondary' : 'initial'
-                }`}
-              >
-                {name}
-              </a>
-            ))}
+      <div className="flex align-center">
+        {location && location.pathname.startsWith(PATH.PROJECTS) ? (
+          <div className="ml-4 first-of-type:ml-0 text-brand">
+            {fields.map(({ strapiId = null, color, name }, idx) => {
+              const isActive = strapiId === selectedFieldId
+              return (
+                <button
+                  key={strapiId}
+                  onClick={(e) => {
+                    setSelectedFieldId(isActive ? null : strapiId)
+                  }}
+                  style={{ color: color || 'inherit' }}
+                  className={`ml-2 animate-fadeIn px-2 py-1 animate-delay-${
+                    100 + 100 * idx
+                  } cursor-pointer rounded-md ${strapiId === selectedFieldId ? 'bg-secondary' : 'initial'}`}
+                >
+                  {name}
+                </button>
+              )
+            })}
           </div>
+        ) : (
+          <Link to="/projects">
+            Projects{' '}
+            <span>
+              <ArrowSmRightIcon className="w-5 h-5" />
+            </span>
+          </Link>
         )}
       </div>
       <div>
