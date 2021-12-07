@@ -5785,7 +5785,7 @@ export type SeoDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type SeoDataQuery = { strapiGlobal?: { siteName?: string | null | undefined, favIcon?: { localFile?: { publicURL?: string | null | undefined } | null | undefined } | null | undefined, defaultSeo?: { metaTitle?: string | null | undefined, metaDescription?: string | null | undefined, shareImage?: { localFile?: { publicURL?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined } | null | undefined };
 
-export type ProjectDetailsFragment = { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, images?: Array<{ url?: string | null | undefined } | null | undefined> | null | undefined, strapiFields?: Array<{ name?: string | null | undefined } | null | undefined> | null | undefined };
+export type ProjectDetailsFragment = { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, images?: Array<{ localFile?: { childImageSharp?: { fixed?: { srcSet: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, strapiFields?: Array<{ name?: string | null | undefined } | null | undefined> | null | undefined };
 
 export type HomeDataQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5797,12 +5797,12 @@ export type ProjectDataQueryVariables = Exact<{
 }>;
 
 
-export type ProjectDataQuery = { strapiProject?: { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, images?: Array<{ url?: string | null | undefined } | null | undefined> | null | undefined, strapiFields?: Array<{ name?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined };
+export type ProjectDataQuery = { strapiProject?: { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, images?: Array<{ localFile?: { childImageSharp?: { fixed?: { srcSet: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, strapiFields?: Array<{ name?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined };
 
 export type ProjectsPageDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectsPageDataQuery = { allStrapiProject: { totalCount: number, edges: Array<{ node: { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, strapiFields?: Array<{ id?: number | null | undefined, name?: string | null | undefined, color?: string | null | undefined } | null | undefined> | null | undefined, images?: Array<{ url?: string | null | undefined } | null | undefined> | null | undefined } }> }, allStrapiField: { edges: Array<{ node: { strapiId?: number | null | undefined, name?: string | null | undefined, color?: string | null | undefined } }> } };
+export type ProjectsPageDataQuery = { allStrapiProject: { totalCount: number, edges: Array<{ node: { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, strapiFields?: Array<{ id?: number | null | undefined, name?: string | null | undefined, color?: string | null | undefined } | null | undefined> | null | undefined, images?: Array<{ localFile?: { childImageSharp?: { fixed?: { srcSet: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } }> }, allStrapiField: { edges: Array<{ node: { strapiId?: number | null | undefined, name?: string | null | undefined, color?: string | null | undefined } }> } };
 
 export type GatsbyImageSharpFixedFragment = { base64?: string | null | undefined, width: number, height: number, src: string, srcSet: string };
 

@@ -28,8 +28,8 @@ module.exports = {
         tertiary: 'var(--text-tertiary)'
       },
       fontFamily: {
-        display: 'Rubik',
-        body: 'Karla'
+        display: 'Rubik, sans-serif',
+        body: 'Karla, sans-serif'
       },
       animation: { fadeIn: 'fade-in 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both' },
       keyframes: {

@@ -41,15 +41,18 @@ export const VoronoiChart: FC<VoronoiChartProps> = ({ data, padding, width, heig
         data,
         { width, height },
         {
-          offset: Math.min(width, height) * 0.25,
-          padding
+          offset: Math.min(width, height) * 0.1,
+          padding: { ...DEFAULT_PADDING, ...padding },
+          transitionDuration: 450,
+          cellGap: 32,
+          imageSize: 600
         }
       )
     }
   }, [updateGraphDebounce, data, width, height, padding])
 
   return (
-    <svg id="voronoiSvg" ref={svgRef} width={width} height={height}>
+    <svg id="voronoiSvg" ref={svgRef} width={width} height={height} className="cursor-pointer">
       <defs>
         <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4">
           <path
@@ -79,12 +82,10 @@ type VoronoiDrawFn = (
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   data: VoronoiDatum[],
   { width, height }: Dimensions,
-  options?: Partial<VoronoiOptions>
+  options: VoronoiOptions
 ) => any
 
-const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }, options = {}) => {
-  const mergedPadding = { padding: { ...DEFAULT_PADDING, ...options.padding } }
-  const opts = { offset: 50, transitionDuration: 550, cellGap: 32, ...options, ...mergedPadding }
+const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }, opts) => {
   console.log('originalData', originalData)
 
   const update = (data: VoronoiDatum[], ctx: VoronoiContext) => {
@@ -116,7 +117,7 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       update
     )
 
-    svg.on('mouseleave', () => restore())
+    // svg.on('mouseleave', () => restore())
 
     const defs = svg
       .select('defs')
@@ -137,37 +138,37 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
     const definitionLayer = svg.select('g.definition-layer')
     const contentLayer = svg.select('g.content-layer')
 
-    const baseLayerCell = baseLayer.selectAll('g.cell').data(currentData).join('g').classed('cell', true)
-
-    const definitionLayerCell = definitionLayer.selectAll('g.cell').data(currentData).join('g').classed('cell', true)
-
-    const contentLayerCell = contentLayer
+    const baseLayerCell = baseLayer
       .selectAll('g.cell')
       .data(currentData)
       .join('g')
       .classed('cell', true)
-      .on('click', function (e: MouseEvent, d) {
-        if (ctx.transitioning === 'select') {
-          return
-        }
-        console.log('click')
-        if (typeof d.index === 'number') {
-          console.log('expose')
-          exposeCell(d.index)
-        }
-      })
+      .attr('clip-path', (d) => `url(#clip-${d.index})`)
+
+    const definitionLayerCell = definitionLayer.selectAll('g.cell').data(currentData).join('g').classed('cell', true)
+
+    const contentLayerCell = contentLayer.selectAll('g.cell').data(currentData).join('g').classed('cell', true)
 
     baseLayerCell
-      .selectAll('image')
+      .selectAll('foreignObject.image')
       .data((d) => [d])
-      .join('image')
-      .attr('xlink:href', (d) => d.imageUrl)
-      .attr('x', (d) => d.x - 300)
-      .attr('y', (d) => d.y - 300)
-      .attr('width', 600)
-      .attr('height', 600)
-      .attr('preserveAspectRatio', 'xMidYMid meet')
-      .attr('clip-path', (d) => `url(#clip-${d.index})`)
+      .join('foreignObject')
+      .classed('image', true)
+      .attr('x', (d) => d.x - opts.imageSize / 2)
+      .attr('y', (d) => d.y - opts.imageSize / 2)
+      .attr('width', opts.imageSize)
+      .attr('height', opts.imageSize)
+      .attr('transform-origin', 'right')
+      .style('transform-box', 'fill-box')
+      .selectAll('img')
+      .data((d) => [d])
+      .join('xhtml:img')
+      .attr('xmlns', 'http://www.w3.org/1999/xhtml')
+      .attr('srcSet', (d) => d.imageUrl)
+      .style('width', '100%')
+      .style('height', '100%')
+      .style('object-fit', 'contain')
+      .style('object-position', 'center')
 
     baseLayerCell
       .selectAll('path.cell-gap')
@@ -199,15 +200,13 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       .classed('definition stroke-current text-brand', true)
       .on('mouseenter', function (e: MouseEvent, d) {
         if (
-          ctx.locked ||
-          ctx.transitioning === 'expose' ||
-          ctx.transitioning === 'zoom' ||
-          svg.node()?.contains(document.activeElement)
+          (ctx.viewState === 'hover' || !ctx.viewState) &&
+          ctx.transitioning !== 'expose' &&
+          ctx.transitioning !== 'zoom' &&
+          d.index !== ctx.selectedIndex &&
+          !svg.node()!.contains(document.activeElement)
         ) {
-          return
-        }
-        if (typeof d.index === 'number' && d.index !== ctx.selectedIndex) {
-          console.log(ctx.locked, 'mouseenter')
+          console.log('mouseenter')
           selectCell(d.index)
         }
       })
@@ -230,35 +229,98 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       .classed('fill-current text-brand', true)
       .attr('tabindex', (d) => 10 + d.index)
 
-    if (ctx.transitioning !== 'select') {
+    if (ctx.transitioning !== 'hover') {
       circles.on('focus', function (e: FocusEvent<SVGElement>) {
         const datum = d3.select<SVGElement, EnrichedDatum>(e.target).datum()
-        // console.log('focus', datum.index)
-        selectCell(datum.index)
-      })
-    }
-
-    if (ctx.transitioning !== 'select') {
-      svg.on('wheel', (e) => {
-        const index = e?.target ? d3.select<SVGElement, EnrichedDatum>(e.target).datum()?.index : null
-        const deltaY = e?.deltaY
-        // console.log('wheel', index, 'deltaY', deltaY)
-        if (typeof index === 'number' && typeof deltaY === 'number') {
-          zoomCell(index, deltaY)
+        if (ctx.viewState === 'expose') {
+          exposeCell(datum.index)
+        } else {
+          selectCell(datum.index)
         }
       })
     }
 
+    // if (ctx.transitioning !== 'hover') {
+    //   svg.on('wheel', (e) => {
+    //     const index = e?.target ? d3.select<SVGElement, EnrichedDatum>(e.target).datum()?.index : null
+    //     const deltaY = e?.deltaY
+    //     // console.log('wheel', index, 'deltaY', deltaY)
+    //     if (typeof index === 'number' && typeof deltaY === 'number') {
+    //       zoomCell(index, deltaY)
+    //     }
+    //   })
+    // }
+
+    svg.on('click', function (e: MouseEvent) {
+      console.log('click')
+      if (!(ctx.viewState !== 'expose' && ctx.transitioning === 'expose')) {
+        const index = d3.select<any, EnrichedDatum>(e.target).datum().index
+        if (typeof index === 'number') {
+          console.log('expose')
+          exposeCell(index)
+        }
+      }
+    })
+
     contentLayerCell
-      .selectAll('text')
+      .selectAll('text.label')
       .data((d) => [d])
       .join('text')
       .attr('x', (d) => d.x + 16)
       .attr('y', (d) => d.y - 18)
       .text((d) => d.title || '')
       .style('text-anchor', 'middle')
-      .classed('fill-current text-xl xl:text-2xl text-primary font-semibold', true)
+      .classed('label fill-current text-xl xl:text-2xl text-primary font-semibold', true)
+
+    d3.selectAll('.cell foreignObject.description').remove()
+    d3.selectAll('.cell foreignObject.image').style('transform', null)
+    d3.selectAll('.cell .label').style('transform', null)
+    if (
+      (ctx.transitioning === 'zoom' || !ctx.transitioning) &&
+      ctx.viewState === 'expose' &&
+      typeof ctx.selectedIndex === 'number'
+    ) {
+      const index = ctx.selectedIndex
+      const contentCell = contentLayerCell.filter((d) => d.index === index)
+      const baseCell = baseLayerCell.filter((d) => d.index === index)
+      const definitionCell = definitionLayerCell.filter((d) => d.index === index)
+
+      const columnGap = 30
+
+      baseCell
+        .select('foreignObject.image')
+        .transition()
+        .style('transform', `translate(-${opts.imageSize / 2 + columnGap}px, -${opts.imageSize / 6}px) scale(0.75)`)
+
+      contentCell
+        .select('text.label')
+        .transition()
+        .style('transform', function () {
+          const textWidth = d3.select(this).node()?.getBoundingClientRect().width
+          return `translate(${textWidth / 2 - 16}px, ${-opts.imageSize / 3}px)`
+        })
+
+      const fo = contentCell
+        .selectAll('foreignObject.description')
+        .data((d) => [d])
+        .join('foreignObject')
+        .attr('x', (d) => d.x)
+        .attr('y', (d) => d.y - opts.imageSize / 3)
+        .attr('width', width / 5)
+        .classed('description', true)
+
+      const div = fo
+        .selectAll('.content')
+        .data((d) => [d])
+        .join('xhtml:div')
+        .classed('content rounded text-highlight shadow-xl animate-fadeIn', true)
+        .html((d) => d.description || '')
+
+      const foHeight = div.node()?.getBoundingClientRect().height
+
+      fo.attr('height', foHeight)
+    }
   }
 
-  update(originalData, { selectedIndex: null, delta: [], transitioning: null, locked: false })
+  update(originalData, { selectedIndex: null, delta: [], transitioning: null, locked: false, viewState: null })
 }

@@ -1,14 +1,12 @@
 import * as d3 from 'd3'
-import { cloneDeep } from 'lodash'
-
-import { VoronoiChartProps } from './VoronoiChart'
-
+import { cloneDeep, throttle } from 'lodash'
 export type VoronoiDatum = {
   x: number
   y: number
   imageUrl: string
   id: number | null | undefined
   title: string | null | undefined
+  description: string | null | undefined
   fields: {
     color?: string | null | undefined
     name?: string | null | undefined
@@ -22,22 +20,32 @@ export type EnrichedDatum = VoronoiDatum & {
 }
 
 export type Dimensions = { width: number; height: number }
+export type Padding = {
+  top: number
+  right: number
+  bottom: number
+  left: number
+}
 
 export type VoronoiOptions = {
   offset: number
   transitionDuration: number
   cellGap: number
-  padding: VoronoiChartProps['padding']
+  imageSize: number
+  padding: Padding
 }
 type Position = { x: number; y: number }
 
 type Delta = Position[]
 
+type Transition = 'hover' | 'expose' | 'zoom' | 'restore' | null
+
 export type VoronoiContext = {
   delta: Delta
-  transitioning: string | null
+  transitioning: Transition | null
   selectedIndex: number | null
   locked: boolean
+  viewState: Extract<Transition, 'hover' | 'expose'> | null
 }
 
 export const initializeVoronoiHelpers = (
@@ -55,22 +63,24 @@ export const initializeVoronoiHelpers = (
     .clamp(true)
     .range([opts.offset, 0])
 
-  const animate = (name: string, animateContext: VoronoiContext) => {
+  const animate = (name: Transition, animateContext: VoronoiContext, duration = opts.transitionDuration) => {
     const { delta } = animateContext
     const transition = d3
-      .transition(name)
-      .duration(opts.transitionDuration)
+      .transition(name || '')
+      .duration(duration)
       .tween('tween-' + name, function (d) {
         return (tweenValue) => {
-          const tweenDelta = delta.map((d) => ({ x: d.x * tweenValue, y: d.y * tweenValue }))
-          const tweenData = d3
-            .zip<EnrichedDatum>(data, tweenDelta as EnrichedDatum[])
-            .map(([d, delta]) => ({ ...d, x: d.x + delta.x, y: d.y + delta.y }))
-          animateFn(tweenData, {
-            ...animateContext,
-            delta: tweenDelta,
-            transitioning: tweenValue < 1 ? name : null
-          })
+          if (tweenValue) {
+            const tweenDelta = delta.map((d) => ({ x: d.x * tweenValue, y: d.y * tweenValue }))
+            const tweenData = d3
+              .zip<EnrichedDatum>(data, tweenDelta as EnrichedDatum[])
+              .map(([d, delta]) => ({ ...d, x: d.x + delta.x, y: d.y + delta.y }))
+            animateFn(tweenData, {
+              ...animateContext,
+              delta: tweenDelta,
+              transitioning: tweenValue < 1 ? name : null
+            })
+          }
         }
       })
     return {
@@ -85,21 +95,26 @@ export const initializeVoronoiHelpers = (
     d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
       .classed('hover-selected', false)
       .selectAll('.pattern')
-      .transition()
-      .duration(450)
+      .transition('restore')
+      .duration(opts.transitionDuration)
       .style('fill-opacity', 0.9)
 
     const restoreDelta = d3
       .zip(originalData, data)
       .map(([curr, original]) => ({ x: curr.x - original.x, y: curr.y - original.y }))
-    return animate('restore', { ...ctx, delta: restoreDelta })
+    return animate('restore', { ...ctx, delta: restoreDelta, selectedIndex: null, viewState: null })
   }
 
-  const animateToState = (name: string, targetData: EnrichedDatum[], animateContext: VoronoiContext) => {
+  const animateToState = (
+    name: Transition,
+    targetData: EnrichedDatum[],
+    animateContext: VoronoiContext,
+    duration?: number
+  ) => {
     const delta = d3
       .zip(targetData, data)
       .map(([target, source]) => ({ x: target.x - source.x, y: target.y - source.y }))
-    return animate(name, { ...animateContext, delta })
+    return animate(name, { ...animateContext, delta }, duration)
   }
 
   const selectCell = (index: number, options: { scale?: (val: any) => number; restoreData?: EnrichedDatum[] } = {}) => {
@@ -108,22 +123,22 @@ export const initializeVoronoiHelpers = (
 
     d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
       .classed('hover-selected', (d) => d.index === index)
-      .transition()
-      .duration(450)
+      .transition('select-pattern-selected')
+      .duration(opts.transitionDuration)
       .select('.pattern')
       .style('fill-opacity', (d) => (d.index === index ? 0 : 0.9))
 
-    const newDelta = createDeltaPush(index, data, scale)
+    // const newDelta = createDeltaPush(index, data, scale)
 
-    const restoreDelta = d3
-      .zip(data, restoreData)
-      .map(([curr, original]) => ({ x: curr.x - original.x, y: curr.y - original.y }))
+    // const restoreDelta = d3
+    //   .zip(data, restoreData)
+    //   .map(([curr, original]) => ({ x: curr.x - original.x, y: curr.y - original.y }))
 
-    const delta = d3
-      .zip(newDelta, restoreDelta)
-      .map(([fresh, restore]) => ({ x: fresh.x - restore.x, y: fresh.y - restore.y }))
+    // const delta = d3
+    //   .zip(newDelta, restoreDelta)
+    //   .map(([fresh, restore]) => ({ x: fresh.x - restore.x, y: fresh.y - restore.y }))
 
-    return animate('select', { ...ctx, delta, selectedIndex: index })
+    // return animate('hover', { ...ctx, delta, selectedIndex: index })
   }
 
   const zoomCell = (index: number, deltaY: number) => {
@@ -131,38 +146,50 @@ export const initializeVoronoiHelpers = (
     animate('zoom', { ...ctx, delta: newDelta, selectedIndex: index })
   }
 
-  const exposeCell = (index: number) => {
-    d3.selectAll<SVGPathElement, EnrichedDatum>(`.base-layer .cell`)
+  const exposeCell = async (index: number) => {
+    d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
       .classed('hover-selected', (d) => d.index === index)
       .select('.pattern')
-      .transition()
-      .duration(450)
+      .transition('expose-pattern-selected')
+      .duration(opts.transitionDuration)
       .style('fill-opacity', (d) => (d.index === index ? 0 : 0.9))
 
-    const radius = (Math.min(width, height) * 0.8) / 2
-    const collideRadius = (radius * Math.PI) / data.length
-    console.log('simulation start', data)
-    const clonedData = cloneDeep(data)
-    const pushedData = clonedData.filter((d) => d.index !== index)
-    const centerData = { ...clonedData[index], x: width / 2, y: height / 2 }
-    d3.forceSimulation(pushedData)
-      .force(
-        'r',
-        d3
-          .forceRadial(radius)
-          .strength(1)
-          .x(width / 2)
-          .y(height / 2)
-      )
-      .force('charge', d3.forceCollide(collideRadius).iterations(2).strength(1))
-      .alphaDecay(0.15)
-      .on('end', function () {
-        console.log('simulation end')
-        const nodes = this.nodes()
-        const mergedData = [...nodes.slice(0, index), centerData, ...nodes.slice(index)]
-        animateToState('expose', mergedData, { ...ctx, locked: true })
-      })
+    const exposeData =
+      ctx.viewState === 'expose' && typeof ctx.selectedIndex === 'number'
+        ? swapItems(data, index, ctx.selectedIndex || 0)
+        : await simulateRadialForce(index)
+
+    d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
+      .classed('field-highlight', (d) => d.index === index)
+      .select('.highlight-pattern')
+      .style('fill', (d) => `url(#diagonalHatchHighlight-${d.fields[0].id})`)
+      .transition('expose-highlight-field')
+      .duration(opts.transitionDuration)
+      .style('fill-opacity', (d) => (d.index === index ? 0 : 1))
+
+    animateToState('expose', exposeData, { ...ctx, locked: true, selectedIndex: index, viewState: 'expose' })
   }
+  const simulateRadialForce = (index: number) =>
+    new Promise<EnrichedDatum[]>((resolve) => {
+      console.log('simulation start', data)
+      const aspect = width / height
+      const x0 = width / 2
+      const y0 = height / 2
+      const radius = (Math.min(width, height) * 1) / 2
+      const collideRadius = (radius * Math.PI) / data.length
+      const clonedData = cloneDeep(data)
+      const pushedData = clonedData.filter((d) => d.index !== index)
+      const centerData = { ...clonedData[index], x: x0, y: y0 }
+      d3.forceSimulation(pushedData)
+        .force('r', d3.forceRadial(radius).strength(1).x(x0).y(y0))
+        .force('charge', d3.forceCollide(collideRadius).iterations(2).strength(1))
+        .alphaDecay(0.1)
+        .on('end', function () {
+          const nodes = circleToEllipse(this.nodes(), aspect > 1 ? aspect * 0.8 : aspect * 1.2, x0, y0)
+          console.log('simulation end')
+          resolve([...nodes.slice(0, index), centerData, ...nodes.slice(index)])
+        })
+    })
   return { animate, selectCell, zoomCell, exposeCell, restore }
 }
 
@@ -178,4 +205,23 @@ const createDeltaPush = (index: number, data: Position[], transformScalar: (scal
         }
       : { x: 0, y: 0 }
   })
+}
+
+function circleToEllipse(data: EnrichedDatum[], aspect = 1, x0 = 0, y0 = 0) {
+  const aspectFactor = {
+    x: aspect > 1 ? aspect : 1,
+    y: aspect < 1 ? 1 / aspect : 1
+  }
+  const ellipseData = data.map((d) => ({
+    ...d,
+    x: x0 + (d.x - x0) * aspectFactor.x,
+    y: y0 + (d.y - y0) * aspectFactor.y
+  }))
+  return ellipseData
+}
+
+function swapItems<T = any>(data: T[], idx1: number, idx2: number) {
+  console.log('swap')
+  const swappedData = data.map((d, idx) => (idx === idx1 ? data[idx2] : idx === idx2 ? data[idx1] : d))
+  return swappedData
 }

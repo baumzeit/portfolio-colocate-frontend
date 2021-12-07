@@ -1,12 +1,11 @@
 import useSize from '@react-hook/size'
 import * as d3 from 'd3'
 import { graphql, PageProps } from 'gatsby'
-import React, { useEffect, useMemo, useRef } from 'react'
+import React, { useMemo, useRef } from 'react'
 
 import { ProjectsPageDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
 import { useJitterGrid } from '../common/hooks/useJitterGrid'
-import { useSpiralLayout } from '../common/hooks/useSpiralLayout'
 import notEmpty from '../common/utility/notEmpty'
 import { VoronoiChart } from '../features/viz/Voronoi/VoronoiChart'
 
@@ -21,21 +20,22 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
     minItems: allStrapiProject.totalCount,
     width,
     height,
-    relMargin: { top: 0.25, right: 0.15, bottom: 0.2, left: 0.15 },
+    relMargin: { top: 0.15, right: 0.15, bottom: 0.15, left: 0.15 },
     jitter
   })
 
   const chartData = useMemo(
     () =>
       getGridPosition
-        ? allStrapiProject.edges.map(({ node: { images, strapiId, strapiFields, title } }, idx) => ({
+        ? allStrapiProject.edges.map(({ node: { images, strapiId, strapiFields, title, description } }, idx) => ({
             x: getGridPosition(idx)[0],
             y: getGridPosition(idx)[1],
             imageUrl: images
-              ? process.env.GATSBY_API_URL! + images?.[0]?.url || 'https://picsum.photos/600/300'
+              ? images?.[0]?.localFile.childImageSharp.fixed.srcSet || 'https://picsum.photos/600/300'
               : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
             id: strapiId,
             title,
+            description,
             fields: strapiFields?.filter(notEmpty) || []
           }))
         : [],
@@ -44,7 +44,11 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
 
   return (
     <Layout location={location}>
-      <div ref={chartRef} id="voronoiContainer" className="absolute top-0 left-0 w-full h-full">
+      <div
+        ref={chartRef}
+        id="voronoiContainer"
+        className="absolute top-0 left-0 w-full h-full animate-fadeIn animate-delay-400"
+      >
         <VoronoiChart data={chartData} padding={chartPadding} width={width} height={height}>
           {allStrapiField.edges.map(({ node: { strapiId, color } }) => (
             <pattern
