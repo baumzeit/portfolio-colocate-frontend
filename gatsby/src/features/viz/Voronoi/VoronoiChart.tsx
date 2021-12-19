@@ -1,14 +1,13 @@
 import { useDebounceCallback } from '@react-hook/debounce'
 import * as d3 from 'd3'
-import React, { FC, FocusEvent, KeyboardEvent, MouseEvent, useEffect, useRef } from 'react'
+import React, { FC, FocusEvent, KeyboardEvent, MouseEvent, useEffect, useRef, useState } from 'react'
 
 import {
   calculateModel,
   Dimensions,
   EnrichedDatum,
   initializeVoronoiActions,
-  SetModalFn as SetModalData,
-  VoronoiContext,
+  SetModalFn,
   VoronoiDatum,
   VoronoiOptions
 } from './helpers'
@@ -24,20 +23,10 @@ export type VoronoiChartProps = {
   width: number
   height: number
   options?: Partial<VoronoiOptions>
-  setModalData: SetModalData
-  modalData: EnrichedDatum
+  setModal: SetModalFn
 }
 
-export const VoronoiChart: FC<VoronoiChartProps> = ({
-  data,
-  padding,
-  width,
-  height,
-  options,
-  setModalData,
-  modalData,
-  children
-}) => {
+export const VoronoiChart: FC<VoronoiChartProps> = ({ data, padding, width, height, options, setModal, children }) => {
   const svgRef = useRef<SVGSVGElement>(null)
 
   const updateGraphDebounce = useDebounceCallback(drawVoronoi, 300)
@@ -62,11 +51,10 @@ export const VoronoiChart: FC<VoronoiChartProps> = ({
           imageSize: 500,
           ...options
         },
-        setModalData,
-        modalData
+        setModal
       )
     }
-  }, [updateGraphDebounce, data, width, height, padding, options, modalData, setModalData])
+  }, [updateGraphDebounce, data, width, height, padding, options, setModal])
 
   return (
     <svg id="voronoiSvg" ref={svgRef} width={width} height={height} className="cursor-pointer">
@@ -101,11 +89,10 @@ type VoronoiDrawFn = (
   data: VoronoiDatum[],
   { width, height }: Dimensions,
   options: VoronoiOptions,
-  setModal: SetModalData,
-  modalData: EnrichedDatum
+  setModal: SetModalFn
 ) => any
 
-const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }, opts, setModalData, modalData) => {
+const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }, opts, setModal) => {
   console.log('originalData', originalData)
 
   const bounds = [
@@ -115,14 +102,11 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
     height - Number(opts.padding.left) + opts.cellGap / 2
   ]
   const enterDuration = 250
-  const updateDuration = 250
   const exitDuration = 250
   const fadeIn = (sel: d3.Selection<SVGGElement, EnrichedDatum, any, unknown>) =>
     sel.style('opacity', 0).transition().duration(enterDuration).style('opacity', 1)
-  const fadeOut = (sel: d3.Selection<SVGGElement, EnrichedDatum, any, unknown>) =>
-    sel.transition().duration(exitDuration).style('opacity', 0).remove()
 
-  const update = (data: VoronoiDatum[], { initial = false } = {}) => {
+  const update = (data: VoronoiDatum[]) => {
     const { voronoi } = calculateModel(data, bounds)
 
     const currentData: EnrichedDatum[] = data.map((d, idx) => ({
@@ -131,19 +115,7 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       id: String(d.id)
     }))
 
-    const { restore, selectCell, exposeCell } = initializeVoronoiActions(
-      currentData,
-      originalData,
-      { width, height },
-      opts,
-      update,
-      setModalData
-    )
-
-    if (!initial && !modalData) {
-      exposeCell(null)
-      return
-    }
+    const { restore, selectCell, exposeCell } = initializeVoronoiActions(currentData, { width, height }, opts, setModal)
 
     svg
       .select('defs')
@@ -197,20 +169,17 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
             .style('height', '100%')
             .style('object-fit', 'contain')
             .style('object-position', 'center')
-          // .attr('fill', (d) => `url(#diagonalHatchHighlight-${d.fields[0].id})`)
           return imageG
         },
         (update) => {
-          const transition = update.transition().duration(updateDuration)
-          transition
+          update
             .select('foreignObject.image')
             .attr('x', (d) => d.x - opts.imageSize / 2)
             .attr('y', (d) => d.y - opts.imageSize / 2)
             .attr('width', opts.imageSize)
             .attr('height', opts.imageSize)
           return update
-        },
-        fadeOut
+        }
       )
 
     const baseLayerCell = baseLayer
@@ -232,17 +201,14 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
             .classed('highlight-pattern stroke-current text-bg-primary', true)
             .attr('stroke-width', opts.cellGap)
             .attr('fill-opacity', 0)
-          // .attr('fill', (d) => `url(#diagonalHatchHighlight-${d.fields[0].id})`)
           return baseG
         },
         (update) => {
-          const transition = update.transition().duration(updateDuration)
-          transition.select('path.cell-gap').attr('d', (d) => d.path)
-          transition.select('path.highlight-pattern').attr('d', (d) => d.path)
+          update.select('path.cell-gap').attr('d', (d) => d.path)
+          update.select('path.highlight-pattern').attr('d', (d) => d.path)
 
           return update
-        },
-        fadeOut
+        }
       )
 
     const definitionLayerCell = definitionLayer
@@ -263,11 +229,9 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
           return definitionG
         },
         (update) => {
-          const transition = update.transition().duration(updateDuration)
-          transition.select('path.cell-border').attr('d', (d) => d.path)
+          update.select('path.cell-border').attr('d', (d) => d.path)
           return update
-        },
-        fadeOut
+        }
       )
 
     definitionLayer
@@ -311,27 +275,21 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
           return contentG
         },
         (update) => {
-          const transition = update.transition().duration(updateDuration)
-          transition
+          update
             .select('circle')
             .attr('cx', (d) => d.x)
             .attr('cy', (d) => d.y)
-          transition
+          update
             .select('text.label')
             .attr('x', (d) => d.x + 16)
             .attr('y', (d) => d.y - 18)
-          return transition
-        },
-        fadeOut
+          return update
+        }
       )
 
-    svg.on('mouseleave', () => {
-      // restore()
-      // exposeCell(null)
-    })
     svg.on('keyup', (e: KeyboardEvent) => {
       if (e.code === 'Space') {
-        const activeElement = d3.select(document.activeElement)
+        const activeElement = d3.select<d3.BaseType, EnrichedDatum | null>(document.activeElement)
         const activeElementId = activeElement?.datum()?.id
         if (activeElementId) {
           exposeCell(activeElementId)
@@ -349,26 +307,15 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       }
     })
 
-    // if (ctx.transitioning !== 'hover') {
-    //   svg.on('wheel', (e) => {
-    //     const index = e?.target ? d3.select<SVGElement, EnrichedDatum>(e.target).datum()?.index : null
-    //     const deltaY = e?.deltaY
-    //     // console.log('wheel', index, 'deltaY', deltaY)
-    //     if (typeof index === 'number' && typeof deltaY === 'number') {
-    //       zoomCell(index, deltaY)
-    //     }
-    //   })
-    // }
-
     d3.selectAll<SVGGElement, EnrichedDatum>('.cell').on('click', function (e: MouseEvent, d) {
       e.stopPropagation()
       const isExposed = d3.select(this).classed('exposed')
       if (d.id && !isExposed) {
-        console.log('expose')
+        console.log('expose', d.id)
         exposeCell(d.id)
       }
     })
   }
 
-  update(originalData, { initial: true })
+  update(originalData)
 }

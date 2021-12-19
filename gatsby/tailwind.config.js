@@ -31,7 +31,10 @@ module.exports = {
         display: 'Rubik, sans-serif',
         body: 'Karla, sans-serif'
       },
-      animation: { fadeIn: 'fade-in 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both' },
+      animation: {
+        fadeIn: 'fade-in 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
+        fadeOut: 'fade-out 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards',
+      },
       keyframes: {
         'fade-in': {
           '0%': {
@@ -39,6 +42,15 @@ module.exports = {
           },
           '100%': {
             opacity: 1
+          }
+        },
+        'fade-out': {
+          '100%': {
+            opacity: 1
+          },
+          '0%': {
+            opacity: 0,
+            height: 0,
           }
         }
       }

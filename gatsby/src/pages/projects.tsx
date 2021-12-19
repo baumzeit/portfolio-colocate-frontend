@@ -1,13 +1,14 @@
 import useSize from '@react-hook/size'
 import * as d3 from 'd3'
 import { graphql, PageProps } from 'gatsby'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { ProjectsPageDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
 import { useJitterGrid } from '../common/hooks/useJitterGrid'
 import notEmpty from '../common/utility/notEmpty'
-import { EnrichedDatum } from '../features/viz/Voronoi/helpers'
+import { ProjectDetailModal } from '../features/project/DetailModal'
+import { SetModalProps } from '../features/viz/Voronoi/helpers'
 import { VoronoiChart } from '../features/viz/Voronoi/VoronoiChart'
 
 const chartPadding = { top: 3.5 * 16, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 }
@@ -16,7 +17,7 @@ const jitter = d3.randomNormal(0, 0.05)
 const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: PageProps<ProjectsPageDataQuery>) => {
   const chartRef = useRef(null)
   const [width, height] = useSize(chartRef)
-  const [modalData, setModalData] = useState<EnrichedDatum | null>(null)
+  const [modalData, setModalData] = useState<SetModalProps>()
 
   const { getGridPosition, numCols } = useJitterGrid({
     minItems: allStrapiProject.totalCount,
@@ -26,10 +27,20 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
     jitter
   })
 
+  const [initialExposeId] = useState(() => {
+    console.log('initialize state')
+    if (location.hash) {
+      const slug = location.hash.slice(1)
+      const match = allStrapiProject.edges.find(({ node }) => node?.slug === slug)
+      return match ? String(match.node.strapiId) : null
+    }
+    return null
+  })
+
   const chartData = useMemo(
     () =>
       getGridPosition
-        ? allStrapiProject.edges.map(({ node: { images, strapiId, strapiFields, title, description } }, idx) => ({
+        ? allStrapiProject.edges.map(({ node: { images, strapiId, strapiFields, title, description, slug } }, idx) => ({
             x: getGridPosition(idx)[0],
             y: getGridPosition(idx)[1],
             imageUrl: images
@@ -37,6 +48,7 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
               : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
             id: String(strapiId),
             title: String(title),
+            slug: String(slug),
             description: String(description),
             fields:
               strapiFields?.filter(notEmpty).map((d) => ({
@@ -58,9 +70,9 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
             padding={chartPadding}
             width={width}
             height={height}
-            options={{ imageSize: (width / numCols) * 1.5 }}
-            setModalData={setModalData}
-            modalData={!!modalData}
+            options={{ imageSize: (width / numCols) * 1.2 }}
+            setModal={setModalData}
+            initialExposeId={initialExposeId}
           >
             {allStrapiField.edges.map(({ node: { strapiId, color } }) => (
               <pattern
@@ -83,12 +95,7 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
           </VoronoiChart>
         </div>
       </Layout>
-      {modalData && (
-        <div className="absolute top-0 left-0 w-full h-full mt-12 bg-primaryLayer animate-fadeIn">
-          {modalData.title}
-          <button onClick={() => setModalData(null)}>Close</button>
-        </div>
-      )}
+      {modalData && <ProjectDetailModal {...modalData} />}
     </>
   )
 }
