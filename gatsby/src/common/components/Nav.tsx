@@ -1,10 +1,10 @@
 import { ArrowSmRightIcon } from '@heroicons/react/solid'
 import { Link, graphql, useStaticQuery } from 'gatsby'
-import React, { useContext, useEffect, useMemo, useState } from 'react'
+import React, { useContext } from 'react'
 
 import { NavDataQuery } from '../../../graphql-types'
-import { highlightCellsByFieldId } from '../../features/viz/Voronoi/highlightCellsByField'
 import { PATH } from '../constants/paths'
+import { NavFilterFields } from './NavFilterFields'
 import { ThemeContext } from './ThemeContextProvider'
 export const Nav = ({ location }: { location?: Location }) => {
   const {
@@ -13,12 +13,7 @@ export const Nav = ({ location }: { location?: Location }) => {
   } = useStaticQuery<NavDataQuery>(query)
 
   const { theme, setTheme } = useContext(ThemeContext)
-  const [selectedFieldId, setSelectedFieldId] = useState<number | null>(null)
   const fields = edges.map((d) => d.node)
-
-  useEffect(() => {
-    highlightCellsByFieldId(selectedFieldId)
-  }, [selectedFieldId])
 
   if (!strapiGlobal) {
     return <p>no data</p>
@@ -40,25 +35,7 @@ export const Nav = ({ location }: { location?: Location }) => {
       </Link>
       <div className="flex align-center">
         {location && location.pathname.startsWith(PATH.PROJECTS) ? (
-          <div className="ml-4 first-of-type:ml-0 text-brand">
-            {fields.map(({ strapiId = null, color, name }, idx) => {
-              const isActive = strapiId === selectedFieldId
-              return (
-                <button
-                  key={strapiId}
-                  onClick={(e) => {
-                    setSelectedFieldId(isActive ? null : strapiId)
-                  }}
-                  style={{ color: color || 'inherit' }}
-                  className={`ml-2 animate-fadeIn px-2 py-1 animate-delay-${
-                    100 + 100 * idx
-                  } cursor-pointer rounded-md ${strapiId === selectedFieldId ? 'bg-secondary' : 'initial'}`}
-                >
-                  {name}
-                </button>
-              )
-            })}
-          </div>
+          <NavFilterFields fields={fields} />
         ) : (
           <Link to="/projects">
             Projects{' '}

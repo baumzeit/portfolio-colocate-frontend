@@ -2,10 +2,10 @@ import * as d3 from 'd3'
 
 import { EnrichedDatum } from './helpers'
 
-export const highlightCellsByFieldId = (highlightId: number | null) => {
+export const highlightCellsByFieldId = (highlightId: string | null) => {
   d3.selectAll<SVGGElement, EnrichedDatum>('g.cell').each(function (d) {
     const cellG = d3.select(this)
-    const highlightPath = cellG.select('path.highlight-pattern')
+    const highlightPath = cellG.select('.highlight-pattern')
 
     const isHighlight = cellG.classed('field-highlight')
     // const isSelected = cellG.classed('hover-selected')

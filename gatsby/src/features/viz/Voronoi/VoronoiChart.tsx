@@ -1,11 +1,13 @@
 import { useDebounceCallback } from '@react-hook/debounce'
 import * as d3 from 'd3'
-import React, { FC, FocusEvent, MouseEvent, useEffect, useRef } from 'react'
+import React, { FC, FocusEvent, KeyboardEvent, MouseEvent, useEffect, useRef } from 'react'
 
 import {
+  calculateModel,
   Dimensions,
   EnrichedDatum,
-  initializeVoronoiHelpers,
+  initializeVoronoiActions,
+  SetModalFn as SetModalData,
   VoronoiContext,
   VoronoiDatum,
   VoronoiOptions
@@ -21,9 +23,21 @@ export type VoronoiChartProps = {
   }
   width: number
   height: number
+  options?: Partial<VoronoiOptions>
+  setModalData: SetModalData
+  modalData: EnrichedDatum
 }
 
-export const VoronoiChart: FC<VoronoiChartProps> = ({ data, padding, width, height, children }) => {
+export const VoronoiChart: FC<VoronoiChartProps> = ({
+  data,
+  padding,
+  width,
+  height,
+  options,
+  setModalData,
+  modalData,
+  children
+}) => {
   const svgRef = useRef<SVGSVGElement>(null)
 
   const updateGraphDebounce = useDebounceCallback(drawVoronoi, 300)
@@ -45,11 +59,14 @@ export const VoronoiChart: FC<VoronoiChartProps> = ({ data, padding, width, heig
           padding: { ...DEFAULT_PADDING, ...padding },
           transitionDuration: 450,
           cellGap: 32,
-          imageSize: 600
-        }
+          imageSize: 500,
+          ...options
+        },
+        setModalData,
+        modalData
       )
     }
-  }, [updateGraphDebounce, data, width, height, padding])
+  }, [updateGraphDebounce, data, width, height, padding, options, modalData, setModalData])
 
   return (
     <svg id="voronoiSvg" ref={svgRef} width={width} height={height} className="cursor-pointer">
@@ -59,11 +76,12 @@ export const VoronoiChart: FC<VoronoiChartProps> = ({ data, padding, width, heig
             d="M-1,1 l2,-2
            M0,4 l4,-4
            M3,5 l2,-2"
-            className="stroke-current stroke-1 text-bg-secondary"
+            className="stroke-current stroke-1 opacity-80 text-bg-secondary"
           />
         </pattern>
         {children}
       </defs>
+      <g className="image-layer"></g>
       <g className="base-layer"></g>
       <g className="definition-layer"></g>
       <g className="content-layer"></g>
@@ -82,136 +100,185 @@ type VoronoiDrawFn = (
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>,
   data: VoronoiDatum[],
   { width, height }: Dimensions,
-  options: VoronoiOptions
+  options: VoronoiOptions,
+  setModal: SetModalData,
+  modalData: EnrichedDatum
 ) => any
 
-const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }, opts) => {
+const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }, opts, setModalData, modalData) => {
   console.log('originalData', originalData)
 
-  const update = (data: VoronoiDatum[], ctx: VoronoiContext) => {
-    const delaunay = d3.Delaunay.from(
-      data,
-      (d) => d.x,
-      (d) => d.y
-    )
+  const bounds = [
+    Number(opts.padding.left) - opts.cellGap / 2,
+    Number(opts.padding.top) - opts.cellGap / 2,
+    width - Number(opts.padding.left) + opts.cellGap / 2,
+    height - Number(opts.padding.left) + opts.cellGap / 2
+  ]
+  const enterDuration = 250
+  const updateDuration = 250
+  const exitDuration = 250
+  const fadeIn = (sel: d3.Selection<SVGGElement, EnrichedDatum, any, unknown>) =>
+    sel.style('opacity', 0).transition().duration(enterDuration).style('opacity', 1)
+  const fadeOut = (sel: d3.Selection<SVGGElement, EnrichedDatum, any, unknown>) =>
+    sel.transition().duration(exitDuration).style('opacity', 0).remove()
 
-    const voronoi = delaunay.voronoi([
-      Number(opts.padding.left) - opts.cellGap / 2,
-      Number(opts.padding.top) - opts.cellGap / 2,
-      width - Number(opts.padding.left) + opts.cellGap / 2,
-      height - Number(opts.padding.left) + opts.cellGap / 2
-    ])
+  const update = (data: VoronoiDatum[], { initial = false } = {}) => {
+    const { voronoi } = calculateModel(data, bounds)
 
     const currentData: EnrichedDatum[] = data.map((d, idx) => ({
       ...d,
       path: voronoi.renderCell(idx),
-      index: idx
+      id: String(d.id)
     }))
 
-    const { restore, selectCell, zoomCell, exposeCell } = initializeVoronoiHelpers(
+    const { restore, selectCell, exposeCell } = initializeVoronoiActions(
       currentData,
       originalData,
       { width, height },
       opts,
-      ctx,
-      update
+      update,
+      setModalData
     )
 
-    // svg.on('mouseleave', () => restore())
+    if (!initial && !modalData) {
+      exposeCell(null)
+      return
+    }
 
-    const defs = svg
+    svg
       .select('defs')
-      .selectAll('clipPath')
-      .data(currentData)
-      .join('clipPath')
-      .attr('id', (d) => `clip-${d.index}`)
-
-    defs
-      .selectAll('path')
-      .data((d) => [d])
-      .join('path')
-      .attr('fill', 'none')
-      .attr('d', (d) => d.path)
-      .attr('stroke-linejoin', 'round')
+      .selectAll<d3.BaseType, EnrichedDatum>('clipPath')
+      .data(currentData, (d) => String(d.id))
+      .join(
+        (enter) => {
+          const defG = enter.append('g').classed('cell defs-cell', true)
+          defG
+            .append('clipPath')
+            .attr('id', (d) => `clip-${d.id}`)
+            .append('path')
+            .attr('d', (d) => d.path)
+            .style('transform-origin', 'center')
+            .style('transform-box', 'fill-box')
+          return defG
+        },
+        (update) => update.select('clipPath path').attr('d', (d) => d.path),
+        (exit) => exit.transition().delay(exitDuration)
+      )
 
     const baseLayer = svg.select('g.base-layer')
+    const imageLayer = svg.select('g.image-layer')
     const definitionLayer = svg.select('g.definition-layer')
     const contentLayer = svg.select('g.content-layer')
 
+    const imageLayerCell = imageLayer
+      .selectAll<SVGGElement, EnrichedDatum>('.cell')
+      .data(currentData, (d) => String(d.id))
+      .join(
+        (enter) => {
+          const imageG = enter
+            .append('g')
+            .classed('cell image-cell', true)
+            .call(fadeIn)
+            .attr('clip-path', (d) => `url(#clip-${d.id})`)
+
+          imageG
+            .append('foreignObject')
+            .classed('image', true)
+            .attr('x', (d) => d.x - opts.imageSize / 2)
+            .attr('y', (d) => d.y - opts.imageSize / 2)
+            .attr('width', opts.imageSize)
+            .attr('height', opts.imageSize)
+            .attr('transform-origin', 'right')
+            .style('transform-box', 'fill-box')
+            .append('xhtml:img')
+            .attr('xmlns', 'http://www.w3.org/1999/xhtml')
+            .attr('srcSet', (d) => d.imageUrl)
+            .style('width', '100%')
+            .style('height', '100%')
+            .style('object-fit', 'contain')
+            .style('object-position', 'center')
+          // .attr('fill', (d) => `url(#diagonalHatchHighlight-${d.fields[0].id})`)
+          return imageG
+        },
+        (update) => {
+          const transition = update.transition().duration(updateDuration)
+          transition
+            .select('foreignObject.image')
+            .attr('x', (d) => d.x - opts.imageSize / 2)
+            .attr('y', (d) => d.y - opts.imageSize / 2)
+            .attr('width', opts.imageSize)
+            .attr('height', opts.imageSize)
+          return update
+        },
+        fadeOut
+      )
+
     const baseLayerCell = baseLayer
-      .selectAll('g.cell')
-      .data(currentData)
-      .join('g')
-      .classed('cell', true)
-      .attr('clip-path', (d) => `url(#clip-${d.index})`)
+      .selectAll<SVGGElement, EnrichedDatum>('.cell')
+      .data(currentData, (d) => String(d.id))
+      .join(
+        (enter) => {
+          const baseG = enter.append('g').classed('cell base-cell', true).call(fadeIn)
+          baseG
+            .append('path')
+            .attr('d', (d) => d.path)
+            .classed('cell-gap pattern stroke-current text-bg-primary', true)
+            .attr('stroke-width', opts.cellGap)
+            .attr('fill', 'url(#diagonalHatch)')
+            .attr('fill-opacity', 0.9)
+          baseG
+            .append('path')
+            .attr('d', (d) => d.path)
+            .classed('highlight-pattern stroke-current text-bg-primary', true)
+            .attr('stroke-width', opts.cellGap)
+            .attr('fill-opacity', 0)
+          // .attr('fill', (d) => `url(#diagonalHatchHighlight-${d.fields[0].id})`)
+          return baseG
+        },
+        (update) => {
+          const transition = update.transition().duration(updateDuration)
+          transition.select('path.cell-gap').attr('d', (d) => d.path)
+          transition.select('path.highlight-pattern').attr('d', (d) => d.path)
 
-    const definitionLayerCell = definitionLayer.selectAll('g.cell').data(currentData).join('g').classed('cell', true)
+          return update
+        },
+        fadeOut
+      )
 
-    const contentLayerCell = contentLayer.selectAll('g.cell').data(currentData).join('g').classed('cell', true)
+    const definitionLayerCell = definitionLayer
+      .selectAll<SVGGElement, EnrichedDatum>('.cell')
+      .data(currentData, (d) => String(d.id))
+      .join(
+        (enter) => {
+          const definitionG = enter.append('g').classed('cell definition-cell', true).call(fadeIn)
 
-    baseLayerCell
-      .selectAll('foreignObject.image')
-      .data((d) => [d])
-      .join('foreignObject')
-      .classed('image', true)
-      .attr('x', (d) => d.x - opts.imageSize / 2)
-      .attr('y', (d) => d.y - opts.imageSize / 2)
-      .attr('width', opts.imageSize)
-      .attr('height', opts.imageSize)
-      .attr('transform-origin', 'right')
-      .style('transform-box', 'fill-box')
-      .selectAll('img')
-      .data((d) => [d])
-      .join('xhtml:img')
-      .attr('xmlns', 'http://www.w3.org/1999/xhtml')
-      .attr('srcSet', (d) => d.imageUrl)
-      .style('width', '100%')
-      .style('height', '100%')
-      .style('object-fit', 'contain')
-      .style('object-position', 'center')
+          definitionG
+            .append('path')
+            .attr('d', (d) => d.path)
+            .attr('stroke-width', '1')
+            .attr('stroke-opacity', 0.1)
+            .attr('fill', 'transparent')
+            .classed('cell-border stroke-current text-brand', true)
 
-    baseLayerCell
-      .selectAll('path.cell-gap')
-      .data((d) => [d])
-      .join('path')
-      .attr('d', (d) => d.path)
-      .classed('cell-gap pattern stroke-current text-bg-primary', true)
-      .attr('stroke-width', opts.cellGap)
-      .attr('fill', (d) => 'url(#diagonalHatch)')
-      .attr('fill-opacity', 0.9)
+          return definitionG
+        },
+        (update) => {
+          const transition = update.transition().duration(updateDuration)
+          transition.select('path.cell-border').attr('d', (d) => d.path)
+          return update
+        },
+        fadeOut
+      )
 
-    baseLayerCell
-      .selectAll('path.highlight-pattern')
-      .data((d) => [d])
-      .join('path')
-      .attr('d', (d) => d.path)
-      .classed('highlight-pattern stroke-current text-bg-primary', true)
-      .attr('stroke-width', opts.cellGap)
-      .attr('fill-opacity', 0)
-
-    definitionLayerCell
-      .selectAll('path.definition')
-      .data((d) => [d])
-      .join('path')
-      .attr('d', (d) => d.path)
-      .attr('stroke-width', '1')
-      .attr('stroke-opacity', 0.1)
-      .attr('fill', 'transparent')
-      .classed('definition stroke-current text-brand', true)
+    definitionLayer
+      .selectAll<SVGPathElement, EnrichedDatum>('path.cell-border')
       .on('mouseenter', function (e: MouseEvent, d) {
-        if (
-          (ctx.viewState === 'hover' || !ctx.viewState) &&
-          ctx.transitioning !== 'expose' &&
-          ctx.transitioning !== 'zoom' &&
-          d.index !== ctx.selectedIndex &&
-          !svg.node()!.contains(document.activeElement)
-        ) {
-          console.log('mouseenter')
-          selectCell(d.index)
+        if (d3.selectAll('.cell.exposed').empty() && !svg.node()!.contains(document.activeElement)) {
+          selectCell(d.id)
         }
       })
 
-    definitionLayer
+    svg
       .selectAll('path.bounds')
       .data([voronoi.renderBounds()])
       .join('path')
@@ -219,26 +286,68 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
       .attr('stroke-width', '2')
       .classed('bounds stroke-current text-bg-primary', true)
 
-    const circles = contentLayerCell
-      .selectAll('circle')
-      .data((d) => [d])
-      .join('circle')
-      .attr('cx', (d) => d.x)
-      .attr('cy', (d) => d.y)
-      .attr('r', 8)
-      .classed('fill-current text-brand', true)
-      .attr('tabindex', (d) => 10 + d.index)
+    const contentLayerCell = contentLayer
+      .selectAll<SVGGElement, EnrichedDatum>('.cell')
+      .data(currentData, (d) => String(d.id))
+      .join(
+        (enter) => {
+          const contentG = enter.append('g').classed('cell content-cell', true).call(fadeIn)
 
-    if (ctx.transitioning !== 'hover') {
-      circles.on('focus', function (e: FocusEvent<SVGElement>) {
-        const datum = d3.select<SVGElement, EnrichedDatum>(e.target).datum()
-        if (ctx.viewState === 'expose') {
-          exposeCell(datum.index)
-        } else {
-          selectCell(datum.index)
+          contentG
+            .append('circle')
+            .attr('cx', (d) => d.x)
+            .attr('cy', (d) => d.y)
+            .attr('r', 8)
+            .classed('fill-current text-brand', true)
+            .attr('tabindex', (d) => 10 + d.id)
+
+          contentG
+            .append('text')
+            .attr('x', (d) => d.x)
+            .attr('y', (d) => d.y - 18)
+            .text((d) => d.title || '')
+            .style('text-anchor', 'middle')
+            .classed('label fill-current text-xl xl:text-2xl text-primary font-semibold', true)
+          return contentG
+        },
+        (update) => {
+          const transition = update.transition().duration(updateDuration)
+          transition
+            .select('circle')
+            .attr('cx', (d) => d.x)
+            .attr('cy', (d) => d.y)
+          transition
+            .select('text.label')
+            .attr('x', (d) => d.x + 16)
+            .attr('y', (d) => d.y - 18)
+          return transition
+        },
+        fadeOut
+      )
+
+    svg.on('mouseleave', () => {
+      // restore()
+      // exposeCell(null)
+    })
+    svg.on('keyup', (e: KeyboardEvent) => {
+      if (e.code === 'Space') {
+        const activeElement = d3.select(document.activeElement)
+        const activeElementId = activeElement?.datum()?.id
+        if (activeElementId) {
+          exposeCell(activeElementId)
         }
-      })
-    }
+      }
+    })
+
+    contentLayerCell.selectAll('circle').on('focus', function (e: FocusEvent<SVGElement>) {
+      const datum = d3.select<SVGElement, EnrichedDatum>(e.target).datum()
+      if (!contentLayer.selectAll('.exposed').empty()) {
+        exposeCell(datum.id)
+      } else {
+        console.log('focus select')
+        selectCell(datum.id)
+      }
+    })
 
     // if (ctx.transitioning !== 'hover') {
     //   svg.on('wheel', (e) => {
@@ -251,76 +360,15 @@ const drawVoronoi: VoronoiDrawFn = (svg, originalData, { width = 0, height = 0 }
     //   })
     // }
 
-    svg.on('click', function (e: MouseEvent) {
-      console.log('click')
-      if (!(ctx.viewState !== 'expose' && ctx.transitioning === 'expose')) {
-        const index = d3.select<any, EnrichedDatum>(e.target).datum().index
-        if (typeof index === 'number') {
-          console.log('expose')
-          exposeCell(index)
-        }
+    d3.selectAll<SVGGElement, EnrichedDatum>('.cell').on('click', function (e: MouseEvent, d) {
+      e.stopPropagation()
+      const isExposed = d3.select(this).classed('exposed')
+      if (d.id && !isExposed) {
+        console.log('expose')
+        exposeCell(d.id)
       }
     })
-
-    contentLayerCell
-      .selectAll('text.label')
-      .data((d) => [d])
-      .join('text')
-      .attr('x', (d) => d.x + 16)
-      .attr('y', (d) => d.y - 18)
-      .text((d) => d.title || '')
-      .style('text-anchor', 'middle')
-      .classed('label fill-current text-xl xl:text-2xl text-primary font-semibold', true)
-
-    d3.selectAll('.cell foreignObject.description').remove()
-    d3.selectAll('.cell foreignObject.image').style('transform', null)
-    d3.selectAll('.cell .label').style('transform', null)
-    if (
-      (ctx.transitioning === 'zoom' || !ctx.transitioning) &&
-      ctx.viewState === 'expose' &&
-      typeof ctx.selectedIndex === 'number'
-    ) {
-      const index = ctx.selectedIndex
-      const contentCell = contentLayerCell.filter((d) => d.index === index)
-      const baseCell = baseLayerCell.filter((d) => d.index === index)
-      const definitionCell = definitionLayerCell.filter((d) => d.index === index)
-
-      const columnGap = 30
-
-      baseCell
-        .select('foreignObject.image')
-        .transition()
-        .style('transform', `translate(-${opts.imageSize / 2 + columnGap}px, -${opts.imageSize / 6}px) scale(0.75)`)
-
-      contentCell
-        .select('text.label')
-        .transition()
-        .style('transform', function () {
-          const textWidth = d3.select(this).node()?.getBoundingClientRect().width
-          return `translate(${textWidth / 2 - 16}px, ${-opts.imageSize / 3}px)`
-        })
-
-      const fo = contentCell
-        .selectAll('foreignObject.description')
-        .data((d) => [d])
-        .join('foreignObject')
-        .attr('x', (d) => d.x)
-        .attr('y', (d) => d.y - opts.imageSize / 3)
-        .attr('width', width / 5)
-        .classed('description', true)
-
-      const div = fo
-        .selectAll('.content')
-        .data((d) => [d])
-        .join('xhtml:div')
-        .classed('content rounded text-highlight shadow-xl animate-fadeIn', true)
-        .html((d) => d.description || '')
-
-      const foHeight = div.node()?.getBoundingClientRect().height
-
-      fo.attr('height', foHeight)
-    }
   }
 
-  update(originalData, { selectedIndex: null, delta: [], transitioning: null, locked: false, viewState: null })
+  update(originalData, { initial: true })
 }

@@ -31,7 +31,6 @@ export const useJitterGrid = ({ minItems, width, height, relMargin, jitter = () 
       const virtualColumns = aspect ? defaultSize * aspectFactor.x : defaultSize
       const virtualRows = aspect ? defaultSize * aspectFactor.y : defaultSize
 
-      console.log(virtualRows, virtualColumns)
       const safeRows = Math.ceil(virtualRows)
       const safeColumns = Math.ceil(virtualColumns)
 
