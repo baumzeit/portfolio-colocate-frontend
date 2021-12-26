@@ -43,13 +43,28 @@ export type SetModalProps = {
 }
 
 export type SetModalFn = ({ data, onClose, onNext, onPrev }: SetModalProps) => void
+export type SetExposedCellFn = (id: string | null) => void
 
 export const initializeVoronoiActions = (
-  data: EnrichedDatum[],
+  originalData: VoronoiDatum[],
   { width, height }: Dimensions,
   opts: VoronoiOptions,
   setModal: SetModalFn
 ) => {
+  const bounds = [
+    Number(opts.padding.left) - opts.cellGap / 2,
+    Number(opts.padding.top) - opts.cellGap / 2,
+    width - Number(opts.padding.left) + opts.cellGap / 2,
+    height - Number(opts.padding.left) + opts.cellGap / 2
+  ]
+  const { voronoi } = calculateModel(originalData, bounds)
+
+  const data: EnrichedDatum[] = originalData.map((d, idx) => ({
+    ...d,
+    path: voronoi.renderCell(idx),
+    id: String(d.id)
+  }))
+
   const restore = () => {
     d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
       .classed('hover-selected', false)
@@ -132,7 +147,7 @@ export const initializeVoronoiActions = (
     })
   }
 
-  return { selectCell, exposeCell, restore }
+  return { selectCell, exposeCell, restore, data, options: opts, voronoi, width, height }
 }
 
 export function calculateModel<T extends { x: number; y: number }>(data: T[], bounds: number[]) {
