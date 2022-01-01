@@ -1,0 +1,92 @@
+#voronoiSvg {
+  .bounds {
+    stroke-width: 2;
+    @apply stroke-bg-primary;
+  }
+
+  .cell {
+    transform-origin: center;
+    opacity: 1;
+    transform: scale(1);
+    transition: all 250ms ease-out;
+
+    .pattern {
+      fill-opacity: 0.9;
+      transition: all 250ms ease-out;
+    }
+    .highlight-pattern {
+      fill-opacity: 0;
+      transition: all 250ms ease-out;
+    }
+    .cell-gap {
+      stroke-width: 28;
+      @apply stroke-bg-primary;
+      transition: all 250ms ease-out;
+    }
+    .cell-border {
+      stroke-width: 1;
+      stroke-opacity: 0.1;
+      fill: transparent;
+      @apply stroke-brand;
+    }
+    .image-fo {
+      transform: scale(1);
+      transform-box: fill-box;
+      transform-origin: center;
+      transition: transform 350ms ease-out;
+      .image {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        object-position: center;
+      }
+    }
+
+    &.content-cell {
+      circle {
+        @apply fill-brand;
+      }
+      text {
+        text-anchor: middle;
+        @apply fill-text-primary;
+        @apply text-xl xl:text-2xl;
+        @apply font-semibold;
+      }
+    }
+
+    &.hover-selected {
+      .cell-gap {
+        fill-opacity: 0;
+        stroke-width: 22;
+      }
+      .image-fo {
+        transform: scale(1.01);
+      }
+    }
+
+    &.field-highlight {
+      .highlight-pattern {
+        fill-opacity: 1;
+      }
+    }
+  }
+
+  .bounds,
+  .layer {
+    opacity: 1;
+    transition: all 300ms ease-out;
+  }
+
+  &.expose-view {
+    .bounds,
+    .base-layer,
+    .content-layer,
+    .image-cell:not(.exposed.image-cell) {
+      opacity: 0;
+      transition: all 300ms ease-out;
+    }
+    .cell-border {
+      @apply stroke-bg-primary;
+    }
+  }
+}

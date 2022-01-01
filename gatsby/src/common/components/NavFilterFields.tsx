@@ -40,9 +40,9 @@ export const NavFilterFields = ({ fields }: NavFilterFieldsProps) => {
             style={{
               color: color || 'inherit'
             }}
-            className={`ml-2 animate-fadeIn px-2 py-1 animate-delay-${100 + 100 * idx} cursor-pointer rounded-md ${
-              strapiId === selectedFieldId ? 'bg-secondary' : 'initial'
-            }`}
+            className={`ml-2 animate-fadeIn px-2 py-1 animate-delay-${
+              100 + 100 * idx
+            } cursor-pointer rounded-md hover:brightness-110 ${isActive ? 'bg-primary' : 'initial'}`}
           >
             {name}
           </button>

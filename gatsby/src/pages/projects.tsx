@@ -7,8 +7,6 @@ import { ProjectsPageDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
 import { useJitterGrid } from '../common/hooks/useJitterGrid'
 import notEmpty from '../common/utility/notEmpty'
-import { ProjectDetailModal } from '../features/project/DetailModal'
-import { SetModalProps } from '../features/viz/Voronoi/helpers'
 import { VoronoiChart } from '../features/viz/Voronoi/VoronoiChart'
 
 const jitter = d3.randomNormal(0, 0.05)
@@ -16,7 +14,6 @@ const jitter = d3.randomNormal(0, 0.05)
 const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: PageProps<ProjectsPageDataQuery>) => {
   const chartRef = useRef(null)
   const [width, height] = useSize(chartRef)
-  const [modalData, setModalData] = useState<SetModalProps>()
 
   const { getGridPosition, numCols } = useJitterGrid({
     minItems: allStrapiProject.totalCount,
@@ -56,7 +53,7 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
                 id: String(d.id)
               })) || []
           }))
-        : [],
+        : null,
     [allStrapiProject.edges, getGridPosition]
   )
 
@@ -64,13 +61,12 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
     <>
       <Layout location={location}>
         <div ref={chartRef} id="voronoiContainer" className="absolute top-0 left-0 w-full h-full">
-          {width && height ? (
+          {width && height && chartData ? (
             <VoronoiChart
               data={chartData}
               width={width}
               height={height}
               imageSize={(width / numCols) * 1.2}
-              setModal={setModalData}
               initialExposedId={initialExposedId}
             >
               {allStrapiField.edges.map(({ node: { strapiId, color } }) => (
@@ -97,7 +93,6 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
           )}
         </div>
       </Layout>
-      {modalData && <ProjectDetailModal {...modalData} />}
     </>
   )
 }

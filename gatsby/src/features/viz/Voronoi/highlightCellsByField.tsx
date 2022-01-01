@@ -7,20 +7,12 @@ export const highlightCellsByFieldId = (highlightId: string | null) => {
     const cellG = d3.select(this)
     const highlightPath = cellG.select('.highlight-pattern')
 
-    const isHighlight = cellG.classed('field-highlight')
-    // const isSelected = cellG.classed('hover-selected')
-
     const shouldHighlight = Boolean(d.fields.find((field) => highlightId && field.id === highlightId))
 
     if (highlightId) {
       highlightPath.style('fill', `url(#diagonalHatchHighlight-${highlightId})`)
     }
-    highlightPath
-      .style('fill-opacity', isHighlight ? 1 : 0)
-      .transition()
-      .duration(350)
-      .style('fill-opacity', shouldHighlight ? 1 : 0)
 
-    cellG.classed('field-highlight', shouldHighlight)
+    cellG.classed('field-highlight hover-selected', shouldHighlight)
   })
 }
