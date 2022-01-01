@@ -5,6 +5,7 @@
   }
 
   .cell {
+    transform-box: fill-box;
     transform-origin: center;
     opacity: 1;
     transform: scale(1);
@@ -19,7 +20,7 @@
       transition: all 250ms ease-out;
     }
     .cell-gap {
-      stroke-width: 28;
+      stroke-width: 22;
       @apply stroke-bg-primary;
       transition: all 250ms ease-out;
     }
@@ -28,6 +29,12 @@
       stroke-opacity: 0.1;
       fill: transparent;
       @apply stroke-brand;
+      transition: all 250ms ease-out;
+    }
+    .hover-border {
+      stroke-width: 1;
+      fill: transparent;
+      stroke: transparent;
     }
     .image-fo {
       transform: scale(1);
@@ -55,9 +62,12 @@
     }
 
     &.hover-selected {
-      .cell-gap {
+      .pattern,
+      .highlight-pattern {
         fill-opacity: 0;
-        stroke-width: 22;
+      }
+      .cell-gap {
+        stroke-width: 20;
       }
       .image-fo {
         transform: scale(1.01);
@@ -72,21 +82,37 @@
   }
 
   .bounds,
-  .layer {
+  .base-layer,
+  .content-layer {
     opacity: 1;
     transition: all 300ms ease-out;
   }
 
+  &.list-view {
+    .cell-border {
+      stroke-opacity: 1;
+    }
+    .bounds {
+      opacity: 0;
+    }
+    .pattern,
+    .highlight-pattern {
+      fill-opacity: 0;
+    }
+  }
+
   &.expose-view {
     .bounds,
-    .base-layer,
-    .content-layer,
-    .image-cell:not(.exposed.image-cell) {
+    .cell {
       opacity: 0;
       transition: all 300ms ease-out;
-    }
-    .cell-border {
-      @apply stroke-bg-primary;
+
+      &.exposed {
+        opacity: 1;
+        .cell-border {
+          stroke-opacity: 1;
+        }
+      }
     }
   }
 }

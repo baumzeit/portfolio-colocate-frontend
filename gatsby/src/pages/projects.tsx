@@ -7,6 +7,7 @@ import { ProjectsPageDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
 import { useJitterGrid } from '../common/hooks/useJitterGrid'
 import notEmpty from '../common/utility/notEmpty'
+import { ProjectsNavContent } from '../features/projects/NavContent'
 import { VoronoiChart } from '../features/viz/Voronoi/VoronoiChart'
 
 const jitter = d3.randomNormal(0, 0.05)
@@ -59,8 +60,12 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
 
   return (
     <>
-      <Layout location={location}>
-        <div ref={chartRef} id="voronoiContainer" className="absolute top-0 left-0 w-full h-full">
+      <Layout navContent={<ProjectsNavContent />}>
+        <div
+          ref={chartRef}
+          id="voronoiContainer"
+          className="absolute top-0 left-0 w-full h-full overflow-x-hidden overflow-y-auto "
+        >
           {width && height && chartData ? (
             <VoronoiChart
               data={chartData}

@@ -5778,7 +5778,7 @@ export type StrapiFieldSortInput = {
 export type NavDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type NavDataQuery = { site?: { siteMetadata?: { siteURL?: string | null | undefined } | null | undefined } | null | undefined, strapiGlobal?: { siteName?: string | null | undefined, logo?: { url?: string | null | undefined } | null | undefined } | null | undefined, allStrapiField: { edges: Array<{ node: { strapiId?: number | null | undefined, name?: string | null | undefined, color?: string | null | undefined, projects?: Array<{ id?: number | null | undefined } | null | undefined> | null | undefined } }> } };
+export type NavDataQuery = { site?: { siteMetadata?: { siteURL?: string | null | undefined } | null | undefined } | null | undefined, strapiGlobal?: { siteName?: string | null | undefined, logo?: { url?: string | null | undefined } | null | undefined } | null | undefined };
 
 export type SeoDataQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -5786,6 +5786,11 @@ export type SeoDataQueryVariables = Exact<{ [key: string]: never; }>;
 export type SeoDataQuery = { strapiGlobal?: { siteName?: string | null | undefined, favIcon?: { localFile?: { publicURL?: string | null | undefined } | null | undefined } | null | undefined, defaultSeo?: { metaTitle?: string | null | undefined, metaDescription?: string | null | undefined, shareImage?: { localFile?: { publicURL?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined } | null | undefined };
 
 export type ProjectDetailsFragment = { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, images?: Array<{ localFile?: { childImageSharp?: { fixed?: { srcSet: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, strapiFields?: Array<{ name?: string | null | undefined } | null | undefined> | null | undefined };
+
+export type ProjectsNavDataQueryVariables = Exact<{ [key: string]: never; }>;
+
+
+export type ProjectsNavDataQuery = { allStrapiField: { edges: Array<{ node: { strapiId?: number | null | undefined, name?: string | null | undefined, color?: string | null | undefined, projects?: Array<{ id?: number | null | undefined } | null | undefined> | null | undefined } }> } };
 
 export type HomeDataQueryVariables = Exact<{ [key: string]: never; }>;
 

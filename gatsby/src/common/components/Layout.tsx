@@ -1,18 +1,19 @@
-import React, { FC } from 'react'
+import React, { FC, ReactNode } from 'react'
 
-import { Nav } from './Nav'
+import { Navbar } from './Navbar'
 
 type LayoutProps = {
   seo?: any
   fullWidth?: boolean
-  location?: Location
+  navContent?: ReactNode
 }
 
-const Layout: FC<LayoutProps> = ({ children, seo, fullWidth, location }) => {
+const Layout: FC<LayoutProps> = ({ children, fullWidth, navContent = null }) => {
+  console.log(navContent)
   return (
     <div className="min-h-screen pb-12">
       {/* <Seo seo={seo} /> */}
-      <Nav location={location} />
+      <Navbar>{navContent}</Navbar>
 
       <main className={`mt-10 ${fullWidth ? '' : 'container mx-auto px-3'}`}>{children}</main>
     </div>

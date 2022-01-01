@@ -56,7 +56,7 @@ export const initializeVoronoiActions = (originalData: VoronoiDatum[], opts: Vor
     opts.height - Number(opts.padding.left) + opts.cellGap / 2
   ]
 
-  const { voronoi } = calculateModel(originalData, bounds)
+  const { voronoi, delaunay } = calculateModel(originalData, bounds)
 
   const data: EnrichedDatum[] = originalData.map((d, idx) => ({
     ...d,
@@ -69,18 +69,6 @@ export const initializeVoronoiActions = (originalData: VoronoiDatum[], opts: Vor
     if (!d3.select('svg').classed('expose-view')) {
       d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`).classed('hover-selected exposed', false)
     }
-  }
-
-  const sequenceCells = () => {
-    d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
-      .transition()
-      .duration(opts.transitionDuration)
-      .style('transform', function (d) {
-        const cellHeight = this.getBoundingClientRect().height || 10
-        console.log(this.getBoundingClientRect())
-        const scale = (opts.height * 0.3) / cellHeight
-        return `translate(${200 - d.x}px, ${d.index * opts.height * 0.3 - d.y}px) scale(${scale})`
-      })
   }
 
   const selectCell = (selectedId: string) => {
@@ -97,11 +85,8 @@ export const initializeVoronoiActions = (originalData: VoronoiDatum[], opts: Vor
       isExposed(d) ? scaleTransform + translateTransform(d) : 'scale(1) translate(0, 0)'
 
     const cells = d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
-    const imageCell = d3.selectAll<SVGGElement, EnrichedDatum>('.image-cell')
-    const baseCell = d3.selectAll<SVGGElement, EnrichedDatum>('.base-cell')
-    const contentCell = d3.selectAll<SVGGElement, EnrichedDatum>('.content-cell')
 
-    // d3.selectAll<d3.BaseType, EnrichedDatum>([...baseCell, ...contentCell, ...imageCell]).style(
+    // cells.style(
     //   'transform',
     //   scaleTranslateExposed
     // )
@@ -110,7 +95,7 @@ export const initializeVoronoiActions = (originalData: VoronoiDatum[], opts: Vor
     cells.classed('exposed', isExposed)
   }
 
-  return { selectCell, exposeCell, sequenceCells, restore, data, options: opts, voronoi }
+  return { selectCell, exposeCell, restore, data, options: opts, voronoi, delaunay }
 }
 
 export function calculateModel<T extends { x: number; y: number }>(data: T[], bounds: number[]) {

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 
-import { highlightCellsByFieldId } from '../../features/viz/Voronoi/highlightCellsByField'
+import { highlightCellsByFieldId } from '../../features/viz/Voronoi/highlightCellsByField copy'
 
 type NavFilterFieldsProps = {
   fields: {

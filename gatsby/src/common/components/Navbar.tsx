@@ -1,19 +1,13 @@
-import { ArrowSmRightIcon } from '@heroicons/react/solid'
 import { Link, graphql, useStaticQuery } from 'gatsby'
-import React, { useContext } from 'react'
+import React, { FC, useContext } from 'react'
 
 import { NavDataQuery } from '../../../graphql-types'
-import { PATH } from '../constants/paths'
-import { NavFilterFields } from './NavFilterFields'
 import { ThemeContext } from './ThemeContextProvider'
-export const Nav = ({ location }: { location?: Location }) => {
-  const {
-    strapiGlobal,
-    allStrapiField: { edges }
-  } = useStaticQuery<NavDataQuery>(query)
+
+export const Navbar: FC = ({ children }) => {
+  const { strapiGlobal } = useStaticQuery<NavDataQuery>(query)
 
   const { theme, setTheme } = useContext(ThemeContext)
-  const fields = edges.map((d) => d.node)
 
   if (!strapiGlobal) {
     return <p>no data</p>
@@ -33,18 +27,7 @@ export const Nav = ({ location }: { location?: Location }) => {
           {siteName}
         </div>
       </Link>
-      <div className="flex align-center">
-        {location && location.pathname.startsWith(PATH.PROJECTS) ? (
-          <NavFilterFields fields={fields} />
-        ) : (
-          <Link to="/projects">
-            Projects{' '}
-            <span>
-              <ArrowSmRightIcon className="w-5 h-5" />
-            </span>
-          </Link>
-        )}
-      </div>
+      {children}
       <div>
         Theme
         <select
@@ -71,18 +54,6 @@ const query = graphql`
       siteName
       logo {
         url
-      }
-    }
-    allStrapiField {
-      edges {
-        node {
-          strapiId
-          name
-          color
-          projects {
-            id
-          }
-        }
       }
     }
   }

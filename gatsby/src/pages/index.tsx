@@ -5,10 +5,11 @@ import { Helmet } from 'react-helmet'
 import { HomeDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
 import { PATH } from '../common/constants/paths'
+import { HomeNavContent } from '../features/home/NavContent'
 import { ContourChart } from '../features/viz/ContourChart'
 
 // markup
-const HomePage = ({ data: { strapiHome, allStrapiField }, location }: PageProps<HomeDataQuery>) => {
+const HomePage = ({ data: { strapiHome, allStrapiField } }: PageProps<HomeDataQuery>) => {
   const { title, subtitle, intro, strapiFields, seo } = strapiHome
 
   const displayFields = useMemo(
@@ -21,7 +22,7 @@ const HomePage = ({ data: { strapiHome, allStrapiField }, location }: PageProps<
       <Helmet>
         <title>{seo.metaTitle}</title>
       </Helmet>
-      <Layout location={location}>
+      <Layout navContent={<HomeNavContent />}>
         <div className="relative">
           <div className="h-[500px] w-full absolute top-0 left-0">
             <ContourChart data={[{ x: 30, y: 30 }]} margin={200} />
@@ -36,7 +37,7 @@ const HomePage = ({ data: { strapiHome, allStrapiField }, location }: PageProps<
                 <div className="ml-3 text-secondary">
                   {field.projects
                     ? field.projects.map((project) => (
-                        <Link to={`${PATH.PROJECT}/${project.slug}`} key={project.id}>
+                        <Link to={`${PATH.PROJECTS}#${project.slug}`} key={project.id}>
                           {project.title}
                         </Link>
                       ))
