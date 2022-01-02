@@ -1,20 +1,33 @@
 import useSize from '@react-hook/size'
 import * as d3 from 'd3'
 import { graphql, PageProps } from 'gatsby'
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 
 import { ProjectsPageDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
 import { useJitterGrid } from '../common/hooks/useJitterGrid'
 import notEmpty from '../common/utility/notEmpty'
 import { ProjectsNavContent } from '../features/projects/NavContent'
-import { VoronoiChart } from '../features/viz/Voronoi/VoronoiChart'
+import { VoronoiChart, VoronoiViewOptions } from '../features/viz/Voronoi/VoronoiChart'
 
 const jitter = d3.randomNormal(0, 0.05)
 
 const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: PageProps<ProjectsPageDataQuery>) => {
   const chartRef = useRef(null)
   const [width, height] = useSize(chartRef)
+  const [view, setView] = useState<VoronoiViewOptions>({ listView: false, exposedId: '', fieldId: '' })
+
+  useEffect(() => {
+    const query = new URLSearchParams(location.search)
+    const exposedSlug = query.get('exposed')
+    setView({
+      listView: query.get('list') === 'true',
+      fieldId: query.get('field'),
+      exposedId: exposedSlug
+        ? allStrapiProject.edges.find(({ node }) => node.slug === exposedSlug)?.node.strapiId?.toString() || null
+        : null
+    })
+  }, [allStrapiProject.edges, location])
 
   const { getGridPosition, numCols } = useJitterGrid({
     minItems: allStrapiProject.totalCount,
@@ -22,16 +35,6 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
     height,
     relMargin: { top: 0.15, right: 0.15, bottom: 0.15, left: 0.15 },
     jitter
-  })
-
-  const [initialExposedId] = useState(() => {
-    console.log('initialize state')
-    if (location.hash) {
-      const slug = location.hash.slice(1)
-      const match = allStrapiProject.edges.find(({ node }) => node?.slug === slug)
-      return match ? String(match.node.strapiId) : null
-    }
-    return null
   })
 
   const chartData = useMemo(
@@ -60,7 +63,7 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
 
   return (
     <>
-      <Layout navContent={<ProjectsNavContent />}>
+      <Layout navContent={<ProjectsNavContent location={location} />}>
         <div
           ref={chartRef}
           id="voronoiContainer"
@@ -72,7 +75,8 @@ const ProjectsPage = ({ location, data: { allStrapiProject, allStrapiField } }: 
               width={width}
               height={height}
               imageSize={(width / numCols) * 1.2}
-              initialExposedId={initialExposedId}
+              location={location}
+              {...view}
             >
               {allStrapiField.edges.map(({ node: { strapiId, color } }) => (
                 <pattern

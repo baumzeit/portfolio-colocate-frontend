@@ -9,7 +9,6 @@ type LayoutProps = {
 }
 
 const Layout: FC<LayoutProps> = ({ children, fullWidth, navContent = null }) => {
-  console.log(navContent)
   return (
     <div className="min-h-screen pb-12">
       {/* <Seo seo={seo} /> */}

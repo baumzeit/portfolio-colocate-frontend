@@ -7,7 +7,7 @@ export const useHash = (hash?: string) => {
       window.history.pushState({}, '', '#' + hash)
     } else {
       window.location.hash = ''
-      window.history.replaceState('', '', window.location.pathname)
+      window.history.pushState('', '', window.location.pathname)
     }
   }, [hash])
 }

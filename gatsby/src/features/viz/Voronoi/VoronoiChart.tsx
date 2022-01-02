@@ -5,7 +5,7 @@ import React, { FC, FocusEvent, KeyboardEvent, memo, MouseEvent, useEffect, useM
 import ReactDOM from 'react-dom'
 import './voronoi.scss'
 
-import { useHash } from '../../../common/hooks/useHash'
+import { useQueryParam } from '../../../common/hooks/useQueryParam'
 import { ProjectDetail } from '../../project/Detail'
 import { EnrichedDatum, initializeVoronoiActions, SetModalProps, VoronoiDatum, VoronoiOptions } from './helpers'
 
@@ -30,24 +30,28 @@ const Modal: FC<{ show: boolean }> = ({ show, children }) => {
 
 const chartPadding = { top: 3.5 * 16, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 * 16 }
 
+export type VoronoiViewOptions = {
+  listView: boolean | null
+  exposedId: string | null
+  fieldId: string | null
+}
+
 export type VoronoiChartProps = {
   data: VoronoiDatum[]
   width: number
   height: number
-  list?: boolean
   imageSize: number
-  initialExposedId: string | null
-}
+  location: Location
+} & VoronoiViewOptions
 
 export const VoronoiChart: FC<VoronoiChartProps> = memo(
-  ({ data, width, height, imageSize, initialExposedId, list, children }) => {
+  ({ data, width, height, imageSize, exposedId, fieldId: highlightFieldId, listView, location, children }) => {
     const svgRef = useRef<SVGSVGElement>(null)
     const [initialized, setInitialized] = useState(false)
-    const [exposedCell, setExposedCell] = useState<string | null>(initialExposedId)
+    const [exposedCell, setExposedCell] = useState<string | null>(exposedId)
     const [modalData, setModalData] = useState<SetModalProps>()
 
-    useHash(modalData?.data?.slug)
-
+    useQueryParam(location, { exposed: modalData?.data?.slug })
     const voronoiOptions = useMemo(() => {
       if (width && height) {
         console.log('set options')
@@ -63,9 +67,10 @@ export const VoronoiChart: FC<VoronoiChartProps> = memo(
     }, [height, imageSize, width])
 
     const voronoiActions = useMemo(() => {
-      if (voronoiOptions) {
+      const svg = svgRef.current
+      if (voronoiOptions && svg) {
         console.log('set actions')
-        return initializeVoronoiActions(data, voronoiOptions)
+        return initializeVoronoiActions(svg, data, voronoiOptions)
       }
     }, [data, voronoiOptions])
 
@@ -114,6 +119,20 @@ export const VoronoiChart: FC<VoronoiChartProps> = memo(
       }
     }, [exposedCell, initialized, voronoiActions])
 
+    // useEffect(() => {
+    //   if (voronoiActions && initialized) {
+    //     console.log('action sequence')
+    //     voronoiActions.sequenceCells(!!listView)
+    //   }
+    // }, [listView, initialized, voronoiActions])
+
+    useEffect(() => {
+      if (voronoiActions && initialized) {
+        console.log('action highlight field')
+        voronoiActions.highlightCellsByFieldId(highlightFieldId)
+      }
+    }, [highlightFieldId, initialized, voronoiActions])
+
     return (
       <>
         <svg id="voronoiSvg" ref={svgRef} width={width} height={height} className="cursor-pointer animate-fadeIn">
@@ -129,6 +148,7 @@ export const VoronoiChart: FC<VoronoiChartProps> = memo(
             {children}
           </defs>
           <g className="base-layer"></g>
+          <g className="content-layer"></g>
           <g className="hover-layer"></g>
         </svg>
         <Modal show={!!modalData?.data}>{modalData && <ProjectDetail {...modalData} />}</Modal>
@@ -169,6 +189,7 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
     )
 
   const baseLayer = svg.select('g.base-layer')
+  const contentLayer = svg.select('g.content-layer')
   const hoverLayer = svg.select('g.hover-layer')
 
   baseLayer
@@ -211,19 +232,6 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
           .attr('d', (d) => d.path)
           .classed('cell-border', true)
 
-        cell
-          .append('circle')
-          .attr('cx', (d) => d.x)
-          .attr('cy', (d) => d.y)
-          .attr('r', 8)
-          .attr('tabindex', (d) => 10 + d.id)
-
-        cell
-          .append('text')
-          .attr('x', (d) => d.x)
-          .attr('y', (d) => d.y - 18)
-          .text((d) => d.title || '')
-          .classed('label', true)
         return cell
       },
       (update) => {
@@ -234,8 +242,43 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
           .attr('width', opts.imageSize)
           .attr('height', opts.imageSize)
         update.select('path.cell-gap').attr('d', (d) => d.path)
+        update.select('path.pattern').attr('d', (d) => d.path)
         update.select('path.highlight-pattern').attr('d', (d) => d.path)
         update.select('path.cell-border').attr('d', (d) => d.path)
+        update
+          .select('circle')
+          .attr('cx', (d) => d.x)
+          .attr('cy', (d) => d.y)
+        update
+          .select('text.label')
+          .attr('x', (d) => d.x)
+          .attr('y', (d) => d.y - 18)
+        return update
+      }
+    )
+  contentLayer
+    .selectAll<SVGGElement, EnrichedDatum>('.cell')
+    .data(data, (d) => String(d.id))
+    .join(
+      (enter) => {
+        const cell = enter.append('g').classed('cell', true)
+        cell
+          .append('circle')
+          .attr('cx', (d) => d.x)
+          .attr('cy', (d) => d.y)
+          .attr('r', 8)
+          .attr('tabindex', (d) => 10 + d.id)
+          .classed('focus-dot', true)
+
+        cell
+          .append('text')
+          .attr('x', (d) => d.x)
+          .attr('y', (d) => d.y - 18)
+          .text((d) => d.title || '')
+          .classed('label', true)
+        return cell
+      },
+      (update) => {
         update
           .select('circle')
           .attr('cx', (d) => d.x)

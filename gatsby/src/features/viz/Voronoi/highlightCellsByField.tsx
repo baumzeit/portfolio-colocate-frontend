@@ -13,6 +13,6 @@ export const highlightCellsByFieldId = (highlightId: string | null) => {
       highlightPath.style('fill', `url(#diagonalHatchHighlight-${highlightId})`)
     }
 
-    cellG.classed('field-highlight hover-selected', shouldHighlight)
+    cellG.classed('hover-selected field-highlight', shouldHighlight)
   })
 }

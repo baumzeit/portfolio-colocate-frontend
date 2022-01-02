@@ -48,7 +48,7 @@ export type SetModalProps = {
 export type SetModalFn = ({ data, onClose, onNext, onPrev }: SetModalProps) => void
 export type SetExposedCellFn = (id: string | null) => void
 
-export const initializeVoronoiActions = (originalData: VoronoiDatum[], opts: VoronoiOptions) => {
+export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: VoronoiDatum[], opts: VoronoiOptions) => {
   const bounds = [
     Number(opts.padding.left) - opts.cellGap / 2,
     Number(opts.padding.top) - opts.cellGap / 2,
@@ -66,7 +66,7 @@ export const initializeVoronoiActions = (originalData: VoronoiDatum[], opts: Vor
   }))
 
   const restore = () => {
-    if (!d3.select('svg').classed('expose-view')) {
+    if (!d3.select(svg).classed('expose-view') && !d3.select(svg).classed('list-view')) {
       d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`).classed('hover-selected exposed', false)
     }
   }
@@ -75,27 +75,75 @@ export const initializeVoronoiActions = (originalData: VoronoiDatum[], opts: Vor
     d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`).classed('hover-selected', (d) => d.id === selectedId)
   }
 
+  const sequenceCells = (sequence: boolean) => {
+    const resizeSvg = (node: SVGSVGElement, reset?: boolean) => {
+      const resize = () => {
+        const bbox = node.getBBox()
+        node.setAttribute('height', reset ? String(window.innerHeight) : String(bbox.y + bbox.height + bbox.y))
+      }
+      setTimeout(resize, 400)
+    }
+    if (svg) {
+      const cells = d3.selectAll<SVGPathElement, EnrichedDatum>(`.base-layer .cell, .hover-layer .cell`)
+      if (sequence) {
+        cells.style('transform', function (d) {
+          const cellHeight = this.getBoundingClientRect().height
+          const scale = 290 / cellHeight
+          return `translate(${200 - d.x}px, ${200 + d.index * 300 - d.y}px) scale(${scale})`
+        })
+        resizeSvg(svg)
+      } else {
+        cells.style('transform', 'translate(0) scale(1)')
+        resizeSvg(svg)
+      }
+      d3.select(svg).classed('expose-view', false)
+      d3.select(svg).classed('list-view', sequence)
+    }
+  }
+
+  const highlightCellsByFieldId = (highlightId: string | null) => {
+    d3.selectAll<SVGGElement, EnrichedDatum>('g.cell').each(function (d) {
+      const cellG = d3.select(this)
+      const highlightPath = cellG.select('.highlight-pattern')
+
+      const shouldHighlight = Boolean(d.fields.find((field) => highlightId && field.id === highlightId))
+
+      if (highlightId) {
+        highlightPath.style('fill', `url(#diagonalHatchHighlight-${highlightId})`)
+      }
+
+      cellG.classed('hover-selected field-highlight', shouldHighlight)
+    })
+  }
+
   const exposeCell = (exposedId: string | null) => {
     const isExposed = (d: EnrichedDatum) => exposedId !== null && d.id === exposedId
     const isClear = exposedId === null
 
-    const scaleTransform = `scale(${Math.sqrt(data.length)})`
-    const translateTransform = (d: EnrichedDatum) => `translate(${opts.width / 2 - d.x}px, ${opts.height / 2 - d.y}px)`
+    // const scaleTransform = `scale(${Math.sqrt(data.length)})`
+    const translateTransform = (d: EnrichedDatum) => `translate(calc(15vw - ${d.x}px), ${opts.height / 2 - d.y}px)`
     const scaleTranslateExposed = (d: EnrichedDatum) =>
-      isExposed(d) ? scaleTransform + translateTransform(d) : 'scale(1) translate(0, 0)'
+      isExposed(d) ? translateTransform(d) : 'scale(1) translate(0, 0)'
 
     const cells = d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
 
-    // cells.style(
-    //   'transform',
-    //   scaleTranslateExposed
-    // )
+    cells.style('transform', scaleTranslateExposed)
 
-    d3.select('svg').classed('expose-view', !isClear)
+    d3.select(svg).classed('expose-view', !isClear)
     cells.classed('exposed', isExposed)
   }
 
-  return { selectCell, exposeCell, restore, data, options: opts, voronoi, delaunay }
+  return {
+    selectCell,
+    exposeCell,
+    sequenceCells,
+    highlightCellsByFieldId,
+    restore,
+    data,
+    options: opts,
+    voronoi,
+    delaunay
+  }
 }
 
 export function calculateModel<T extends { x: number; y: number }>(data: T[], bounds: number[]) {

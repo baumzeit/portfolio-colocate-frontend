@@ -1,11 +1,11 @@
 import { graphql } from 'gatsby'
-import React, { FC, useEffect, useState } from 'react'
+import React, { FC } from 'react'
 
 import { SetModalProps } from '../viz/Voronoi/helpers'
 
 export const ProjectDetail: FC<SetModalProps> = ({ data, onClose, onNext, onPrev }) => {
   return (
-    <div className={`absolute top-0 left-0 w-full h-full px-14 pt-14`}>
+    <div className={`absolute top-0 left-0 w-full h-full p-14 lg:pl-[35vw] lg:pr-[10vw] lg:pt-[20vh]`}>
       <h1>{data?.title}</h1>
       <div>{data?.description}</div>
       <button

@@ -11,9 +11,9 @@ export const sequenceCells = (sequence: boolean) => {
       console.log(bbox)
       node.setAttribute('height', reset ? String(window.innerHeight) : String(bbox.y + bbox.height + bbox.y))
     }
-    setTimeout(resize, 400)
+    setTimeout(resize, 800)
   }
-
+  console.log('sequence cells')
   if (svgNode) {
     const cells = d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
     if (sequence) {
@@ -25,8 +25,9 @@ export const sequenceCells = (sequence: boolean) => {
       resizeSvg(svgNode)
     } else {
       cells.style('transform', 'translate(0) scale(1)')
-      resizeSvg(svgNode, true)
+      resizeSvg(svgNode)
     }
+    svg.classed('expose-view', false)
     svg.classed('list-view', sequence)
   }
 }

@@ -1,27 +1,20 @@
 import { graphql, useStaticQuery } from 'gatsby'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 
 import { ProjectsNavDataQuery } from '../../../graphql-types'
-import { NavFilterFields } from '../../common/components/NavFilterFields'
-import { sequenceCells } from '../viz/Voronoi/sequenceCells'
+import { NavFilterFields } from './NavFilterFields'
+// import { NavSelectView } from './NavSelectView'
 
-export const ProjectsNavContent = () => {
+export const ProjectsNavContent = ({ location }: { location: Location }) => {
   const {
     allStrapiField: { edges }
   } = useStaticQuery<ProjectsNavDataQuery>(query)
   const fields = edges.map((d) => d.node)
 
-  const [listView, setListView] = useState(false)
-  useEffect(() => {
-    sequenceCells(listView)
-  }, [listView])
-
   return (
     <>
-      <button onClick={() => setListView((d) => !d)}>toggle list</button>
-      <div className="flex align-center">
-        <NavFilterFields fields={fields} />
-      </div>
+      {/* <NavSelectView location={location} /> */}
+      <NavFilterFields location={location} fields={fields} />
     </>
   )
 }
