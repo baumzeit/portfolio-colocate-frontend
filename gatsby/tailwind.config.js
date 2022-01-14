@@ -1,12 +1,16 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 module.exports = {
-  purge: {
-    content: ['./src/**/*.{js,jsx,ts,tsx}'],
-    safelist: [...Array.from({ length: 9 }, (_, idx) => 'animate-delay-' + (idx + 1) * 100)]
-  },
+  content: ['./src/**/*.{js,jsx,ts,tsx}'],
+  safelist: [...Array.from({ length: 9 }, (_, idx) => 'animate-delay-' + (idx + 1) * 100)],
   darkMode: 'class',
   mode: 'jit',
   theme: {
+    screens: {
+      'sm': '640px',
+      'md': '768px',
+      'lg': '1024px',
+      'xl': '1280px',
+    },
     extend: {
       colors: {
         highlight: 'var(--color-highlight)',

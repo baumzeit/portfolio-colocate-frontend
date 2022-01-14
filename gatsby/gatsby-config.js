@@ -16,6 +16,7 @@ module.exports = {
     'gatsby-plugin-postcss',
     'gatsby-plugin-sass',
     'gatsby-plugin-graphql-codegen',
+    "gatsby-plugin-use-query-params",
     {
       resolve: 'gatsby-source-filesystem',
       options: {

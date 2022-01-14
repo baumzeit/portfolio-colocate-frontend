@@ -6,30 +6,29 @@
 
   .cell {
     transform-box: fill-box;
-    transform-origin: center;
+    // transform-origin: center;
     opacity: 1;
-    transform: scale(1);
-    transition: all 250ms ease-out;
+    transition: transform 250ms ease-out, opacity 250ms ease-out;
 
     .pattern {
       fill-opacity: 0.9;
-      transition: all 250ms ease-out;
+      transition: transform 250ms ease-out, fill-opacity 250ms ease-out;
     }
     .highlight-pattern {
       fill-opacity: 0;
-      transition: all 250ms ease-out;
+      transition: transform 250ms ease-out, fill-opacity 250ms ease-out;
     }
     .cell-gap {
       stroke-width: 22;
       @apply stroke-bg-primary;
-      transition: all 250ms ease-out;
+      transition: transform 250ms ease-out, opacity 250ms ease-out, stroke-width 250ms ease-out;
     }
     .cell-border {
       stroke-width: 1;
       stroke-opacity: 0.1;
       fill: transparent;
       @apply stroke-brand;
-      transition: all 250ms ease-out;
+      transition: transform 250ms ease-out, opacity 250ms ease-out, stroke-opacity 250ms ease-out;
     }
     .hover-border {
       stroke-width: 1;
@@ -51,14 +50,14 @@
 
     .focus-dot {
       @apply fill-brand;
-      transition: all 250ms ease-out;
+      transition: transform 250ms ease-out, opacity 250ms ease-out;
     }
     .label {
       text-anchor: middle;
       @apply fill-text-primary;
       @apply text-lg xl:text-xl;
       @apply font-semibold;
-      transition: all 250ms ease-out;
+      transition: transform 250ms ease-out, opacity 250ms ease-out;
     }
 
     &.hover-selected {
@@ -85,7 +84,7 @@
   .base-layer,
   .content-layer {
     opacity: 1;
-    transition: all 300ms ease-out;
+    transition: opacity 300ms ease-out;
   }
 
   &.list-view {
@@ -104,17 +103,21 @@
   }
 
   &.expose-view {
+    pointer-events: none;
     .bounds,
     .cell {
       opacity: 0.025;
-      transition: all 300ms ease-out;
+      transition: opacity 150ms ease-out, transform 200ms ease-out 50ms;
 
       &.exposed {
         opacity: 1;
+        transition: transform 200ms ease-out, opacity 200ms ease-out 100ms;
+
         .cell-border {
           stroke-opacity: 1;
         }
-        .pattern {
+        .pattern,
+        .highlight-pattern {
           fill-opacity: 0;
         }
         .focus-dot,

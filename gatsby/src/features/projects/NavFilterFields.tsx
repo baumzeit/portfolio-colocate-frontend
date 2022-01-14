@@ -1,54 +1,36 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { useQueryParam } from 'use-query-params'
 
-import { useQueryParam } from '../../common/hooks/useQueryParam'
+import { ProjectsNavDataQuery } from '../../../graphql-types'
 
 type NavFilterFieldsProps = {
-  location: Location
-  fields: {
-    strapiId?: number | null | undefined
-    name?: string | null | undefined
-    color?: string | null | undefined
-    projects?:
-      | (
-          | {
-              id?: number | null | undefined
-            }
-          | null
-          | undefined
-        )[]
-      | null
-      | undefined
-  }[]
+  fields: ProjectsNavDataQuery['allStrapiField']['edges'][number]['node'][]
 }
 
-export const NavFilterFields = ({ fields, location }: NavFilterFieldsProps) => {
-  const [selectedFieldId, setSelectedFieldId] = useState<string | null>(null)
-
-  useQueryParam(location, { field: selectedFieldId })
-
+export const NavFilterFields = ({ fields }: NavFilterFieldsProps) => {
+  const [selectedFieldSlug, setSelectedFieldSlug] = useQueryParam<string | undefined>('field')
   return (
-    <div className="flex items-center ">
-      <div className="gap-4 text-brand">
-        {fields.map(({ strapiId = null, color, name }, idx) => {
-          const isActive = String(strapiId) === selectedFieldId
-          return (
-            <button
-              key={strapiId}
-              onClick={(e) => {
-                setSelectedFieldId(isActive ? null : String(strapiId))
-              }}
-              style={{
-                color: color || 'inherit'
-              }}
-              className={`ml-2 animate-fadeIn px-2 py-1 animate-delay-${
-                100 + 100 * idx
-              } cursor-pointer rounded-md hover:brightness-110 ${isActive ? 'bg-primary' : 'initial'}`}
-            >
-              {name}
-            </button>
-          )
-        })}
-      </div>
+    <div className="flex items-center gap-4 text-brand">
+      {fields.map(({ strapiId = null, color, name, slug }, idx) => {
+        const isActive = slug === selectedFieldSlug
+        return (
+          <button
+            key={strapiId}
+            onClick={(e) => {
+              setSelectedFieldSlug(isActive ? undefined : slug || undefined)
+            }}
+            style={{
+              color: color || 'inherit',
+              borderColor: color || 'none'
+            }}
+            className={`ml-2 animate-fadeIn animate-delay-${100 + 100 * idx} cursor-pointer ${
+              isActive ? 'border-b border-solid' : ''
+            }`}
+          >
+            {name}
+          </button>
+        )
+      })}
     </div>
   )
 }

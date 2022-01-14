@@ -1,13 +1,15 @@
-import { Transition } from '@headlessui/react'
-import { useDebounceCallback } from '@react-hook/debounce'
 import * as d3 from 'd3'
 import React, { FC, FocusEvent, KeyboardEvent, memo, MouseEvent, useEffect, useMemo, useRef, useState } from 'react'
-import ReactDOM from 'react-dom'
 import './voronoi.scss'
+import ReactDOM from 'react-dom'
+import { useQueryParam } from 'use-query-params'
 
-import { useQueryParam } from '../../../common/hooks/useQueryParam'
+import { ProjectsPageDataQuery } from '../../../../graphql-types'
 import { ProjectDetail } from '../../project/Detail'
 import { EnrichedDatum, initializeVoronoiActions, SetModalProps, VoronoiDatum, VoronoiOptions } from './helpers'
+
+const findIdBySlug = (data: { slug?: string | null; id?: string | number | null }[], searchSlug?: string) =>
+  searchSlug ? data.find((entity) => entity.slug === searchSlug)?.id?.toString() || null : null
 
 const Modal: FC<{ show: boolean }> = ({ show, children }) => {
   if (!show) return null
@@ -22,7 +24,7 @@ const Modal: FC<{ show: boolean }> = ({ show, children }) => {
     //   leaveFrom="opacity-100"
     //   leaveTo="opacity-0"
     // >
-    <div>{children}</div>,
+    <div className="h-full">{children}</div>,
     // </Transition>,
     document.body
   )
@@ -31,131 +33,139 @@ const Modal: FC<{ show: boolean }> = ({ show, children }) => {
 const chartPadding = { top: 3.5 * 16, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 * 16 }
 
 export type VoronoiViewOptions = {
-  listView: boolean | null
   exposedId: string | null
   fieldId: string | null
 }
 
 export type VoronoiChartProps = {
   data: VoronoiDatum[]
+  fields: ProjectsPageDataQuery['allStrapiField']['edges'][number]['node'][]
   width: number
   height: number
   imageSize: number
-  location: Location
 } & VoronoiViewOptions
 
-export const VoronoiChart: FC<VoronoiChartProps> = memo(
-  ({ data, width, height, imageSize, exposedId, fieldId: highlightFieldId, listView, location, children }) => {
-    const svgRef = useRef<SVGSVGElement>(null)
-    const [initialized, setInitialized] = useState(false)
-    const [exposedCell, setExposedCell] = useState<string | null>(exposedId)
-    const [modalData, setModalData] = useState<SetModalProps>()
+export const VoronoiChart: FC<VoronoiChartProps> = memo(({ data, width, height, imageSize, fields, children }) => {
+  const svgRef = useRef<SVGSVGElement>(null)
+  const [initialized, setInitialized] = useState(false)
+  const [modalData, setModalData] = useState<SetModalProps>()
 
-    useQueryParam(location, { exposed: modalData?.data?.slug })
-    const voronoiOptions = useMemo(() => {
-      if (width && height) {
-        console.log('set options')
-        return {
-          padding: chartPadding,
-          transitionDuration: 200,
-          cellGap: 28,
-          imageSize,
-          width,
-          height
-        }
+  const [fieldSlug] = useQueryParam<string | null>('field')
+  const [exposeSlug, setExposeSlug] = useQueryParam<string | undefined>('project')
+
+  const voronoiOptions = useMemo<VoronoiOptions | undefined>(() => {
+    if (width && height) {
+      console.log('set options', {
+        width,
+        height,
+        imageSize,
+        cellGap: 28,
+        padding: chartPadding,
+        exposeOffsetTop: 90,
+        exposeCellHeight: 400
+      })
+      return {
+        width,
+        height,
+        imageSize,
+        cellGap: 28,
+        padding: chartPadding,
+        exposeOffsetTop: 90,
+        exposeCellHeight: 400
       }
-    }, [height, imageSize, width])
+    }
+  }, [height, imageSize, width])
 
-    const voronoiActions = useMemo(() => {
-      const svg = svgRef.current
-      if (voronoiOptions && svg) {
-        console.log('set actions')
-        return initializeVoronoiActions(svg, data, voronoiOptions)
-      }
-    }, [data, voronoiOptions])
+  const voronoiActions = useMemo(() => {
+    const svg = svgRef.current
+    if (voronoiOptions && svg) {
+      console.log('set actions')
+      return initializeVoronoiActions(svg, data, voronoiOptions)
+    }
+  }, [data, voronoiOptions])
 
-    const updateGraphDebounce = useDebounceCallback(drawVoronoi, 300, true)
+  useEffect(() => {
+    if (svgRef.current && voronoiActions) {
+      console.log('initialize voronoi chart')
+      const svg = d3
+        .select(svgRef.current)
+        .attr('fill', 'none')
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-linecap', 'round')
+      drawVoronoi({
+        svg,
+        ...voronoiActions,
+        onClick: (id) => setExposeSlug(voronoiActions.data.find((d) => d.id === id)?.slug),
+        onHover: voronoiActions.selectCell,
+        onMouseLeave: voronoiActions.restore
+      })
+      setInitialized(true)
+    }
+  }, [initialized, setExposeSlug, voronoiActions])
 
-    useEffect(() => {
-      if (svgRef.current && voronoiActions) {
-        console.log('initialize voronoi chart')
-        const svg = d3
-          .select(svgRef.current)
-          .attr('fill', 'none')
-          .attr('stroke-linejoin', 'round')
-          .attr('stroke-linecap', 'round')
-        updateGraphDebounce({
-          svg,
-          ...voronoiActions,
-          onClick: setExposedCell,
-          onHover: voronoiActions.selectCell,
-          onMouseLeave: voronoiActions.restore
-        })
-        setInitialized(true)
-      }
-    }, [updateGraphDebounce, voronoiActions])
+  useEffect(() => {
+    if (voronoiActions && initialized) {
+      const { data } = voronoiActions
+      const exposedId = findIdBySlug(data, exposeSlug)
+      const isExposed = (d: EnrichedDatum) => exposedId !== null && d.id === exposedId
+      const exposeIndex = data.findIndex(isExposed)
+      const nextIndex = (exposeIndex % (data.length - 1)) + 1
+      const prevIndex = exposeIndex > 0 ? exposeIndex - 1 : data.length - 1
 
-    useEffect(() => {
-      if (voronoiActions && initialized) {
-        const { data } = voronoiActions
-        const isExposed = (d: EnrichedDatum) => exposedCell !== null && d.id === exposedCell
-        const exposeIndex = data.findIndex(isExposed)
-        const nextIndex = (exposeIndex % (data.length - 1)) + 1
-        const prevIndex = exposeIndex > 0 ? exposeIndex - 1 : data.length - 1
+      const exposedData = data[exposeIndex]
 
-        setModalData({
-          data: exposeIndex >= 0 ? data[exposeIndex] : null,
-          onClose: () => (exposedCell ? setExposedCell(null) : () => {}),
-          onNext: () => (exposedCell ? setExposedCell(data[nextIndex].id) : () => {}),
-          onPrev: () => (exposedCell ? setExposedCell(data[prevIndex].id) : () => {})
-        })
-      }
-    }, [exposedCell, initialized, voronoiActions])
+      setModalData({
+        data: exposeIndex >= 0 ? exposedData : null,
+        onClose: () => (exposedId ? setExposeSlug(undefined) : () => {}),
+        onNext: () => (exposedId ? setExposeSlug(data[nextIndex].slug) : () => {}),
+        onPrev: () => (exposedId ? setExposeSlug(data[prevIndex].slug) : () => {})
+      })
+    }
+  }, [exposeSlug, initialized, setExposeSlug, voronoiActions])
 
-    useEffect(() => {
-      if (voronoiActions && initialized) {
-        console.log('action expose', exposedCell)
-        voronoiActions.exposeCell(exposedCell)
-      }
-    }, [exposedCell, initialized, voronoiActions])
+  useEffect(() => {
+    if (voronoiActions && initialized) {
+      console.log('action expose', exposeSlug, findIdBySlug(voronoiActions.data, exposeSlug))
+      voronoiActions.exposeCell(findIdBySlug(voronoiActions.data, exposeSlug))
+    }
+  }, [exposeSlug, initialized, voronoiActions])
 
-    // useEffect(() => {
-    //   if (voronoiActions && initialized) {
-    //     console.log('action sequence')
-    //     voronoiActions.sequenceCells(!!listView)
-    //   }
-    // }, [listView, initialized, voronoiActions])
+  // useEffect(() => {
+  //   if (voronoiActions && initialized) {
+  //     console.log('action sequence')
+  //     voronoiActions.sequenceCells(!!listView)
+  //   }
+  // }, [listView, initialized, voronoiActions])
 
-    useEffect(() => {
-      if (voronoiActions && initialized) {
-        console.log('action highlight field')
-        voronoiActions.highlightCellsByFieldId(highlightFieldId)
-      }
-    }, [highlightFieldId, initialized, voronoiActions])
+  useEffect(() => {
+    if (voronoiActions && initialized) {
+      console.log('action highlight field', fieldSlug, findIdBySlug(fields, fieldSlug))
+      voronoiActions.highlightCellsByFieldId(findIdBySlug(fields, fieldSlug))
+    }
+  }, [fieldSlug, fields, initialized, voronoiActions])
 
-    return (
-      <>
-        <svg id="voronoiSvg" ref={svgRef} width={width} height={height} className="cursor-pointer animate-fadeIn">
-          <defs>
-            <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4">
-              <path
-                d="M-1,1 l2,-2
+  return (
+    <>
+      <svg id="voronoiSvg" ref={svgRef} width={width} height={height} className="cursor-pointer animate-fadeIn">
+        <defs>
+          <pattern id="diagonalHatch" patternUnits="userSpaceOnUse" width="4" height="4">
+            <path
+              d="M-1,1 l2,-2
              M0,4 l4,-4
              M3,5 l2,-2"
-                className="stroke-current stroke-1 opacity-80 text-bg-secondary"
-              />
-            </pattern>
-            {children}
-          </defs>
-          <g className="base-layer"></g>
-          <g className="content-layer"></g>
-          <g className="hover-layer"></g>
-        </svg>
-        <Modal show={!!modalData?.data}>{modalData && <ProjectDetail {...modalData} />}</Modal>
-      </>
-    )
-  }
-)
+              className="stroke-current stroke-1 opacity-80 text-bg-secondary"
+            />
+          </pattern>
+          {children}
+        </defs>
+        <g className="base-layer"></g>
+        <g className="content-layer"></g>
+        <g className="hover-layer"></g>
+      </svg>
+      <Modal show={!!modalData?.data}>{modalData && <ProjectDetail {...modalData} />}</Modal>
+    </>
+  )
+})
 
 type VoronoiDrawProps = {
   svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
@@ -267,7 +277,7 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
           .attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
           .attr('r', 8)
-          .attr('tabindex', (d) => 10 + d.id)
+          .attr('tabindex', (d) => 10 + d.index)
           .classed('focus-dot', true)
 
         cell
@@ -314,6 +324,13 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
       onHover(d.id)
     }
   })
+
+  // d3.selectAll<SVGPathElement, EnrichedDatum>(`.base-layer .cell`).style('transform-origin', function (d) {
+  //   const cellRect = this.getBoundingClientRect()
+  //   const originX = (100 * (d.x - cellRect.x)) / cellRect.width
+  //   const originY = (100 * (d.y - cellRect.y)) / cellRect.height
+  //   return `${originX}% ${originY}%`
+  // })
 
   svg
     .selectAll('path.bounds')

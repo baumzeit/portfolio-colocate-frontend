@@ -8,10 +8,14 @@ export type VoronoiDatum = {
   title: string
   description: string
   slug: string
+  tags: {
+    id: string
+    name: string
+  }[]
   fields: {
     color?: string
     name?: string
-    id?: string
+    id: string
   }[]
 }
 
@@ -32,9 +36,10 @@ export type Padding = {
 export type VoronoiOptions = {
   width: number
   height: number
-  transitionDuration: number
   cellGap: number
   imageSize: number
+  exposeCellHeight: number
+  exposeOffsetTop: number
   padding: Padding
 }
 
@@ -120,14 +125,27 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
     const isExposed = (d: EnrichedDatum) => exposedId !== null && d.id === exposedId
     const isClear = exposedId === null
 
-    // const scaleTransform = `scale(${Math.sqrt(data.length)})`
-    const translateTransform = (d: EnrichedDatum) => `translate(calc(15vw - ${d.x}px), ${opts.height / 2 - d.y}px)`
-    const scaleTranslateExposed = (d: EnrichedDatum) =>
-      isExposed(d) ? translateTransform(d) : 'scale(1) translate(0, 0)'
+    const cells = d3.selectAll<SVGPathElement, EnrichedDatum>(`.base-layer .cell`)
+    d3.selectAll<SVGCircleElement, EnrichedDatum>(`.focus-dot`).attr('tabindex', (d) => (isClear ? 10 + d.index : -1))
 
-    const cells = d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
-
-    cells.style('transform', scaleTranslateExposed)
+    cells
+      .style('transform-origin', function (d) {
+        if (isExposed(d)) {
+          const cellRect = this.getBoundingClientRect()
+          const originX = (100 * (d.x - cellRect.x)) / cellRect.width
+          const originY = (100 * (d.y - cellRect.y)) / cellRect.height
+          return `${originX}% ${originY}%`
+        }
+        return 'center'
+      })
+      .style('transform', function (d) {
+        const scale = opts.exposeCellHeight / opts.imageSize
+        const navbarAndScaledImageCenter = opts.exposeOffsetTop + (opts.imageSize * scale) / 2
+        const transform = isExposed(d)
+          ? `translate(${opts.width / 2 - d.x}px, ${navbarAndScaledImageCenter - d.y}px) scale(${scale})`
+          : 'translate(0, 0) scale(1) '
+        return transform
+      })
 
     d3.select(svg).classed('expose-view', !isClear)
     cells.classed('exposed', isExposed)
