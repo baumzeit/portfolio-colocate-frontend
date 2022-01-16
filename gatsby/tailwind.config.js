@@ -17,9 +17,10 @@ module.exports = {
         brand: 'var(--color-brand)',
         'text-primary': 'var(--text-primary)',
         'text-secondary': 'var(--text-secondary)',
-        'text-tertiary': 'var(--text-primary)',
+        'text-tertiary': 'var(--text-tertiary)',
         'bg-primary': 'var(--bg-primary)',
-        'bg-secondary': 'var(--bg-secondary)'
+        'bg-primaryLayer': 'var(--bg-primary-layer)',
+        'bg-secondary': 'var(--bg-secondary)',
       },
       backgroundColor: {
         primary: 'var(--bg-primary)',
@@ -37,6 +38,7 @@ module.exports = {
       },
       animation: {
         fadeIn: 'fade-in 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
+        fadeInFast: 'fade-in 250ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
         fadeOut: 'fade-out 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards',
       },
       keyframes: {

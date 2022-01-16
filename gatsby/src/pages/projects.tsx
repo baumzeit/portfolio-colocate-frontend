@@ -1,16 +1,25 @@
 import { graphql, PageProps } from 'gatsby'
-import React from 'react'
+import React, { useMemo } from 'react'
 
 import { ProjectsPageDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
+import { Main } from '../common/components/Main'
+import { Navbar } from '../common/components/Navbar'
+import { assertAndExtractNodes } from '../common/utility/assertAndExtractNodes'
 import { ProjectsNavContent } from '../features/projects/NavContent'
 import { Projects } from '../features/projects/Projects'
 
-const ProjectsPage = ({ location, data: { allStrapiField, allStrapiProject } }: PageProps<ProjectsPageDataQuery>) => {
-  console.log('page rerender')
+const ProjectsPage = ({ data: { allStrapiField, allStrapiProject } }: PageProps<ProjectsPageDataQuery>) => {
+  const fields = useMemo(() => assertAndExtractNodes(allStrapiField), [allStrapiField])
+  const projects = useMemo(() => assertAndExtractNodes(allStrapiProject), [allStrapiProject])
   return (
-    <Layout navContent={<ProjectsNavContent location={location} />}>
-      <Projects allStrapiField={allStrapiField} allStrapiProject={allStrapiProject} />
+    <Layout>
+      <Navbar>
+        <ProjectsNavContent />
+      </Navbar>
+      <Main fullWidth>
+        <Projects fields={fields} projects={projects} />
+      </Main>
     </Layout>
   )
 }
@@ -21,23 +30,14 @@ export const query = graphql`
       totalCount
       edges {
         node {
-          strapiFields {
-            id
-            name
-            color
-            slug
-          }
-          ...ProjectDetails
+          ...ProjectDetail
         }
       }
     }
     allStrapiField {
       edges {
         node {
-          strapiId
-          name
-          slug
-          color
+          ...FieldBase
         }
       }
     }

@@ -1,55 +1,45 @@
-import { graphql } from 'gatsby'
 import React, { FC } from 'react'
 
-import { SetModalProps } from '../viz/Voronoi/helpers'
+import { ProjectDetailFragment } from '../../../graphql-types'
+import notEmpty from '../../common/utility/notEmpty'
+import { SetModalProps } from '../projects/Projects'
 import { InfoRow } from './InfoRow'
 import { SliderControls } from './SliderControls'
 
-export const ProjectDetail: FC<SetModalProps> = ({ data, onClose, onNext, onPrev }) => {
-  return data ? (
-    <div className={`absolute top-0 left-0 w-full`}>
-      <div className="flex justify-center">
-        <div className="mx-14 max-w-[880px] mt-28 mb-16 ">
-          <SliderControls onPrev={onPrev} onNext={onNext} onClose={onClose}>
-            {/* <h1 className="text-3xl bg-text-primary text-bg-primary px-2">{data.title}</h1> */}
-          </SliderControls>
-          <h1 className="text-3xl bg-text-secondary text-bg-primary px-2 py-1">{data.title}</h1>
+const assertData = <T extends Record<string, any>>(data: T, key: keyof T) => data?.[key].filter(notEmpty) || []
 
-          <div className="mt-6 mb-6">{data.description}</div>
-          <InfoRow rowTitle="Fields:" data={data.fields} label={(field) => field.name || ''} />
-          <InfoRow rowTitle="Tags:" data={data.tags} label={(tag) => tag.name || ''} />
+type ProjectDetailProps = SetModalProps
+export const ProjectDetail: FC<ProjectDetailProps> = ({ data, onClose, onNext, onPrev }) => {
+  return data ? (
+    <div className="flex justify-center">
+      <div className="mx-14 xl:max-w-[960px] mt-28 mb-16 ">
+        <div className="min-h-[200px] h-[30vh] mb-16">
+          <SliderControls onPrev={onPrev} onNext={onNext} onClose={onClose} />
         </div>
+        <div className="flex flex-wrap items-center justify-between py-1 pl-2 pr-4 bg-text-secondary text-bg-primary">
+          <h1 className="text-3xl">{data.title}</h1>
+          <Organization organization={data.organization} />
+        </div>
+
+        <div className="mt-6 mb-6">{data.description}</div>
+        <InfoRow rowTitle="Fields:" data={assertData(data, 'strapiFields')} label={(field) => field.name || ''} />
+        <InfoRow rowTitle="Tags:" data={assertData(data, 'tags')} label={(tag) => tag.name || ''} />
       </div>
     </div>
   ) : null
 }
 
-export const query = graphql`
-  fragment ProjectDetails on StrapiProject {
-    strapiId
-    slug
-    title
-    description
-    tags {
-      id
-      name
-    }
-    # images
-    # seo
-    # strapiTags {
-    #   name
-    # }
-    images {
-      localFile {
-        childImageSharp {
-          fixed(width: 600) {
-            srcSet
-          }
-        }
-      }
-    }
-    strapiFields {
-      name
-    }
-  }
-`
+const Organization = ({ organization }: { organization: ProjectDetailFragment['organization'] }) => {
+  return (
+    <div>
+      {organization && (
+        <span className="text-2xl">
+          at
+          <a className="ml-2 text-brand" href={organization.website || ''}>
+            {organization.name}
+          </a>
+        </span>
+      )}
+    </div>
+  )
+}

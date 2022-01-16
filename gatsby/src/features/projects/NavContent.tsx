@@ -3,10 +3,10 @@ import React from 'react'
 import { useQueryParam } from 'use-query-params'
 
 import { ProjectsNavDataQuery } from '../../../graphql-types'
-import { NavFilterFields } from './NavFilterFields'
+import { NavFilterFields, NavFilterFieldsSelect } from './NavFilterFields'
 // import { NavSelectView } from './NavSelectView'
 
-export const ProjectsNavContent = ({ location }: { location: Location }) => {
+export const ProjectsNavContent = () => {
   const {
     allStrapiField: { edges }
   } = useStaticQuery<ProjectsNavDataQuery>(query)
@@ -16,18 +16,24 @@ export const ProjectsNavContent = ({ location }: { location: Location }) => {
 
   return (
     <>
-      {/* <NavSelectView location={location} /> */}
       {exposedSlug ? (
         <button
           onClick={(e) => {
             setExposedSlug(undefined)
           }}
-          className={`ml-2 animate-fadeIn px-2 py-1 cursor-pointer rounded-md hover:brightness-110 `}
+          className={`animate-fadeIn p-3 hover:text-brand`}
         >
-          Zurück
+          Back
         </button>
       ) : (
-        <NavFilterFields fields={fields} />
+        <>
+          <div className="hidden lg:block">
+            <NavFilterFields fields={fields} />
+          </div>
+          <div className="self-start block mt-3.5 min-w-[180px] lg:hidden">
+            <NavFilterFieldsSelect fields={fields} />
+          </div>
+        </>
       )}
     </>
   )

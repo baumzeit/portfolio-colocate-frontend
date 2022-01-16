@@ -1,3 +1,4 @@
+import { Listbox } from '@headlessui/react'
 import { Link, graphql, useStaticQuery } from 'gatsby'
 import React, { FC, useContext } from 'react'
 
@@ -6,15 +7,14 @@ import { ThemeContext } from './ThemeContextProvider'
 
 export const Navbar: FC = ({ children }) => {
   const { strapiGlobal } = useStaticQuery<NavDataQuery>(query)
-
-  const { theme, setTheme } = useContext(ThemeContext)
+  const { theme } = useContext(ThemeContext)
 
   if (!strapiGlobal) {
     return <p>no data</p>
   }
   const { siteName, logo } = strapiGlobal
   return (
-    <div className="relative z-50 bg-primaryLayer">
+    <nav className="sticky top-0 left-0 z-50 bg-primaryLayer">
       <div className="flex items-center justify-between px-8 h-14">
         <Link to="/" className="font-bold">
           <div className="flex align-center">
@@ -28,20 +28,29 @@ export const Navbar: FC = ({ children }) => {
             {siteName}
           </div>
         </Link>
-        <div className="hidden lg:block">{children}</div>
-        <div>
-          Theme
-          <select
-            onChange={(event) => setTheme(event.target.value)}
-            className="bg-transparent text-brand form-select"
-            value={theme}
-          >
-            <option value="dark">dark</option>
-            <option value="light">light</option>
-          </select>
-        </div>
+        {children}
+        <ThemeSelect />
       </div>
-      <div className="flex justify-between px-8 lg:hidden w-full">{children}</div>
+    </nav>
+  )
+}
+
+const ThemeSelect = () => {
+  const { theme, setTheme } = useContext(ThemeContext)
+
+  return (
+    <div>
+      <Listbox value={theme} onChange={(theme) => setTheme(theme)}>
+        <Listbox.Button className={`px-2 py-1 text-brand`}>{theme}</Listbox.Button>
+        <Listbox.Options>
+          <Listbox.Option value="dark">
+            <div>dark</div>
+          </Listbox.Option>
+          <Listbox.Option value="light">
+            <div>light</div>
+          </Listbox.Option>
+        </Listbox.Options>
+      </Listbox>
     </div>
   )
 }

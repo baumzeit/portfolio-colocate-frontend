@@ -6,15 +6,10 @@ export type VoronoiDatum = {
   imageUrl: string
   id: string
   title: string
-  description: string
   slug: string
-  tags: {
-    id: string
-    name: string
-  }[]
   fields: {
-    color?: string
-    name?: string
+    color: string
+    name: string
     id: string
   }[]
 }
@@ -43,22 +38,14 @@ export type VoronoiOptions = {
   padding: Padding
 }
 
-export type SetModalProps = {
-  data: EnrichedDatum | null
-  onClose: () => void
-  onNext: () => void
-  onPrev: () => void
-}
-
-export type SetModalFn = ({ data, onClose, onNext, onPrev }: SetModalProps) => void
 export type SetExposedCellFn = (id: string | null) => void
 
 export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: VoronoiDatum[], opts: VoronoiOptions) => {
   const bounds = [
     Number(opts.padding.left) - opts.cellGap / 2,
     Number(opts.padding.top) - opts.cellGap / 2,
-    opts.width - Number(opts.padding.left) + opts.cellGap / 2,
-    opts.height - Number(opts.padding.left) + opts.cellGap / 2
+    opts.width - opts.cellGap / 2,
+    opts.height - opts.cellGap / 2
   ]
 
   const { voronoi, delaunay } = calculateModel(originalData, bounds)
@@ -117,22 +104,23 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
         highlightPath.style('fill', `url(#diagonalHatchHighlight-${highlightId})`)
       }
 
-      cellG.classed('hover-selected field-highlight', shouldHighlight)
+      cellG.classed('field-highlight', shouldHighlight)
     })
+    d3.select(svg).classed('highlight-view', !!highlightId)
   }
 
   const exposeCell = (exposedId: string | null) => {
     const isExposed = (d: EnrichedDatum) => exposedId !== null && d.id === exposedId
     const isClear = exposedId === null
 
-    const cells = d3.selectAll<SVGPathElement, EnrichedDatum>(`.base-layer .cell`)
+    const baseLayerCells = d3.selectAll<SVGPathElement, EnrichedDatum>(`.base-layer .cell`)
     d3.selectAll<SVGCircleElement, EnrichedDatum>(`.focus-dot`).attr('tabindex', (d) => (isClear ? 10 + d.index : -1))
 
-    cells
+    baseLayerCells
       .style('transform-origin', function (d) {
         if (isExposed(d)) {
           const cellRect = this.getBoundingClientRect()
-          const originX = (100 * (d.x - cellRect.x)) / cellRect.width
+          const originX = (100 * (d.x - cellRect.x)) / cellRect.width // adjust for point offset from cell center
           const originY = (100 * (d.y - cellRect.y)) / cellRect.height
           return `${originX}% ${originY}%`
         }
@@ -142,13 +130,13 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
         const scale = opts.exposeCellHeight / opts.imageSize
         const navbarAndScaledImageCenter = opts.exposeOffsetTop + (opts.imageSize * scale) / 2
         const transform = isExposed(d)
-          ? `translate(${opts.width / 2 - d.x}px, ${navbarAndScaledImageCenter - d.y}px) scale(${scale})`
-          : 'translate(0, 0) scale(1) '
+          ? `translate(${opts.width / 2 - d.x}px, ${navbarAndScaledImageCenter - d.y}px) scale(calc(${scale})`
+          : 'translate(0, 0) scale(1)'
         return transform
       })
 
     d3.select(svg).classed('expose-view', !isClear)
-    cells.classed('exposed', isExposed)
+    baseLayerCells.classed('exposed', isExposed)
   }
 
   return {

@@ -641,6 +641,7 @@ export type StrapiTagProjects = {
   description?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
+  organization?: Maybe<Scalars['Int']>;
   published_at?: Maybe<Scalars['Date']>;
   created_at?: Maybe<Scalars['Date']>;
   updated_at?: Maybe<Scalars['Date']>;
@@ -801,6 +802,7 @@ export type StrapiProject = Node & {
   description?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
+  organization?: Maybe<StrapiProjectOrganization>;
   published_at?: Maybe<Scalars['Date']>;
   created_at?: Maybe<Scalars['Date']>;
   updated_at?: Maybe<Scalars['Date']>;
@@ -808,7 +810,6 @@ export type StrapiProject = Node & {
   tags?: Maybe<Array<Maybe<StrapiProjectTags>>>;
   strapiId?: Maybe<Scalars['Int']>;
   strapiFields?: Maybe<Array<Maybe<StrapiProjectStrapiFields>>>;
-  gatsbyPath?: Maybe<Scalars['String']>;
 };
 
 
@@ -835,9 +836,37 @@ export type StrapiProjectUpdated_AtArgs = {
   locale?: InputMaybe<Scalars['String']>;
 };
 
+export type StrapiProjectOrganization = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  website?: Maybe<Scalars['String']>;
+  published_at?: Maybe<Scalars['Date']>;
+  created_at?: Maybe<Scalars['Date']>;
+  updated_at?: Maybe<Scalars['Date']>;
+};
 
-export type StrapiProjectGatsbyPathArgs = {
-  filePath?: InputMaybe<Scalars['String']>;
+
+export type StrapiProjectOrganizationPublished_AtArgs = {
+  formatString?: InputMaybe<Scalars['String']>;
+  fromNow?: InputMaybe<Scalars['Boolean']>;
+  difference?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+
+export type StrapiProjectOrganizationCreated_AtArgs = {
+  formatString?: InputMaybe<Scalars['String']>;
+  fromNow?: InputMaybe<Scalars['Boolean']>;
+  difference?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+
+export type StrapiProjectOrganizationUpdated_AtArgs = {
+  formatString?: InputMaybe<Scalars['String']>;
+  fromNow?: InputMaybe<Scalars['Boolean']>;
+  difference?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']>;
 };
 
 export type StrapiProjectImages = {
@@ -1330,6 +1359,7 @@ export type StrapiFieldProjects = {
   description?: Maybe<Scalars['String']>;
   slug?: Maybe<Scalars['String']>;
   name?: Maybe<Scalars['String']>;
+  organization?: Maybe<Scalars['Int']>;
   published_at?: Maybe<Scalars['Date']>;
   created_at?: Maybe<Scalars['Date']>;
   updated_at?: Maybe<Scalars['Date']>;
@@ -1740,6 +1770,7 @@ export type QueryStrapiProjectArgs = {
   description?: InputMaybe<StringQueryOperatorInput>;
   slug?: InputMaybe<StringQueryOperatorInput>;
   name?: InputMaybe<StringQueryOperatorInput>;
+  organization?: InputMaybe<StrapiProjectOrganizationFilterInput>;
   published_at?: InputMaybe<DateQueryOperatorInput>;
   created_at?: InputMaybe<DateQueryOperatorInput>;
   updated_at?: InputMaybe<DateQueryOperatorInput>;
@@ -1747,7 +1778,6 @@ export type QueryStrapiProjectArgs = {
   tags?: InputMaybe<StrapiProjectTagsFilterListInput>;
   strapiId?: InputMaybe<IntQueryOperatorInput>;
   strapiFields?: InputMaybe<StrapiProjectStrapiFieldsFilterListInput>;
-  gatsbyPath?: InputMaybe<StringQueryOperatorInput>;
 };
 
 
@@ -3900,6 +3930,7 @@ export type StrapiTagProjectsFilterInput = {
   description?: InputMaybe<StringQueryOperatorInput>;
   slug?: InputMaybe<StringQueryOperatorInput>;
   name?: InputMaybe<StringQueryOperatorInput>;
+  organization?: InputMaybe<IntQueryOperatorInput>;
   published_at?: InputMaybe<DateQueryOperatorInput>;
   created_at?: InputMaybe<DateQueryOperatorInput>;
   updated_at?: InputMaybe<DateQueryOperatorInput>;
@@ -4137,6 +4168,7 @@ export type StrapiTagFieldsEnum =
   | 'projects___description'
   | 'projects___slug'
   | 'projects___name'
+  | 'projects___organization'
   | 'projects___published_at'
   | 'projects___created_at'
   | 'projects___updated_at'
@@ -4262,6 +4294,15 @@ export type StrapiTagFilterInput = {
 export type StrapiTagSortInput = {
   fields?: InputMaybe<Array<InputMaybe<StrapiTagFieldsEnum>>>;
   order?: InputMaybe<Array<InputMaybe<SortOrderEnum>>>;
+};
+
+export type StrapiProjectOrganizationFilterInput = {
+  id?: InputMaybe<IntQueryOperatorInput>;
+  name?: InputMaybe<StringQueryOperatorInput>;
+  website?: InputMaybe<StringQueryOperatorInput>;
+  published_at?: InputMaybe<DateQueryOperatorInput>;
+  created_at?: InputMaybe<DateQueryOperatorInput>;
+  updated_at?: InputMaybe<DateQueryOperatorInput>;
 };
 
 export type StrapiProjectImagesFilterListInput = {
@@ -4501,6 +4542,12 @@ export type StrapiProjectFieldsEnum =
   | 'description'
   | 'slug'
   | 'name'
+  | 'organization___id'
+  | 'organization___name'
+  | 'organization___website'
+  | 'organization___published_at'
+  | 'organization___created_at'
+  | 'organization___updated_at'
   | 'published_at'
   | 'created_at'
   | 'updated_at'
@@ -4622,8 +4669,7 @@ export type StrapiProjectFieldsEnum =
   | 'strapiFields___slug'
   | 'strapiFields___published_at'
   | 'strapiFields___created_at'
-  | 'strapiFields___updated_at'
-  | 'gatsbyPath';
+  | 'strapiFields___updated_at';
 
 export type StrapiProjectGroupConnection = {
   totalCount: Scalars['Int'];
@@ -4675,6 +4721,7 @@ export type StrapiProjectFilterInput = {
   description?: InputMaybe<StringQueryOperatorInput>;
   slug?: InputMaybe<StringQueryOperatorInput>;
   name?: InputMaybe<StringQueryOperatorInput>;
+  organization?: InputMaybe<StrapiProjectOrganizationFilterInput>;
   published_at?: InputMaybe<DateQueryOperatorInput>;
   created_at?: InputMaybe<DateQueryOperatorInput>;
   updated_at?: InputMaybe<DateQueryOperatorInput>;
@@ -4682,7 +4729,6 @@ export type StrapiProjectFilterInput = {
   tags?: InputMaybe<StrapiProjectTagsFilterListInput>;
   strapiId?: InputMaybe<IntQueryOperatorInput>;
   strapiFields?: InputMaybe<StrapiProjectStrapiFieldsFilterListInput>;
-  gatsbyPath?: InputMaybe<StringQueryOperatorInput>;
 };
 
 export type StrapiProjectSortInput = {
@@ -5436,6 +5482,7 @@ export type StrapiFieldProjectsFilterInput = {
   description?: InputMaybe<StringQueryOperatorInput>;
   slug?: InputMaybe<StringQueryOperatorInput>;
   name?: InputMaybe<StringQueryOperatorInput>;
+  organization?: InputMaybe<IntQueryOperatorInput>;
   published_at?: InputMaybe<DateQueryOperatorInput>;
   created_at?: InputMaybe<DateQueryOperatorInput>;
   updated_at?: InputMaybe<DateQueryOperatorInput>;
@@ -5667,6 +5714,7 @@ export type StrapiFieldFieldsEnum =
   | 'projects___description'
   | 'projects___slug'
   | 'projects___name'
+  | 'projects___organization'
   | 'projects___published_at'
   | 'projects___created_at'
   | 'projects___updated_at'
@@ -5798,29 +5846,24 @@ export type SeoDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type SeoDataQuery = { strapiGlobal?: { siteName?: string | null | undefined, favIcon?: { localFile?: { publicURL?: string | null | undefined } | null | undefined } | null | undefined, defaultSeo?: { metaTitle?: string | null | undefined, metaDescription?: string | null | undefined, shareImage?: { localFile?: { publicURL?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined } | null | undefined };
 
-export type ProjectDetailsFragment = { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, tags?: Array<{ id?: number | null | undefined, name?: string | null | undefined } | null | undefined> | null | undefined, images?: Array<{ localFile?: { childImageSharp?: { fixed?: { srcSet: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, strapiFields?: Array<{ name?: string | null | undefined } | null | undefined> | null | undefined };
-
 export type ProjectsNavDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type ProjectsNavDataQuery = { allStrapiField: { edges: Array<{ node: { strapiId?: number | null | undefined, name?: string | null | undefined, color?: string | null | undefined, slug?: string | null | undefined, projects?: Array<{ id?: number | null | undefined } | null | undefined> | null | undefined } }> } };
 
+export type FieldBaseFragment = { id: string, slug?: string | null | undefined, name?: string | null | undefined, description?: string | null | undefined, color?: string | null | undefined };
+
+export type ProjectDetailFragment = { id: string, title?: string | null | undefined, name?: string | null | undefined, slug?: string | null | undefined, description?: string | null | undefined, organization?: { id?: number | null | undefined, name?: string | null | undefined, website?: string | null | undefined } | null | undefined, images?: Array<{ id?: number | null | undefined, url?: string | null | undefined, alternativeText?: string | null | undefined, localFile?: { childImageSharp?: { fixed?: { srcSet: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id?: number | null | undefined, name?: string | null | undefined } | null | undefined> | null | undefined, strapiFields?: Array<{ id?: number | null | undefined, name?: string | null | undefined, description?: string | null | undefined, color?: string | null | undefined, slug?: string | null | undefined } | null | undefined> | null | undefined };
+
 export type HomeDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HomeDataQuery = { strapiHome?: { title?: string | null | undefined, subtitle?: string | null | undefined, intro?: string | null | undefined, seo?: { metaTitle?: string | null | undefined } | null | undefined, strapiFields?: Array<{ id?: number | null | undefined, name?: string | null | undefined, description?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined, allStrapiField: { edges: Array<{ node: { id: string, name?: string | null | undefined, projects?: Array<{ id?: number | null | undefined, title?: string | null | undefined, slug?: string | null | undefined } | null | undefined> | null | undefined } }> } };
-
-export type ProjectDataQueryVariables = Exact<{
-  slug: Scalars['String'];
-}>;
-
-
-export type ProjectDataQuery = { strapiProject?: { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, tags?: Array<{ id?: number | null | undefined, name?: string | null | undefined } | null | undefined> | null | undefined, images?: Array<{ localFile?: { childImageSharp?: { fixed?: { srcSet: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, strapiFields?: Array<{ name?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined };
+export type HomeDataQuery = { strapiHome?: { title?: string | null | undefined, subtitle?: string | null | undefined, intro?: string | null | undefined, seo?: { metaTitle?: string | null | undefined } | null | undefined, strapiFields?: Array<{ id?: number | null | undefined, name?: string | null | undefined, description?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined, allStrapiField: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name?: string | null | undefined, description?: string | null | undefined, color?: string | null | undefined, projects?: Array<{ id?: number | null | undefined, title?: string | null | undefined, slug?: string | null | undefined } | null | undefined> | null | undefined } }> } };
 
 export type ProjectsPageDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectsPageDataQuery = { allStrapiProject: { totalCount: number, edges: Array<{ node: { strapiId?: number | null | undefined, slug?: string | null | undefined, title?: string | null | undefined, description?: string | null | undefined, strapiFields?: Array<{ id?: number | null | undefined, name?: string | null | undefined, color?: string | null | undefined, slug?: string | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id?: number | null | undefined, name?: string | null | undefined } | null | undefined> | null | undefined, images?: Array<{ localFile?: { childImageSharp?: { fixed?: { srcSet: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined } }> }, allStrapiField: { edges: Array<{ node: { strapiId?: number | null | undefined, name?: string | null | undefined, slug?: string | null | undefined, color?: string | null | undefined } }> } };
+export type ProjectsPageDataQuery = { allStrapiProject: { totalCount: number, edges: Array<{ node: { id: string, title?: string | null | undefined, name?: string | null | undefined, slug?: string | null | undefined, description?: string | null | undefined, organization?: { id?: number | null | undefined, name?: string | null | undefined, website?: string | null | undefined } | null | undefined, images?: Array<{ id?: number | null | undefined, url?: string | null | undefined, alternativeText?: string | null | undefined, localFile?: { childImageSharp?: { fixed?: { srcSet: string } | null | undefined } | null | undefined } | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id?: number | null | undefined, name?: string | null | undefined } | null | undefined> | null | undefined, strapiFields?: Array<{ id?: number | null | undefined, name?: string | null | undefined, description?: string | null | undefined, color?: string | null | undefined, slug?: string | null | undefined } | null | undefined> | null | undefined } }> }, allStrapiField: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name?: string | null | undefined, description?: string | null | undefined, color?: string | null | undefined } }> } };
 
 export type GatsbyImageSharpFixedFragment = { base64?: string | null | undefined, width: number, height: number, src: string, srcSet: string };
 

@@ -6,29 +6,29 @@
 
   .cell {
     transform-box: fill-box;
-    // transform-origin: center;
     opacity: 1;
-    transition: transform 250ms ease-out, opacity 250ms ease-out;
+    transition: transform 200ms ease-out, opacity 200ms ease-out;
 
     .pattern {
       fill-opacity: 0.9;
-      transition: transform 250ms ease-out, fill-opacity 250ms ease-out;
+      transition: fill-opacity 200ms ease-out;
     }
     .highlight-pattern {
       fill-opacity: 0;
-      transition: transform 250ms ease-out, fill-opacity 250ms ease-out;
+      transition: fill-opacity 200ms ease-out;
     }
     .cell-gap {
       stroke-width: 22;
       @apply stroke-bg-primary;
-      transition: transform 250ms ease-out, opacity 250ms ease-out, stroke-width 250ms ease-out;
+      transition: transform 200ms ease-out, opacity 200ms ease-out, stroke-width 200ms ease-out;
     }
     .cell-border {
       stroke-width: 1;
       stroke-opacity: 0.1;
       fill: transparent;
       @apply stroke-brand;
-      transition: transform 250ms ease-out, opacity 250ms ease-out, stroke-opacity 250ms ease-out;
+      transform-origin: center;
+      transition: transform 200ms ease-out, stroke-opacity 200ms ease-out, stroke-width 200ms ease-out;
     }
     .hover-border {
       stroke-width: 1;
@@ -50,14 +50,20 @@
 
     .focus-dot {
       @apply fill-brand;
-      transition: transform 250ms ease-out, opacity 250ms ease-out;
+      transition: transform 200ms ease-out, opacity 200ms ease-out;
     }
     .label {
       text-anchor: middle;
+      dominant-baseline: central;
+      @apply fill-bg-primary;
+      @apply text-lg xl:text-lg;
+      @apply tracking-wide;
+      transition: transform 200ms ease-out, opacity 200ms ease-out;
+    }
+    .label-box {
       @apply fill-text-primary;
-      @apply text-lg xl:text-xl;
-      @apply font-semibold;
-      transition: transform 250ms ease-out, opacity 250ms ease-out;
+      fill-opacity: 0.75;
+      transition: transform 200ms ease-out, opacity 200ms ease-out;
     }
 
     &.hover-selected {
@@ -72,12 +78,6 @@
         transform: scale(1.01);
       }
     }
-
-    &.field-highlight {
-      .highlight-pattern {
-        fill-opacity: 1;
-      }
-    }
   }
 
   .bounds,
@@ -87,34 +87,35 @@
     transition: opacity 300ms ease-out;
   }
 
-  &.list-view {
-    .cell-border {
-      stroke-opacity: 1;
-    }
-    .bounds,
-    .focus-dot,
-    .label {
-      opacity: 0;
-    }
-    .pattern,
-    .highlight-pattern {
-      fill-opacity: 0;
-    }
-  }
+  // &.list-view {
+  //   .cell-border {
+  //     stroke-opacity: 1;
+  //   }
+  //   .bounds,
+  //   .focus-dot,
+  //   .label {
+  //     opacity: 0;
+  //   }
+  //   .pattern,
+  //   .highlight-pattern {
+  //     fill-opacity: 0;
+  //   }
+  // }
 
   &.expose-view {
     pointer-events: none;
     .bounds,
     .cell {
       opacity: 0.025;
-      transition: opacity 150ms ease-out, transform 200ms ease-out 50ms;
+      transition: opacity 150ms ease-out, transform 250ms ease-out;
 
       &.exposed {
         opacity: 1;
-        transition: transform 200ms ease-out, opacity 200ms ease-out 100ms;
+        transition: transform 200ms ease-out, opacity 200ms ease-out 150ms;
 
         .cell-border {
           stroke-opacity: 1;
+          stroke-width: 1;
         }
         .pattern,
         .highlight-pattern {
@@ -123,6 +124,31 @@
         .focus-dot,
         .label {
           opacity: 0;
+        }
+      }
+    }
+  }
+
+  &.highlight-view {
+    .cell {
+      opacity: 0.35;
+
+      .label,
+      .label-box,
+      .focus-dot {
+        opacity: 0;
+      }
+
+      &.field-highlight {
+        opacity: 1;
+
+        .highlight-pattern {
+          fill-opacity: 1;
+        }
+        .label,
+        .label-box,
+        .focus-dot {
+          opacity: 1;
         }
       }
     }

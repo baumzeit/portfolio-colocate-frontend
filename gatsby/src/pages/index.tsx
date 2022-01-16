@@ -4,26 +4,41 @@ import { Helmet } from 'react-helmet'
 
 import { HomeDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
+import { Main } from '../common/components/Main'
+import { Navbar } from '../common/components/Navbar'
 import { PATH } from '../common/constants/paths'
+import notEmpty from '../common/utility/notEmpty'
 import { HomeNavContent } from '../features/home/NavContent'
 import { ContourChart } from '../features/viz/ContourChart'
 
 // markup
 const HomePage = ({ data: { strapiHome, allStrapiField } }: PageProps<HomeDataQuery>) => {
-  const { title, subtitle, intro, strapiFields, seo } = strapiHome
+  const displayFields = useMemo(() => {
+    if (allStrapiField && strapiHome) {
+      const strapiFields = strapiHome.strapiFields?.filter(notEmpty)
+      if (strapiFields) {
+        return allStrapiField.edges.filter((field) =>
+          strapiFields.map((homeField) => 'Field_' + homeField.id).includes(field.node.id)
+        )
+      }
+    }
+  }, [allStrapiField, strapiHome])
 
-  const displayFields = useMemo(
-    () => allStrapiField.edges.filter(({ node }) => strapiFields.map((field) => 'Field_' + field.id).includes(node.id)),
-    [allStrapiField.edges, strapiFields]
-  )
+  if (!(strapiHome && allStrapiField && displayFields)) {
+    return <div>No Data</div>
+  }
+  const { title, subtitle, intro, seo } = strapiHome
 
   return (
     <>
       <Helmet>
-        <title>{seo.metaTitle}</title>
+        <title>{seo?.metaTitle}</title>
       </Helmet>
-      <Layout navContent={<HomeNavContent />}>
-        <div className="relative">
+      <Layout>
+        <Navbar>
+          <HomeNavContent />
+        </Navbar>
+        <Main>
           <div className="h-[500px] w-full absolute top-0 left-0">
             <ContourChart data={[{ x: 30, y: 30 }]} margin={200} />
           </div>
@@ -36,8 +51,8 @@ const HomePage = ({ data: { strapiHome, allStrapiField } }: PageProps<HomeDataQu
                 <div>{field.name}</div>
                 <div className="ml-3 text-secondary">
                   {field.projects
-                    ? field.projects.map((project) => (
-                        <Link to={`${PATH.PROJECTS}#${project.slug}`} key={project.id}>
+                    ? field.projects.filter(notEmpty).map((project) => (
+                        <Link to={`${PATH.PROJECTS}?project=${project.slug}`} key={project.id}>
                           {project.title}
                         </Link>
                       ))
@@ -46,7 +61,7 @@ const HomePage = ({ data: { strapiHome, allStrapiField } }: PageProps<HomeDataQu
               </div>
             ))}
           </div>
-        </div>
+        </Main>
       </Layout>
     </>
   )
@@ -70,13 +85,12 @@ export const query = graphql`
     allStrapiField(sort: { fields: name, order: ASC }) {
       edges {
         node {
-          id
-          name
           projects {
             id
             title
             slug
           }
+          ...FieldBase
         }
       }
     }
