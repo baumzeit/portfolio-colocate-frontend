@@ -25,11 +25,13 @@ export const Navbar: FC = ({ children }) => {
                 alt="logo"
               />
             )}
-            {siteName}
+            <div className="hidden md:block">{siteName}</div>
           </div>
         </Link>
         {children}
-        <ThemeSelect />
+        <div className="self-start block mt-3.5">
+          <ThemeSelect />
+        </div>
       </div>
     </nav>
   )
@@ -41,14 +43,24 @@ const ThemeSelect = () => {
   return (
     <div>
       <Listbox value={theme} onChange={(theme) => setTheme(theme)}>
-        <Listbox.Button className={`px-2 py-1 text-brand`}>{theme}</Listbox.Button>
+        <Listbox.Button className={`px-1.5 py-0.5 rounded text-brand`}>{theme}</Listbox.Button>
         <Listbox.Options>
-          <Listbox.Option value="dark">
-            <div>dark</div>
-          </Listbox.Option>
-          <Listbox.Option value="light">
-            <div>light</div>
-          </Listbox.Option>
+          {['dark', 'light']
+            .filter((val) => val !== theme)
+            .map((val, idx) => {
+              const isActive = theme === val
+              return (
+                <Listbox.Option key={val} value={val} className="text-bg-secondary">
+                  <div
+                    className={`inline-block px-1.5 py-0.5 rounded mt-1.5 animate-fadeInFast animate-delay-${
+                      50 * idx
+                    } cursor-pointer bg-primary ${isActive ? 'text-brand' : 'text-primary'}`}
+                  >
+                    {val}
+                  </div>
+                </Listbox.Option>
+              )
+            })}
         </Listbox.Options>
       </Listbox>
     </div>

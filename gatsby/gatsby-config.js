@@ -3,6 +3,11 @@ require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`
 })
 
+const config = require('./tailwind.config')
+
+const mediaQueries = Object.fromEntries(Object.entries(config.theme.screens).map(([bp, size]) => [bp, `(min-width: ${size})`]))
+
+
 module.exports = {
   siteMetadata: {
     siteURL: process.env.GATSBY_ROOT_URL,
@@ -16,7 +21,13 @@ module.exports = {
     'gatsby-plugin-postcss',
     'gatsby-plugin-sass',
     'gatsby-plugin-graphql-codegen',
-    "gatsby-plugin-use-query-params",
+    'gatsby-plugin-use-query-params',
+    {
+      resolve: 'gatsby-plugin-breakpoints',
+      options: {
+        queries: mediaQueries
+      },
+    },
     {
       resolve: 'gatsby-source-filesystem',
       options: {

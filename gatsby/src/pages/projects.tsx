@@ -1,4 +1,5 @@
 import { graphql, PageProps } from 'gatsby'
+import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { useMemo } from 'react'
 
 import { ProjectsPageDataQuery } from '../../graphql-types'
@@ -7,18 +8,26 @@ import { Main } from '../common/components/Main'
 import { Navbar } from '../common/components/Navbar'
 import { assertAndExtractNodes } from '../common/utility/assertAndExtractNodes'
 import { ProjectsNavContent } from '../features/projects/NavContent'
-import { Projects } from '../features/projects/Projects'
+import { ProjectsList } from '../features/projects/ProjectsList'
+import { ProjectsMap } from '../features/projects/ProjectsMap'
 
 const ProjectsPage = ({ data: { allStrapiField, allStrapiProject } }: PageProps<ProjectsPageDataQuery>) => {
   const fields = useMemo(() => assertAndExtractNodes(allStrapiField), [allStrapiField])
   const projects = useMemo(() => assertAndExtractNodes(allStrapiProject), [allStrapiProject])
+
+  const breakpoints = useBreakpoint()
+
   return (
     <Layout>
       <Navbar>
         <ProjectsNavContent />
       </Navbar>
       <Main fullWidth>
-        <Projects fields={fields} projects={projects} />
+        {breakpoints.sm ? (
+          <ProjectsMap fields={fields} projects={projects} />
+        ) : (
+          <ProjectsList fields={fields} projects={projects} />
+        )}
       </Main>
     </Layout>
   )

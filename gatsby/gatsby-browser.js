@@ -1,6 +1,7 @@
 import './src/scss/index.scss'
 import React from 'react'
 
+import { ModalRoot } from './src/common/components/Modal'
 import { ThemeContextProvider } from './src/common/components/ThemeContextProvider'
 
 
@@ -15,6 +16,8 @@ import '@fontsource/rubik/600.css'
 export const wrapRootElement = ({ element }) => {
   return (
     <ThemeContextProvider>
+      <ModalRoot />
+
       {element}
     </ThemeContextProvider>
   )

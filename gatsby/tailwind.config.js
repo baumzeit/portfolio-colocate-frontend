@@ -6,6 +6,7 @@ module.exports = {
   mode: 'jit',
   theme: {
     screens: {
+      'xs': '420px',
       'sm': '640px',
       'md': '768px',
       'lg': '1024px',
@@ -56,7 +57,7 @@ module.exports = {
           },
           '0%': {
             opacity: 0,
-            height: 0,
+            // height: 0,
           }
         }
       }
@@ -66,8 +67,6 @@ module.exports = {
     extend: {}
   },
   plugins: [
-    require('tailwindcss-text-fill-stroke')(),
-    require('@tailwindcss/custom-forms'),
     require('./tailwind/twPluginAnimateDelay.js')
   ]
 }

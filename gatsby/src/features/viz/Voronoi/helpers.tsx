@@ -116,24 +116,14 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
     const baseLayerCells = d3.selectAll<SVGPathElement, EnrichedDatum>(`.base-layer .cell`)
     d3.selectAll<SVGCircleElement, EnrichedDatum>(`.focus-dot`).attr('tabindex', (d) => (isClear ? 10 + d.index : -1))
 
-    baseLayerCells
-      .style('transform-origin', function (d) {
-        if (isExposed(d)) {
-          const cellRect = this.getBoundingClientRect()
-          const originX = (100 * (d.x - cellRect.x)) / cellRect.width // adjust for point offset from cell center
-          const originY = (100 * (d.y - cellRect.y)) / cellRect.height
-          return `${originX}% ${originY}%`
-        }
-        return 'center'
-      })
-      .style('transform', function (d) {
-        const scale = opts.exposeCellHeight / opts.imageSize
-        const navbarAndScaledImageCenter = opts.exposeOffsetTop + (opts.imageSize * scale) / 2
-        const transform = isExposed(d)
-          ? `translate(${opts.width / 2 - d.x}px, ${navbarAndScaledImageCenter - d.y}px) scale(calc(${scale})`
-          : 'translate(0, 0) scale(1)'
-        return transform
-      })
+    baseLayerCells.style('transform', function (d) {
+      const scale = opts.exposeCellHeight / opts.imageSize
+      const navbarAndScaledImageCenter = opts.exposeOffsetTop + opts.exposeCellHeight / 2
+      const transform = isExposed(d)
+        ? `translate(${opts.width / 2 - d.x}px, ${navbarAndScaledImageCenter - d.y}px) scale(calc(${scale})`
+        : 'translate(0, 0) scale(1)'
+      return transform
+    })
 
     d3.select(svg).classed('expose-view', !isClear)
     baseLayerCells.classed('exposed', isExposed)

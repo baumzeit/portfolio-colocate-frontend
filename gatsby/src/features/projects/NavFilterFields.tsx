@@ -1,9 +1,8 @@
-import { Listbox, Popover } from '@headlessui/react'
-import React, { useCallback, useEffect, useState } from 'react'
+import { Listbox } from '@headlessui/react'
+import React, { useCallback, useState } from 'react'
 import { useQueryParam } from 'use-query-params'
 
 import { ProjectsNavDataQuery } from '../../../graphql-types'
-import { theme } from '../../../tailwind.config'
 
 type NavFilterFieldsProps = {
   fields: ProjectsNavDataQuery['allStrapiField']['edges'][number]['node'][]
@@ -52,36 +51,38 @@ export const NavFilterFieldsSelect = ({ fields }: NavFilterFieldsProps) => {
   )
 
   return (
-    <Listbox value={selectedField} onChange={handleChange}>
-      <Listbox.Button
-        style={{
-          backgroundColor: selectedField?.color || 'transparent'
-        }}
-        className={`px-1.5 py-0.5 rounded ${selectedField ? 'text-bg-secondary' : 'text-primary'}`}
-      >
-        {selectedField ? selectedField.name : 'Select a Field'}
-      </Listbox.Button>
-      <Listbox.Options>
-        {fields.map((field, idx) => {
-          const { strapiId = null, color, name, slug } = field
-          const isActive = slug === selectedFieldSlug
-          return (
-            <Listbox.Option key={strapiId} value={field} className="text-bg-secondary">
-              <div
-                style={{
-                  color: isActive ? 'inherit' : color || 'inherit',
-                  backgroundColor: isActive ? color || 'transparent' : ''
-                }}
-                className={`inline-block px-1.5 py-0.5 rounded mt-2 animate-fadeInFast bg-primary animate-delay-${
-                  50 * idx
-                } cursor-pointer`}
-              >
-                {name}
-              </div>
-            </Listbox.Option>
-          )
-        })}
-      </Listbox.Options>
-    </Listbox>
+    <div className="flex flex-col items-center">
+      <Listbox value={selectedField} onChange={handleChange}>
+        <Listbox.Button
+          style={{
+            backgroundColor: selectedField?.color || 'transparent'
+          }}
+          className={`px-1.5 py-0.5 rounded text-center ${selectedField ? 'text-bg-secondary' : 'text-primary'}`}
+        >
+          {selectedField ? selectedField.name : 'Select a Field'}
+        </Listbox.Button>
+        <Listbox.Options className="flex flex-col items-center">
+          {fields.map((field, idx) => {
+            const { strapiId = null, color, name, slug } = field
+            const isActive = slug === selectedFieldSlug
+            return (
+              <Listbox.Option key={strapiId} value={field} className="text-bg-secondary">
+                <div
+                  style={{
+                    color: isActive ? 'inherit' : color || 'inherit',
+                    backgroundColor: isActive ? color || 'transparent' : ''
+                  }}
+                  className={`inline-block px-1.5 py-0.5 rounded mt-1.5 animate-fadeInFast bg-primary animate-delay-${
+                    50 * idx
+                  } cursor-pointer`}
+                >
+                  {name}
+                </div>
+              </Listbox.Option>
+            )
+          })}
+        </Listbox.Options>
+      </Listbox>
+    </div>
   )
 }

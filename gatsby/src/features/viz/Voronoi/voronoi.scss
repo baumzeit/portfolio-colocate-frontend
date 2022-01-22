@@ -4,6 +4,10 @@
     @apply stroke-bg-primary;
   }
 
+  .content-layer {
+    // @apply hidden md:block;
+  }
+
   .cell {
     transform-box: fill-box;
     opacity: 1;
@@ -43,7 +47,7 @@
       .image {
         width: 100%;
         height: 100%;
-        object-fit: contain;
+        object-fit: cover;
         object-position: center;
       }
     }
@@ -55,15 +59,15 @@
     .label {
       text-anchor: middle;
       dominant-baseline: central;
-      @apply fill-bg-primary;
-      @apply text-lg xl:text-lg;
-      @apply tracking-wide;
+      @apply fill-text-secondary md:fill-bg-primary;
+      @apply md:text-sm xl:text-lg;
+      @apply tracking-normal md:tracking-wide;
       transition: transform 200ms ease-out, opacity 200ms ease-out;
     }
     .label-box {
-      @apply fill-text-primary;
+      @apply fill-bg-primary md:fill-text-primary;
       fill-opacity: 0.75;
-      transition: transform 200ms ease-out, opacity 200ms ease-out;
+      transition: transform 200ms ease-out, opacity 200ms ease-out, fill-opacity 200ms ease-out;
     }
 
     &.hover-selected {
@@ -76,6 +80,9 @@
       }
       .image-fo {
         transform: scale(1.01);
+      }
+      .label-box {
+        fill-opacity: 0.85;
       }
     }
   }
@@ -106,12 +113,12 @@
     pointer-events: none;
     .bounds,
     .cell {
-      opacity: 0.025;
-      transition: opacity 150ms ease-out, transform 250ms ease-out;
+      opacity: 0.02;
+      transition: transform 250ms ease-in, opacity 200ms ease-out;
 
       &.exposed {
         opacity: 1;
-        transition: transform 200ms ease-out, opacity 200ms ease-out 150ms;
+        transition: transform 250ms ease-out, opacity 200ms ease-out 150ms;
 
         .cell-border {
           stroke-opacity: 1;
