@@ -17,7 +17,6 @@ export const wrapRootElement = ({ element }) => {
   return (
     <ThemeContextProvider>
       <ModalRoot />
-
       {element}
     </ThemeContextProvider>
   )

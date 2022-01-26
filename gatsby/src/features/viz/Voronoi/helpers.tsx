@@ -67,32 +67,6 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
     d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`).classed('hover-selected', (d) => d.id === selectedId)
   }
 
-  const sequenceCells = (sequence: boolean) => {
-    const resizeSvg = (node: SVGSVGElement, reset?: boolean) => {
-      const resize = () => {
-        const bbox = node.getBBox()
-        node.setAttribute('height', reset ? String(window.innerHeight) : String(bbox.y + bbox.height + bbox.y))
-      }
-      setTimeout(resize, 400)
-    }
-    if (svg) {
-      const cells = d3.selectAll<SVGPathElement, EnrichedDatum>(`.base-layer .cell, .hover-layer .cell`)
-      if (sequence) {
-        cells.style('transform', function (d) {
-          const cellHeight = this.getBoundingClientRect().height
-          const scale = 290 / cellHeight
-          return `translate(${200 - d.x}px, ${200 + d.index * 300 - d.y}px) scale(${scale})`
-        })
-        resizeSvg(svg)
-      } else {
-        cells.style('transform', 'translate(0) scale(1)')
-        resizeSvg(svg)
-      }
-      d3.select(svg).classed('expose-view', false)
-      d3.select(svg).classed('list-view', sequence)
-    }
-  }
-
   const highlightCellsByFieldId = (highlightId: string | null) => {
     d3.selectAll<SVGGElement, EnrichedDatum>('g.cell').each(function (d) {
       const cellG = d3.select(this)
@@ -117,11 +91,32 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
     d3.selectAll<SVGCircleElement, EnrichedDatum>(`.focus-dot`).attr('tabindex', (d) => (isClear ? 10 + d.index : -1))
 
     baseLayerCells.style('transform', function (d) {
+      // const cellRect = d3
+      //   .select<SVGGElement, EnrichedDatum>(this)
+      //   ?.select<SVGPathElement>('.cell-border')
+      //   ?.node()
+      //   ?.getBBox()
+
+      // const imageCutoffY = Math.max(
+      //   Math.max(opts.imageSize / 2 - (d.y - cellRect.y), opts.imageSize / 2 - (cellRect.y + cellRect?.height - d.y)),
+      //   0
+      // )
+      // const imageCutoffX = Math.max(
+      //   Math.max(opts.imageSize / 2 - (d.x - cellRect.x), opts.imageSize / 2 - (cellRect.x + cellRect?.width - d.x)),
+      //   0
+      // )
+      // const imageCellScaleY = (opts.imageSize - imageCutoffY) / cellRect?.height
+      // const imageCellScaleX = (opts.imageSize - imageCutoffX) / cellRect?.width
+
+      // const centerOffsetY = imageCutoffY //* imageCellScaleY
+      // const centerOffsetX = imageCutoffX //* imageCellScaleX
+
       const scale = opts.exposeCellHeight / opts.imageSize
+
       const navbarAndScaledImageCenter = opts.exposeOffsetTop + opts.exposeCellHeight / 2
       const transform = isExposed(d)
-        ? `translate(${opts.width / 2 - d.x}px, ${navbarAndScaledImageCenter - d.y}px) scale(calc(${scale})`
-        : 'translate(0, 0) scale(1)'
+        ? `translate(${opts.width / 2 - d.x}px, ${navbarAndScaledImageCenter - d.y}px) scale(${scale})`
+        : 'translate(0, 0) scale(1) '
       return transform
     })
 
@@ -132,7 +127,6 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
   return {
     selectCell,
     exposeCell,
-    sequenceCells,
     highlightCellsByFieldId,
     restore,
     data,

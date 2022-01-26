@@ -58,7 +58,7 @@ export const useJitterGrid = ({ minItems, width, height, relMargin, jitter = () 
             return Array.from({ length: columns }).map((_, colIndex) => {
               return [
                 colPositions[colIndex] + colWidth * jitter(),
-                rowPositions[rowIdx] + rowHeight * jitter() + (colIndex % 2) * rowHeight * 0.3
+                rowPositions[rowIdx] + rowHeight * jitter() + (colIndex % 2) * rowHeight * 0.2
               ]
             })
           }
@@ -70,7 +70,7 @@ export const useJitterGrid = ({ minItems, width, height, relMargin, jitter = () 
           return Array.from({ length: columns }).map((_, colIndex) => {
             return [
               adjustedColPositions[colIndex] + adjustedColPositions[colIndex] * jitter(),
-              rowPositions[rowIdx] + rowHeight * jitter() + (colIndex % 2) * rowHeight * 0.1
+              rowPositions[rowIdx] + rowHeight * jitter() + (colIndex % 2) * rowHeight * 0.15
             ]
           })
         })

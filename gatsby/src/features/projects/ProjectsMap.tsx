@@ -1,13 +1,12 @@
-import { Transition } from '@headlessui/react'
 import { useWindowSize } from '@react-hook/window-size'
 import * as d3 from 'd3'
 import { graphql } from 'gatsby'
-import React, { FC, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import ReactDOM from 'react-dom'
+import React, { useCallback, useMemo, useRef } from 'react'
 import { StringParam, useQueryParams } from 'use-query-params'
 
 import { FieldBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
 import { Modal } from '../../common/components/Modal'
+import { NAVBAR_HEIGHT } from '../../common/components/Navbar'
 import { useJitterGrid } from '../../common/hooks/useJitterGrid'
 import { useProjectModalData } from '../../common/hooks/useProjectModalData'
 import notEmpty from '../../common/utility/notEmpty'
@@ -45,8 +44,8 @@ export const ProjectsMap = ({
   const { getGridPosition, numCols, numRows } = useJitterGrid({
     minItems: projects.length,
     width,
-    height,
-    relMargin: { top: 0.2, right: 0.15, bottom: 0.15, left: 0.15 },
+    height: height - NAVBAR_HEIGHT,
+    relMargin: { top: 0.18, right: 0.14, bottom: 0.15, left: 0.14 },
     jitter
   })
 
@@ -90,13 +89,13 @@ export const ProjectsMap = ({
 
   return (
     <>
-      <div ref={chartRef} id="voronoiContainer" className="absolute top-0 left-0 w-full h-full overflow-hidden">
+      <div ref={chartRef} id="voronoiContainer" className={`max-h-[calc(100vh-${NAVBAR_HEIGHT})]`}>
         {width && height && chartData ? (
           <VoronoiChart
             data={chartData}
             highlightPatternData={fields}
             width={width}
-            height={height}
+            height={height - NAVBAR_HEIGHT}
             imageSize={Math.max(width / numCols, height / numRows) * 1}
             highlightedFieldId={highlightedFieldId}
             exposedProjectId={exposedProjectId}
@@ -106,7 +105,7 @@ export const ProjectsMap = ({
           'Loading ...'
         )}
       </div>
-      <Modal id="project-map-detail" show={!!exposedSlug}>
+      <Modal id="project-map-detail" show={!!exposedSlug} enterClass="delay-300">
         {modalData && <ProjectDetail {...modalData} />}
       </Modal>
     </>

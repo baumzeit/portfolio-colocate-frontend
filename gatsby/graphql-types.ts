@@ -1028,12 +1028,12 @@ export type StrapiHome = Node & {
   children: Array<Node>;
   internal: Internal;
   title?: Maybe<Scalars['String']>;
-  subtitle?: Maybe<Scalars['String']>;
   intro?: Maybe<Scalars['String']>;
   published_at?: Maybe<Scalars['Date']>;
   created_at?: Maybe<Scalars['Date']>;
   updated_at?: Maybe<Scalars['Date']>;
   seo?: Maybe<StrapiHomeSeo>;
+  profile?: Maybe<StrapiHomeProfile>;
   strapiId?: Maybe<Scalars['Int']>;
   strapiFields?: Maybe<Array<Maybe<StrapiHomeStrapiFields>>>;
 };
@@ -1065,6 +1065,79 @@ export type StrapiHomeUpdated_AtArgs = {
 export type StrapiHomeSeo = {
   id?: Maybe<Scalars['Int']>;
   metaTitle?: Maybe<Scalars['String']>;
+};
+
+export type StrapiHomeProfile = {
+  id?: Maybe<Scalars['Int']>;
+  qualities?: Maybe<Array<Maybe<StrapiHomeProfileQualities>>>;
+  picture?: Maybe<StrapiHomeProfilePicture>;
+};
+
+export type StrapiHomeProfileQualities = {
+  id?: Maybe<Scalars['Int']>;
+  text?: Maybe<Scalars['String']>;
+};
+
+export type StrapiHomeProfilePicture = {
+  id?: Maybe<Scalars['Int']>;
+  name?: Maybe<Scalars['String']>;
+  alternativeText?: Maybe<Scalars['String']>;
+  caption?: Maybe<Scalars['String']>;
+  width?: Maybe<Scalars['Int']>;
+  height?: Maybe<Scalars['Int']>;
+  formats?: Maybe<StrapiHomeProfilePictureFormats>;
+  hash?: Maybe<Scalars['String']>;
+  ext?: Maybe<Scalars['String']>;
+  mime?: Maybe<Scalars['String']>;
+  size?: Maybe<Scalars['Float']>;
+  url?: Maybe<Scalars['String']>;
+  provider?: Maybe<Scalars['String']>;
+  created_at?: Maybe<Scalars['Date']>;
+  updated_at?: Maybe<Scalars['Date']>;
+  localFile?: Maybe<File>;
+};
+
+
+export type StrapiHomeProfilePictureCreated_AtArgs = {
+  formatString?: InputMaybe<Scalars['String']>;
+  fromNow?: InputMaybe<Scalars['Boolean']>;
+  difference?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+
+export type StrapiHomeProfilePictureUpdated_AtArgs = {
+  formatString?: InputMaybe<Scalars['String']>;
+  fromNow?: InputMaybe<Scalars['Boolean']>;
+  difference?: InputMaybe<Scalars['String']>;
+  locale?: InputMaybe<Scalars['String']>;
+};
+
+export type StrapiHomeProfilePictureFormats = {
+  thumbnail?: Maybe<StrapiHomeProfilePictureFormatsThumbnail>;
+  small?: Maybe<StrapiHomeProfilePictureFormatsSmall>;
+};
+
+export type StrapiHomeProfilePictureFormatsThumbnail = {
+  name?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  ext?: Maybe<Scalars['String']>;
+  mime?: Maybe<Scalars['String']>;
+  width?: Maybe<Scalars['Int']>;
+  height?: Maybe<Scalars['Int']>;
+  size?: Maybe<Scalars['Float']>;
+  url?: Maybe<Scalars['String']>;
+};
+
+export type StrapiHomeProfilePictureFormatsSmall = {
+  name?: Maybe<Scalars['String']>;
+  hash?: Maybe<Scalars['String']>;
+  ext?: Maybe<Scalars['String']>;
+  mime?: Maybe<Scalars['String']>;
+  width?: Maybe<Scalars['Int']>;
+  height?: Maybe<Scalars['Int']>;
+  size?: Maybe<Scalars['Float']>;
+  url?: Maybe<Scalars['String']>;
 };
 
 export type StrapiHomeStrapiFields = {
@@ -1795,12 +1868,12 @@ export type QueryStrapiHomeArgs = {
   children?: InputMaybe<NodeFilterListInput>;
   internal?: InputMaybe<InternalFilterInput>;
   title?: InputMaybe<StringQueryOperatorInput>;
-  subtitle?: InputMaybe<StringQueryOperatorInput>;
   intro?: InputMaybe<StringQueryOperatorInput>;
   published_at?: InputMaybe<DateQueryOperatorInput>;
   created_at?: InputMaybe<DateQueryOperatorInput>;
   updated_at?: InputMaybe<DateQueryOperatorInput>;
   seo?: InputMaybe<StrapiHomeSeoFilterInput>;
+  profile?: InputMaybe<StrapiHomeProfileFilterInput>;
   strapiId?: InputMaybe<IntQueryOperatorInput>;
   strapiFields?: InputMaybe<StrapiHomeStrapiFieldsFilterListInput>;
 };
@@ -4741,6 +4814,67 @@ export type StrapiHomeSeoFilterInput = {
   metaTitle?: InputMaybe<StringQueryOperatorInput>;
 };
 
+export type StrapiHomeProfileFilterInput = {
+  id?: InputMaybe<IntQueryOperatorInput>;
+  qualities?: InputMaybe<StrapiHomeProfileQualitiesFilterListInput>;
+  picture?: InputMaybe<StrapiHomeProfilePictureFilterInput>;
+};
+
+export type StrapiHomeProfileQualitiesFilterListInput = {
+  elemMatch?: InputMaybe<StrapiHomeProfileQualitiesFilterInput>;
+};
+
+export type StrapiHomeProfileQualitiesFilterInput = {
+  id?: InputMaybe<IntQueryOperatorInput>;
+  text?: InputMaybe<StringQueryOperatorInput>;
+};
+
+export type StrapiHomeProfilePictureFilterInput = {
+  id?: InputMaybe<IntQueryOperatorInput>;
+  name?: InputMaybe<StringQueryOperatorInput>;
+  alternativeText?: InputMaybe<StringQueryOperatorInput>;
+  caption?: InputMaybe<StringQueryOperatorInput>;
+  width?: InputMaybe<IntQueryOperatorInput>;
+  height?: InputMaybe<IntQueryOperatorInput>;
+  formats?: InputMaybe<StrapiHomeProfilePictureFormatsFilterInput>;
+  hash?: InputMaybe<StringQueryOperatorInput>;
+  ext?: InputMaybe<StringQueryOperatorInput>;
+  mime?: InputMaybe<StringQueryOperatorInput>;
+  size?: InputMaybe<FloatQueryOperatorInput>;
+  url?: InputMaybe<StringQueryOperatorInput>;
+  provider?: InputMaybe<StringQueryOperatorInput>;
+  created_at?: InputMaybe<DateQueryOperatorInput>;
+  updated_at?: InputMaybe<DateQueryOperatorInput>;
+  localFile?: InputMaybe<FileFilterInput>;
+};
+
+export type StrapiHomeProfilePictureFormatsFilterInput = {
+  thumbnail?: InputMaybe<StrapiHomeProfilePictureFormatsThumbnailFilterInput>;
+  small?: InputMaybe<StrapiHomeProfilePictureFormatsSmallFilterInput>;
+};
+
+export type StrapiHomeProfilePictureFormatsThumbnailFilterInput = {
+  name?: InputMaybe<StringQueryOperatorInput>;
+  hash?: InputMaybe<StringQueryOperatorInput>;
+  ext?: InputMaybe<StringQueryOperatorInput>;
+  mime?: InputMaybe<StringQueryOperatorInput>;
+  width?: InputMaybe<IntQueryOperatorInput>;
+  height?: InputMaybe<IntQueryOperatorInput>;
+  size?: InputMaybe<FloatQueryOperatorInput>;
+  url?: InputMaybe<StringQueryOperatorInput>;
+};
+
+export type StrapiHomeProfilePictureFormatsSmallFilterInput = {
+  name?: InputMaybe<StringQueryOperatorInput>;
+  hash?: InputMaybe<StringQueryOperatorInput>;
+  ext?: InputMaybe<StringQueryOperatorInput>;
+  mime?: InputMaybe<StringQueryOperatorInput>;
+  width?: InputMaybe<IntQueryOperatorInput>;
+  height?: InputMaybe<IntQueryOperatorInput>;
+  size?: InputMaybe<FloatQueryOperatorInput>;
+  url?: InputMaybe<StringQueryOperatorInput>;
+};
+
 export type StrapiHomeStrapiFieldsFilterListInput = {
   elemMatch?: InputMaybe<StrapiHomeStrapiFieldsFilterInput>;
 };
@@ -4889,13 +5023,68 @@ export type StrapiHomeFieldsEnum =
   | 'internal___owner'
   | 'internal___type'
   | 'title'
-  | 'subtitle'
   | 'intro'
   | 'published_at'
   | 'created_at'
   | 'updated_at'
   | 'seo___id'
   | 'seo___metaTitle'
+  | 'profile___id'
+  | 'profile___qualities'
+  | 'profile___qualities___id'
+  | 'profile___qualities___text'
+  | 'profile___picture___id'
+  | 'profile___picture___name'
+  | 'profile___picture___alternativeText'
+  | 'profile___picture___caption'
+  | 'profile___picture___width'
+  | 'profile___picture___height'
+  | 'profile___picture___hash'
+  | 'profile___picture___ext'
+  | 'profile___picture___mime'
+  | 'profile___picture___size'
+  | 'profile___picture___url'
+  | 'profile___picture___provider'
+  | 'profile___picture___created_at'
+  | 'profile___picture___updated_at'
+  | 'profile___picture___localFile___sourceInstanceName'
+  | 'profile___picture___localFile___absolutePath'
+  | 'profile___picture___localFile___relativePath'
+  | 'profile___picture___localFile___extension'
+  | 'profile___picture___localFile___size'
+  | 'profile___picture___localFile___prettySize'
+  | 'profile___picture___localFile___modifiedTime'
+  | 'profile___picture___localFile___accessTime'
+  | 'profile___picture___localFile___changeTime'
+  | 'profile___picture___localFile___birthTime'
+  | 'profile___picture___localFile___root'
+  | 'profile___picture___localFile___dir'
+  | 'profile___picture___localFile___base'
+  | 'profile___picture___localFile___ext'
+  | 'profile___picture___localFile___name'
+  | 'profile___picture___localFile___relativeDirectory'
+  | 'profile___picture___localFile___dev'
+  | 'profile___picture___localFile___mode'
+  | 'profile___picture___localFile___nlink'
+  | 'profile___picture___localFile___uid'
+  | 'profile___picture___localFile___gid'
+  | 'profile___picture___localFile___rdev'
+  | 'profile___picture___localFile___ino'
+  | 'profile___picture___localFile___atimeMs'
+  | 'profile___picture___localFile___mtimeMs'
+  | 'profile___picture___localFile___ctimeMs'
+  | 'profile___picture___localFile___atime'
+  | 'profile___picture___localFile___mtime'
+  | 'profile___picture___localFile___ctime'
+  | 'profile___picture___localFile___birthtime'
+  | 'profile___picture___localFile___birthtimeMs'
+  | 'profile___picture___localFile___blksize'
+  | 'profile___picture___localFile___blocks'
+  | 'profile___picture___localFile___url'
+  | 'profile___picture___localFile___publicURL'
+  | 'profile___picture___localFile___childrenImageSharp'
+  | 'profile___picture___localFile___id'
+  | 'profile___picture___localFile___children'
   | 'strapiId'
   | 'strapiFields'
   | 'strapiFields___id'
@@ -4954,12 +5143,12 @@ export type StrapiHomeFilterInput = {
   children?: InputMaybe<NodeFilterListInput>;
   internal?: InputMaybe<InternalFilterInput>;
   title?: InputMaybe<StringQueryOperatorInput>;
-  subtitle?: InputMaybe<StringQueryOperatorInput>;
   intro?: InputMaybe<StringQueryOperatorInput>;
   published_at?: InputMaybe<DateQueryOperatorInput>;
   created_at?: InputMaybe<DateQueryOperatorInput>;
   updated_at?: InputMaybe<DateQueryOperatorInput>;
   seo?: InputMaybe<StrapiHomeSeoFilterInput>;
+  profile?: InputMaybe<StrapiHomeProfileFilterInput>;
   strapiId?: InputMaybe<IntQueryOperatorInput>;
   strapiFields?: InputMaybe<StrapiHomeStrapiFieldsFilterListInput>;
 };
@@ -5846,6 +6035,10 @@ export type SeoDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 export type SeoDataQuery = { strapiGlobal?: { siteName?: string | null | undefined, favIcon?: { localFile?: { publicURL?: string | null | undefined } | null | undefined } | null | undefined, defaultSeo?: { metaTitle?: string | null | undefined, metaDescription?: string | null | undefined, shareImage?: { localFile?: { publicURL?: string | null | undefined } | null | undefined } | null | undefined } | null | undefined } | null | undefined };
 
+export type FieldDetailFragment = { id: string, slug?: string | null | undefined, name?: string | null | undefined, description?: string | null | undefined, color?: string | null | undefined, projects?: Array<{ id?: number | null | undefined, images?: Array<{ alternativeText?: string | null | undefined, localFile?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id?: number | null | undefined, name?: string | null | undefined } | null | undefined> | null | undefined };
+
+export type HomeProfileFragment = { picture?: { alternativeText?: string | null | undefined, localFile?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, qualities?: Array<{ text?: string | null | undefined } | null | undefined> | null | undefined };
+
 export type ProjectsNavDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
@@ -5858,7 +6051,7 @@ export type ProjectDetailFragment = { id: string, title?: string | null | undefi
 export type HomeDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HomeDataQuery = { strapiHome?: { title?: string | null | undefined, subtitle?: string | null | undefined, intro?: string | null | undefined, seo?: { metaTitle?: string | null | undefined } | null | undefined, strapiFields?: Array<{ id?: number | null | undefined, name?: string | null | undefined, description?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined, allStrapiField: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name?: string | null | undefined, description?: string | null | undefined, color?: string | null | undefined, projects?: Array<{ id?: number | null | undefined, title?: string | null | undefined, slug?: string | null | undefined } | null | undefined> | null | undefined } }> } };
+export type HomeDataQuery = { strapiHome?: { title?: string | null | undefined, intro?: string | null | undefined, profile?: { picture?: { alternativeText?: string | null | undefined, localFile?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, qualities?: Array<{ text?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined, seo?: { metaTitle?: string | null | undefined } | null | undefined, strapiFields?: Array<{ id?: number | null | undefined, name?: string | null | undefined, description?: string | null | undefined } | null | undefined> | null | undefined } | null | undefined, allStrapiField: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name?: string | null | undefined, description?: string | null | undefined, color?: string | null | undefined, projects?: Array<{ id?: number | null | undefined, title?: string | null | undefined, slug?: string | null | undefined, images?: Array<{ alternativeText?: string | null | undefined, localFile?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id?: number | null | undefined, name?: string | null | undefined } | null | undefined> | null | undefined } }> } };
 
 export type ProjectsPageDataQueryVariables = Exact<{ [key: string]: never; }>;
 

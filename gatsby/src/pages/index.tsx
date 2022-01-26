@@ -1,4 +1,6 @@
-import { Link, graphql, PageProps } from 'gatsby'
+import { graphql, PageProps } from 'gatsby'
+import { useBreakpoint } from 'gatsby-plugin-breakpoints'
+import chunk from 'lodash.chunk'
 import React, { useMemo } from 'react'
 import { Helmet } from 'react-helmet'
 
@@ -6,19 +8,23 @@ import { HomeDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
 import { Main } from '../common/components/Main'
 import { Navbar } from '../common/components/Navbar'
-import { PATH } from '../common/constants/paths'
+import { assertAndExtractNodes } from '../common/utility/assertAndExtractNodes'
 import notEmpty from '../common/utility/notEmpty'
+import { Field } from '../features/home/Field'
+import { Intro } from '../features/home/Intro'
 import { HomeNavContent } from '../features/home/NavContent'
-import { ContourChart } from '../features/viz/ContourChart'
+import { Profile } from '../features/home/Profile'
 
 // markup
 const HomePage = ({ data: { strapiHome, allStrapiField } }: PageProps<HomeDataQuery>) => {
+  const breakpoints = useBreakpoint()
+
   const displayFields = useMemo(() => {
     if (allStrapiField && strapiHome) {
       const strapiFields = strapiHome.strapiFields?.filter(notEmpty)
       if (strapiFields) {
-        return allStrapiField.edges.filter((field) =>
-          strapiFields.map((homeField) => 'Field_' + homeField.id).includes(field.node.id)
+        return assertAndExtractNodes(allStrapiField).filter((field) =>
+          strapiFields.map((homeField) => 'Field_' + homeField.id).includes(field.id)
         )
       }
     }
@@ -27,43 +33,66 @@ const HomePage = ({ data: { strapiHome, allStrapiField } }: PageProps<HomeDataQu
   if (!(strapiHome && allStrapiField && displayFields)) {
     return <div>No Data</div>
   }
-  const { title, subtitle, intro, seo } = strapiHome
+  const { title, intro, seo, profile } = strapiHome
 
   return (
-    <>
-      <Helmet>
-        <title>{seo?.metaTitle}</title>
-      </Helmet>
-      <Layout>
-        <Navbar>
-          <HomeNavContent />
-        </Navbar>
-        <Main>
-          <div className="h-[500px] w-full absolute top-0 left-0">
-            <ContourChart data={[{ x: 30, y: 30 }]} margin={200} />
-          </div>
-          <div className="relative z-10">
-            <h1 className="mb-4 text-3xl font-semibold tracking-wider color-primary">{title}</h1>
-            <div>{subtitle}</div>
-            <div>{intro}</div>
-            {displayFields.map(({ node: field }) => (
-              <div key={field.id}>
-                <div>{field.name}</div>
-                <div className="ml-3 text-secondary">
-                  {field.projects
-                    ? field.projects.filter(notEmpty).map((project) => (
-                        <Link to={`${PATH.PROJECTS}?project=${project.slug}`} key={project.id}>
-                          {project.title}
-                        </Link>
-                      ))
-                    : null}
-                </div>
+    title &&
+    intro &&
+    profile && (
+      <>
+        <Helmet>
+          <title>{seo?.metaTitle}</title>
+        </Helmet>
+        <Layout>
+          <Navbar>
+            <HomeNavContent />
+          </Navbar>
+          <Main className="mt-6">
+            <div className="grid grid-cols-11">
+              <div className="col-start-1 col-end-5">
+                <Intro title={title} text={intro} />
               </div>
-            ))}
-          </div>
-        </Main>
-      </Layout>
-    </>
+              <div className="col-start-6 col-end-12">
+                <Profile profile={profile} />
+              </div>
+            </div>
+
+            <div className="mt-[100px]">
+              {chunk(displayFields, 3).map((fields, idx) => (
+                <div key={`fields-grid-${idx}`} className="grid gap-x-[80px] xl:gap-x-[120px] gap-y-14 grid-cols-12">
+                  {fields.map((field, idx) => {
+                    const one = idx % 3 === 0
+                    const two = idx % 3 === 1
+                    const three = idx % 3 === 2
+                    return (
+                      <div
+                        key={field.id}
+                        className={`${
+                          one
+                            ? 'row-start-1 col-start-1'
+                            : two
+                            ? 'row-start-2 col-start-1 lg:row-start-1 xl:mt-[80px] lg:col-start-7'
+                            : three
+                            ? 'row-start-3 col-start-1 lg:row-start-2 lg:col-start-4 xl:col-start-3 '
+                            : ''
+                        } col-end-12 lg:col-span-6`}
+                      >
+                        <Field
+                          field={field}
+                          alignment={
+                            breakpoints.lg ? (one ? 'right' : two ? 'left' : three ? 'center' : 'left') : 'left'
+                          }
+                        />
+                      </div>
+                    )
+                  })}
+                </div>
+              ))}
+            </div>
+          </Main>
+        </Layout>
+      </>
+    )
   )
 }
 
@@ -71,8 +100,10 @@ export const query = graphql`
   query HomeData {
     strapiHome {
       title
-      subtitle
       intro
+      profile {
+        ...HomeProfile
+      }
       seo {
         metaTitle
       }
@@ -82,7 +113,7 @@ export const query = graphql`
         description
       }
     }
-    allStrapiField(sort: { fields: name, order: ASC }) {
+    allStrapiField(sort: { fields: name, order: DESC }) {
       edges {
         node {
           projects {
@@ -90,7 +121,7 @@ export const query = graphql`
             title
             slug
           }
-          ...FieldBase
+          ...FieldDetail
         }
       }
     }

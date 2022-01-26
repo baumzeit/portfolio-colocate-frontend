@@ -1,6 +1,5 @@
 import * as d3 from 'd3'
 import React, {
-  FC,
   FocusEvent,
   KeyboardEvent,
   memo,
@@ -15,8 +14,6 @@ import './voronoi.scss'
 
 import { EnrichedDatum, initializeVoronoiActions, VoronoiDatum, VoronoiOptions } from './helpers'
 
-const chartPadding = { top: 3.5 * 16, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 * 16 }
-
 type HighlightPatternDatum = { color?: string | null; id: string | number }
 
 export type VoronoiChartProps = {
@@ -30,7 +27,7 @@ export type VoronoiChartProps = {
   exposedProjectId?: string | null
 }
 
-export const VoronoiChart: FC<VoronoiChartProps> = memo(
+export const VoronoiChart = memo(
   ({
     data,
     highlightPatternData,
@@ -39,9 +36,8 @@ export const VoronoiChart: FC<VoronoiChartProps> = memo(
     imageSize,
     highlightedFieldId = null,
     exposedProjectId = null,
-    onClickCell,
-    children
-  }) => {
+    onClickCell
+  }: VoronoiChartProps) => {
     const [svgNode, setSvgNode] = useState<SVGSVGElement>()
     const [initialized, setInitialized] = useState(false)
 
@@ -56,9 +52,9 @@ export const VoronoiChart: FC<VoronoiChartProps> = memo(
           height,
           imageSize,
           cellGap: 22,
-          padding: chartPadding,
-          exposeOffsetTop: 60,
-          exposeCellHeight: Math.max(window.innerHeight * 0.4, 300)
+          padding: { top: 10, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 * 16 },
+          exposeOffsetTop: 40,
+          exposeCellHeight: Math.max(window.innerHeight * 0.3, 250)
         }
         console.log('voronoi | set options', options)
         return options
@@ -98,13 +94,6 @@ export const VoronoiChart: FC<VoronoiChartProps> = memo(
         voronoiActions.exposeCell(exposedProjectId)
       }
     }, [exposedProjectId, initialized, voronoiActions])
-
-    // useEffect(() => {
-    //   if (voronoiActions && initialized) {
-    //     console.log('action sequence')
-    //     voronoiActions.sequenceCells(!!listView)
-    //   }
-    // }, [listView, initialized, voronoiActions])
 
     useEffect(() => {
       if (voronoiActions && initialized) {
@@ -238,18 +227,25 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
       }
     )
     .style('transform-origin', function (d) {
-      const cellRect = this.getBBox()
-      const originX = (100 * (d.x - cellRect.x)) / cellRect.width // adjust for point offset from cell center
-      const originY = (100 * (d.y - cellRect.y)) / cellRect.height
-      return `${originX}% ${originY}%`
+      const cellRect = d3
+        .select<SVGGElement, EnrichedDatum>(this)
+        ?.select<SVGPathElement>('.cell-border')
+        ?.node()
+        ?.getBBox()
+      if (cellRect) {
+        const originX = (100 * (d.x - cellRect.x)) / cellRect.width // adjust for point offset from cell center
+        const originY = (100 * (d.y - cellRect.y)) / cellRect.height
+        return `${originX}% ${originY}%`
+      }
+      return 'center'
     })
 
-  // svg
-  //   .selectAll('path.bounds')
-  //   .data([voronoi.renderBounds()])
-  //   .join('path')
-  //   .attr('d', (d) => d)
-  //   .classed('bounds', true)
+  svg
+    .selectAll('path.bounds')
+    .data([voronoi.renderBounds()])
+    .join('path')
+    .attr('d', (d) => d)
+    .classed('bounds', true)
 
   const textOffsetY = -32
 
@@ -271,13 +267,15 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
 
   function adjustLabels(d: EnrichedDatum, cell: SVGGElement) {
     const label = d3.select<SVGGElement, EnrichedDatum>(cell).select('.label')
-    label.attr('x', (d) => {
-      const titleSpace = (d.title.length / 2) * 7 + 22
+    label
+      .attr('x', (d) => {
+        const titleSpace = (d.title.length / 2) * 7 + 22
 
-      const min = titleSpace
-      const max = opts.width - titleSpace
-      return Math.min(Math.max(d.x, min), max)
-    })
+        const min = titleSpace
+        const max = opts.width - titleSpace
+        return Math.min(Math.max(d.x, min), max)
+      })
+      .attr('y', (d) => d.y)
   }
   contentLayer
     .selectAll<SVGGElement, EnrichedDatum>('.cell')
@@ -289,7 +287,7 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
           .append('circle')
           .attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
-          .attr('r', 8)
+          .attr('r', 7)
           .attr('tabindex', (d) => 10 + d.index)
           .classed('focus-dot', true)
 
@@ -298,7 +296,6 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
         cell
           .append('text')
           .attr('dy', textOffsetY)
-          .attr('y', (d) => d.y)
           .text((d) => d.title || '')
           .classed('label', true)
 
@@ -310,6 +307,7 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
           .attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
           .attr('y', (d) => d.y)
+
         return update
       }
     )
@@ -337,7 +335,7 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
     )
 
   hoverLayer.selectAll<SVGPathElement, EnrichedDatum>('.hover-border').on('mouseenter', function (e: MouseEvent, d) {
-    console.log('enter cell')
+    // console.log('enter cell')
     if (d3.selectAll('.cell.exposed').empty() && !svg.node()!.contains(document.activeElement)) {
       onHover(d.id)
     }

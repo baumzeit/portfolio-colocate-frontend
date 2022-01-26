@@ -1,9 +1,9 @@
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 import { StringParam, useQueryParams } from 'use-query-params'
 
 import { FieldBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
-import test from '../../../postcss.config'
 import { Modal } from '../../common/components/Modal'
+import { NAVBAR_HEIGHT } from '../../common/components/Navbar'
 import { ProjectDetail } from '../project/Detail'
 import { ProjectBanner } from '../project/ProjectBanner'
 import { useProjectModalData } from './../../common/hooks/useProjectModalData'
@@ -19,10 +19,11 @@ export type SetModalFn = ({ onClose, onNext, onPrev, data }: SetModalProps) => v
 
 export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projects: ProjectDetailFragment[] }) => {
   const modalData = useProjectModalData(projects)
-  const [{ field: highlightedFieldSlug, project: selectedProjectSlug }, setQuery] = useQueryParams({
+  const [{ field: highlightedFieldSlug }, setQuery] = useQueryParams({
     project: StringParam,
     field: StringParam
   })
+  const container = useRef(null)
 
   const displayProjects = useMemo(
     () =>
@@ -36,8 +37,8 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
   )
 
   return (
-    <>
-      <div>
+    <div ref={container}>
+      <div className={`max-h-[calc(100vh-${NAVBAR_HEIGHT}px)] pb-12 overflow-auto`}>
         {displayProjects.map((project, idx) => {
           return (
             <button
@@ -64,6 +65,6 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
           </ProjectDetail>
         )}
       </Modal>
-    </>
+    </div>
   )
 }

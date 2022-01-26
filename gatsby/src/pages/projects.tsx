@@ -1,3 +1,4 @@
+import { Transition } from '@headlessui/react'
 import { graphql, PageProps } from 'gatsby'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { useMemo } from 'react'
@@ -23,11 +24,22 @@ const ProjectsPage = ({ data: { allStrapiField, allStrapiProject } }: PageProps<
         <ProjectsNavContent />
       </Navbar>
       <Main fullWidth>
-        {breakpoints.sm ? (
-          <ProjectsMap fields={fields} projects={projects} />
-        ) : (
-          <ProjectsList fields={fields} projects={projects} />
-        )}
+        <Transition
+          appear={true}
+          show={true}
+          enter="transition-opacity duration-600"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity duration-600"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          {breakpoints.sm ? (
+            <ProjectsMap fields={fields} projects={projects} />
+          ) : (
+            <ProjectsList fields={fields} projects={projects} />
+          )}
+        </Transition>
       </Main>
     </Layout>
   )

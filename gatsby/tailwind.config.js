@@ -1,7 +1,10 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
-  safelist: [...Array.from({ length: 9 }, (_, idx) => 'animate-delay-' + (idx + 1) * 100)],
+  safelist: [
+    ...Array.from({ length: 9 }, (_, idx) => 'animate-delay-' + (idx + 1) * 100),
+    'items-start', 'items-center', 'items-end'
+  ],
   darkMode: 'class',
   mode: 'jit',
   theme: {

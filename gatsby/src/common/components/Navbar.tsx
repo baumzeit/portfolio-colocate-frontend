@@ -5,6 +5,8 @@ import React, { FC, useContext } from 'react'
 import { NavDataQuery } from '../../../graphql-types'
 import { ThemeContext } from './ThemeContextProvider'
 
+export const NAVBAR_HEIGHT = 56
+
 export const Navbar: FC = ({ children }) => {
   const { strapiGlobal } = useStaticQuery<NavDataQuery>(query)
   const { theme } = useContext(ThemeContext)
@@ -14,22 +16,24 @@ export const Navbar: FC = ({ children }) => {
   }
   const { siteName, logo } = strapiGlobal
   return (
-    <nav className="sticky top-0 left-0 z-50 bg-primaryLayer">
-      <div className="flex items-center justify-between px-8 h-14">
-        <Link to="/" className="font-bold">
-          <div className="flex align-center">
-            {logo?.url && (
-              <img
-                src={process.env.GATSBY_API_URL! + logo.url}
-                className={`h-5 mr-4 filter ${theme === 'dark' ? 'invert' : ''}`}
-                alt="logo"
-              />
-            )}
-            <div className="hidden md:block">{siteName}</div>
-          </div>
-        </Link>
+    <nav className="sticky top-0 left-0 z-50 bg-primary">
+      <div className={`flex items-center justify-between px-8 h-14`}>
+        <div className="flex-1">
+          <Link to="/" className="font-bold">
+            <div className="flex align-center">
+              {logo?.url && (
+                <img
+                  src={process.env.GATSBY_API_URL! + logo.url}
+                  className={`h-5 mr-4 filter ${theme === 'dark' ? 'invert' : ''}`}
+                  alt="logo"
+                />
+              )}
+              <div className="hidden md:block text-secondary">{siteName}</div>
+            </div>
+          </Link>
+        </div>
         {children}
-        <div className="self-start block mt-3.5">
+        <div className="flex-1 self-start flex justify-end mt-3.5">
           <ThemeSelect />
         </div>
       </div>

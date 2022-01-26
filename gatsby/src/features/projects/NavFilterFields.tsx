@@ -42,7 +42,6 @@ export const NavFilterFieldsSelect = ({ fields }: NavFilterFieldsProps) => {
 
   const handleChange = useCallback(
     (field: NavFilterFieldsProps['fields'][number]) => {
-      console.log(field)
       const isActive = field.slug === selectedFieldSlug
       setSelectedFieldSlug(isActive || !field.slug ? undefined : field.slug)
       setSelectedField(isActive || !field.slug ? undefined : field)

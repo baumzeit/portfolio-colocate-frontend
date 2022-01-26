@@ -21,6 +21,7 @@
     "@heroicons/react": "^1.0.5",
     "@react-hook/async": "^3.1.1",
     "@react-hook/debounce": "^4.0.0",
+    "@react-hook/intersection-observer": "^3.1.1",
     "@react-hook/previous": "^1.0.1",
     "@react-hook/size": "^2.1.2",
     "@react-hook/throttle": "^2.2.0",

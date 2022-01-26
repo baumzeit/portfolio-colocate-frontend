@@ -4,14 +4,11 @@
     @apply stroke-bg-primary;
   }
 
-  .content-layer {
-    // @apply hidden md:block;
-  }
-
   .cell {
     transform-box: fill-box;
     opacity: 1;
     transition: transform 200ms ease-out, opacity 200ms ease-out;
+    // transition: transform 250ms ease-in, opacity 150ms ease-out 50ms;
 
     .pattern {
       fill-opacity: 0.9;
@@ -59,13 +56,13 @@
     .label {
       text-anchor: middle;
       dominant-baseline: central;
-      @apply fill-text-secondary md:fill-bg-primary;
+      @apply fill-bg-primary;
       @apply md:text-sm xl:text-lg;
       @apply tracking-normal md:tracking-wide;
       transition: transform 200ms ease-out, opacity 200ms ease-out;
     }
     .label-box {
-      @apply fill-bg-primary md:fill-text-primary;
+      @apply fill-text-primary;
       fill-opacity: 0.75;
       transition: transform 200ms ease-out, opacity 200ms ease-out, fill-opacity 200ms ease-out;
     }
@@ -94,31 +91,16 @@
     transition: opacity 300ms ease-out;
   }
 
-  // &.list-view {
-  //   .cell-border {
-  //     stroke-opacity: 1;
-  //   }
-  //   .bounds,
-  //   .focus-dot,
-  //   .label {
-  //     opacity: 0;
-  //   }
-  //   .pattern,
-  //   .highlight-pattern {
-  //     fill-opacity: 0;
-  //   }
-  // }
-
   &.expose-view {
     pointer-events: none;
     .bounds,
     .cell {
-      opacity: 0.02;
+      opacity: 0.015;
       transition: transform 250ms ease-in, opacity 200ms ease-out;
 
       &.exposed {
         opacity: 1;
-        transition: transform 250ms ease-out, opacity 200ms ease-out 150ms;
+        transition: transform 250ms ease-out, opacity 100ms ease-out 150ms;
 
         .cell-border {
           stroke-opacity: 1;

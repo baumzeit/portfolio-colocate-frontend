@@ -8,7 +8,7 @@ type LayoutProps = {
 
 const Layout: FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="h-screen max-h-screen">
+    <div className="bg-primary">
       {/* <Seo seo={seo} /> */}
       {children}
     </div>
