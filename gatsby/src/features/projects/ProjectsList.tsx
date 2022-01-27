@@ -54,12 +54,13 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
       <Modal id="project-list-detail" show={!!modalData?.data} className="bg-primary">
         {modalData?.data && (
           <ProjectDetail {...modalData}>
-            <div className="mx-10">
+            <div className="mx-10 animate-fadeInFast">
               <ProjectBanner
                 project={modalData.data}
                 index={projects.findIndex((d) => d.slug === modalData.data?.slug)}
                 shift="25px"
                 hideTitle
+                disableImageOpacity
               />
             </div>
           </ProjectDetail>

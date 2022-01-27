@@ -8,8 +8,9 @@ type ProjectBannerProps = {
   index: number
   shift: number | string
   hideTitle?: boolean
+  disableImageOpacity?: boolean
 }
-export const ProjectBanner = ({ project, index, shift, hideTitle }: ProjectBannerProps) => {
+export const ProjectBanner = ({ project, index, shift, hideTitle, disableImageOpacity }: ProjectBannerProps) => {
   const firstImage = project.images?.[0]
   const src = firstImage?.localFile?.childImageSharp?.fixed?.src
   const isEven = index % 2 === 0
@@ -48,7 +49,7 @@ export const ProjectBanner = ({ project, index, shift, hideTitle }: ProjectBanne
           src={src}
           alt={firstImage?.alternativeText || ''}
           className={`object-cover object-center w-full h-full transition-all duration-500 ease-in-out ${
-            isZoomed ? 'scale-[1.01]' : 'opacity-80'
+            isZoomed ? 'scale-[1.01]' : disableImageOpacity ? '' : 'opacity-80'
           }`}
         />
       </div>

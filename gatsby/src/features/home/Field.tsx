@@ -2,7 +2,7 @@ import { graphql } from 'gatsby'
 import React from 'react'
 
 import { FieldDetailFragment } from '../../../graphql-types'
-import notEmpty from '../../common/utility/notEmpty'
+import { Tags } from './../../common/components/Tags'
 
 const flex = {
   left: 'start',
@@ -20,19 +20,9 @@ export const Field = ({ field: { name, description, color: fieldColor, tags }, a
       {name}
     </h2>
     <div className={`flex justify-${flex[alignment]} w-full mt-3`}>
-      <div className={`w-4/5 flex flex-col items-${flex[alignment]} contents-${flex[alignment]}`}>
+      <div className={`w-4/5 flex flex-col gap-y-4 items-${flex[alignment]} contents-${flex[alignment]}`}>
         <p className={`text-secondary text-${alignment}`}>{description}</p>
-        <div className={`flex flex-wrap gap-2.5 mt-4 justify-${flex[alignment]}`}>
-          {tags?.filter(notEmpty).map(({ name, id }) => (
-            <div
-              key={id}
-              style={{ borderColor: fieldColor || '' }}
-              className="px-2.5 py-0.5 text-sm border rounded-sm text-secondary"
-            >
-              {name}
-            </div>
-          ))}
-        </div>
+        <Tags tags={tags} color={fieldColor || ''} />
       </div>
     </div>
   </div>

@@ -105,7 +105,7 @@ export const ProjectsMap = ({
           'Loading ...'
         )}
       </div>
-      <Modal id="project-map-detail" show={!!exposedSlug} enterClass="delay-300">
+      <Modal id="project-map-detail" show={!!exposedSlug} enterClass="delay-150">
         {modalData && <ProjectDetail {...modalData} />}
       </Modal>
     </>
@@ -135,6 +135,7 @@ export const query = graphql`
       id
       url
       alternativeText
+      caption
       localFile {
         childImageSharp {
           fixed(width: 600) {

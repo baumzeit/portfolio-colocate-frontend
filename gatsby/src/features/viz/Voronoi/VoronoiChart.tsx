@@ -52,7 +52,7 @@ export const VoronoiChart = memo(
           height,
           imageSize,
           cellGap: 22,
-          padding: { top: 10, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 * 16 },
+          padding: { top: 0, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 * 16 },
           exposeOffsetTop: 40,
           exposeCellHeight: Math.max(window.innerHeight * 0.3, 250)
         }

@@ -22,9 +22,9 @@ export const ProjectsNavContent = () => {
           onClick={(e) => {
             setExposedSlug(undefined)
           }}
-          className={`animate-fadeIn p-3 hover:text-brand`}
+          className={`animate-fadeIn p-3 hover:text-brand tracking-wide`}
         >
-          Back
+          Close
         </button>
       ) : breakpoints.lg ? (
         <div>

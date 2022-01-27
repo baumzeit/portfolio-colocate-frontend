@@ -91,26 +91,6 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
     d3.selectAll<SVGCircleElement, EnrichedDatum>(`.focus-dot`).attr('tabindex', (d) => (isClear ? 10 + d.index : -1))
 
     baseLayerCells.style('transform', function (d) {
-      // const cellRect = d3
-      //   .select<SVGGElement, EnrichedDatum>(this)
-      //   ?.select<SVGPathElement>('.cell-border')
-      //   ?.node()
-      //   ?.getBBox()
-
-      // const imageCutoffY = Math.max(
-      //   Math.max(opts.imageSize / 2 - (d.y - cellRect.y), opts.imageSize / 2 - (cellRect.y + cellRect?.height - d.y)),
-      //   0
-      // )
-      // const imageCutoffX = Math.max(
-      //   Math.max(opts.imageSize / 2 - (d.x - cellRect.x), opts.imageSize / 2 - (cellRect.x + cellRect?.width - d.x)),
-      //   0
-      // )
-      // const imageCellScaleY = (opts.imageSize - imageCutoffY) / cellRect?.height
-      // const imageCellScaleX = (opts.imageSize - imageCutoffX) / cellRect?.width
-
-      // const centerOffsetY = imageCutoffY //* imageCellScaleY
-      // const centerOffsetX = imageCutoffX //* imageCellScaleX
-
       const scale = opts.exposeCellHeight / opts.imageSize
 
       const navbarAndScaledImageCenter = opts.exposeOffsetTop + opts.exposeCellHeight / 2

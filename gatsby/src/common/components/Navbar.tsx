@@ -16,7 +16,7 @@ export const Navbar: FC = ({ children }) => {
   }
   const { siteName, logo } = strapiGlobal
   return (
-    <nav className="sticky top-0 left-0 z-50 bg-primary">
+    <nav className="sticky top-0 left-0 z-30 bg-primary">
       <div className={`flex items-center justify-between px-8 h-14`}>
         <div className="flex-1">
           <Link to="/" className="font-bold">
