@@ -21,8 +21,8 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({ data, onClose, onNext, o
   }, [id])
 
   return data ? (
-    <div className="flex justify-center">
-      <div className="mx-8 md:mx-14 xl:max-w-[960px] mt-28 mb-16 ">
+    <div className="flex justify-center overflow-x-hidden">
+      <div className="mx-8 md:mx-14 xl:max-w-[960px] mt-14 mb-16 ">
         <div className={`${children ? '' : 'min-h-[200px] h-[30vh]'} mb-16`}>
           <SliderControls onPrev={onPrev} onNext={onNext} onClose={onClose}>
             {children}

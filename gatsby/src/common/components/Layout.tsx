@@ -8,7 +8,7 @@ type LayoutProps = {
 
 const Layout: FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="bg-primary">
+    <div className="grid h-screen bg-primary" style={{ gridTemplateRows: '56px 1fr' }}>
       {/* <Seo seo={seo} /> */}
       {children}
     </div>

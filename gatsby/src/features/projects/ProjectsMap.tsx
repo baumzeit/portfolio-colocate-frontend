@@ -106,7 +106,7 @@ export const ProjectsMap = ({
           'Loading ...'
         )}
       </div>
-      <Modal id="project-map-detail" show={!!exposedSlug} enterClass="delay-150">
+      <Modal show={!!exposedSlug} enterClass="delay-150" containerClassName="absolute top-0 left-0 w-full h-full">
         {modalData && <ProjectDetail {...modalData} />}
       </Modal>
     </>

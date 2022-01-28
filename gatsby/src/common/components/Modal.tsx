@@ -1,17 +1,16 @@
 import { Transition } from '@headlessui/react'
-import React, { FC } from 'react'
-import ReactDOM from 'react-dom'
+import React, { CSSProperties, FC } from 'react'
 
 export const Modal: FC<{
   show: boolean
   className?: string
   containerClassName?: string
   enterClass?: string
-  id: string
-}> = ({ show, id, enterClass = '', containerClassName = '', className = '', children }) => {
+  style?: CSSProperties
+}> = ({ show, enterClass = '', containerClassName = '', className = '', style, children }) => {
   if (!show) return null
-  return ReactDOM.createPortal(
-    <div className={`${containerClassName} absolute top-0 left-0 w-full z-20`}>
+  return (
+    <div className={`z-20 ${containerClassName}`} style={style}>
       <Transition
         appear={true}
         show={show}
@@ -24,9 +23,7 @@ export const Modal: FC<{
       >
         <div className={className}>{children}</div>
       </Transition>
-    </div>,
-    document.getElementById('app-modal') || document.body,
-    id
+    </div>
   )
 }
 

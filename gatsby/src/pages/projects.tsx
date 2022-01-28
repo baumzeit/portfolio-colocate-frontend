@@ -20,10 +20,10 @@ const ProjectsPage = ({ data: { allStrapiField, allStrapiProject } }: PageProps<
 
   return (
     <Layout>
-      <Navbar className="sticky top-0 left-0 z-30 ">
+      <Navbar className="z-30">
         <ProjectsNavContent />
       </Navbar>
-      <Main fullWidth>
+      <Main fullWidth className="overflow-y-auto">
         <Transition
           appear={true}
           show={true}

@@ -3,6 +3,7 @@ import { StringParam, useQueryParams } from 'use-query-params'
 
 import { FieldBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
 import { Modal } from '../../common/components/Modal'
+import { NAVBAR_HEIGHT } from '../../common/components/Navbar'
 import { useBodyScrollLock } from '../../common/hooks/useBodyScrollLock'
 import { ProjectDetail } from '../project/Detail'
 import { ProjectBanner } from '../project/ProjectBanner'
@@ -24,7 +25,7 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
     field: StringParam
   })
 
-  useBodyScrollLock({ addPadding: true, enable: !!selectedProject })
+  useBodyScrollLock({ enable: !!selectedProject })
 
   const displayProjects = useMemo(
     () =>
@@ -42,7 +43,7 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
       <ul>
         {displayProjects.map((project, idx) => {
           return (
-            <li key={project.id} className="mb-2 xs:mb-3 last:mb-0 first:mt-[25px]">
+            <li key={project.id} className="-mb-[20px] xs:-mb-[16px] last:mb-0 first:mt-[25px]">
               <button
                 className={`block w-full`}
                 onClick={(e) => {
@@ -50,17 +51,22 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
                 }}
                 tabIndex={selectedProject ? -1 : 0}
               >
-                <ProjectBanner project={project} index={idx} shift="25px" className="h-[160px] xs:h-[240px]" />
+                <ProjectBanner
+                  project={project}
+                  index={idx}
+                  shift="25px"
+                  className="h-[160px] max-h-[160px] xs:h-[240px] xs:max-h-[240px]"
+                />
               </button>
             </li>
           )
         })}
       </ul>
       <Modal
-        id="project-list-detail"
         show={!!modalData?.data}
-        containerClassName="!fixed !inset-0 overflow-y-auto"
         className="bg-primary"
+        containerClassName={`fixed left-0 right-0 bottom-0 top-[${NAVBAR_HEIGHT}px] overflow-y-auto`}
+        style={{ top: NAVBAR_HEIGHT + 'px' }}
       >
         {modalData?.data && (
           <ProjectDetail {...modalData}>

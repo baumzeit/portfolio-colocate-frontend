@@ -39,28 +39,27 @@ export const ProjectBanner = ({
 
   const layerStyle = {
     clipPath: isEven ? clipPolyEven : clipPolyOdd,
-    marginTop: `calc(-${shift} / 2)`,
-    height: `calc(100% + ${shift})`,
-    gridArea: 'banner'
+    gridArea: 'banner',
+    maxHeight: 'inherit'
   }
 
   return (
     <div
       onTouchStart={() => setIsZoomed(true)}
-      className={`grid group ${className}`}
+      className={`grid group ${className} overflow-hidden`}
       style={{ gridTemplateAreas: '"banner"' }}
     >
-      <div className={`overflow-hidden`} style={layerStyle}>
+      <div style={layerStyle}>
         <img
           src={src}
           alt={firstImage?.alternativeText || ''}
-          className={`object-cover object-center w-full h-full transition-all duration-500 ease-out group-hover:scale-[1.01] ${
+          className={`object-cover object-center w-full max-h-inherit transition-all duration-500 ease-out group-hover:scale-[1.01] ${
             isZoomed ? 'scale-[1.01]' : ''
           }`}
         />
       </div>
 
-      <div className={`overflow-hidden`} style={layerStyle}>
+      <div style={layerStyle}>
         <div
           className={`z-10 h-full stripe-pattern transition-all ease-out duration-200 group-hover:opacity-5 ${
             isZoomed ? 'scale-[1.01]' : 'group-hover:scale-[1.01]'
@@ -71,7 +70,7 @@ export const ProjectBanner = ({
       {!hideTitle && (
         <div className={`flex ${isEven ? 'justify-start' : 'justify-end'} items-start `} style={{ gridArea: 'banner' }}>
           <div
-            className={`z-20 py-0.5 mt-[8%] px-2.5 ${
+            className={`z-10 py-0.5 mt-[8%] px-2.5 ${
               isEven ? 'pl-3 rounded-tr-sm rounded-br-sm' : 'pr-3 rounded-tl-sm rounded-bl-sm'
             }  bg-white/90 dark:bg-black/90`}
           >

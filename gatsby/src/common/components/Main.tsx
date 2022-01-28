@@ -6,5 +6,5 @@ type MainProps = {
 }
 
 export const Main: FC<MainProps> = ({ children, fullWidth, className = '' }) => {
-  return <main className={`${fullWidth ? '' : 'container mx-auto px-3'} ${className}`}>{children}</main>
+  return <main className={`${fullWidth ? '' : 'container mx-auto px-3'} relative ${className}`}>{children}</main>
 }
