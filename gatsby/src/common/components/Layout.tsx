@@ -1,5 +1,7 @@
 import React, { FC, ReactNode } from 'react'
 
+export const NAVBAR_HEIGHT = 56
+
 type LayoutProps = {
   seo?: any
   fullWidth?: boolean
@@ -8,7 +10,7 @@ type LayoutProps = {
 
 const Layout: FC<LayoutProps> = ({ children }) => {
   return (
-    <div className="grid h-screen bg-primary" style={{ gridTemplateRows: '56px 1fr' }}>
+    <div className="grid h-screen bg-primary" style={{ gridTemplateRows: `${NAVBAR_HEIGHT}px 1fr` }}>
       {/* <Seo seo={seo} /> */}
       {children}
     </div>

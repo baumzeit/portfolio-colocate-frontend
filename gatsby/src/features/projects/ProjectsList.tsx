@@ -43,7 +43,7 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
       <ul>
         {displayProjects.map((project, idx) => {
           return (
-            <li key={project.id} className="-mb-[20px] xs:-mb-[16px] last:mb-0 first:mt-[25px]">
+            <li key={project.id} className="-mb-[20px] xs:-mb-[16px] last:mb-0 first:mt-8">
               <button
                 className={`block w-full`}
                 onClick={(e) => {

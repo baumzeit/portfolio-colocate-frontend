@@ -5,6 +5,7 @@ import React, { useMemo } from 'react'
 import { Helmet } from 'react-helmet'
 
 import { HomeDataQuery } from '../../graphql-types'
+import { Container } from '../common/components/Container'
 import Layout from '../common/components/Layout'
 import { Main } from '../common/components/Main'
 import { Navbar } from '../common/components/Navbar'
@@ -47,48 +48,50 @@ const HomePage = ({ data: { strapiHome, allStrapiField } }: PageProps<HomeDataQu
           <Navbar>
             <HomeNavContent />
           </Navbar>
-          <Main className="mt-6">
-            <div className="grid grid-cols-11">
-              <div className="col-start-1 col-end-5">
-                <Intro title={title} text={intro} />
-              </div>
-              <div className="col-start-6 col-end-12">
-                <Profile profile={profile} />
-              </div>
-            </div>
-
-            <div className="mt-[100px]">
-              {chunk(displayFields, 3).map((fields, idx) => (
-                <div key={`fields-grid-${idx}`} className="grid gap-x-[80px] xl:gap-x-[120px] gap-y-14 grid-cols-12">
-                  {fields.map((field, idx) => {
-                    const one = idx % 3 === 0
-                    const two = idx % 3 === 1
-                    const three = idx % 3 === 2
-                    return (
-                      <div
-                        key={field.id}
-                        className={`${
-                          one
-                            ? 'row-start-1 col-start-1'
-                            : two
-                            ? 'row-start-2 col-start-1 lg:row-start-1 xl:mt-[80px] lg:col-start-7'
-                            : three
-                            ? 'row-start-3 col-start-1 lg:row-start-2 lg:col-start-4 xl:col-start-3 '
-                            : ''
-                        } col-end-12 lg:col-span-6`}
-                      >
-                        <Field
-                          field={field}
-                          alignment={
-                            breakpoints.lg ? (one ? 'right' : two ? 'left' : three ? 'center' : 'left') : 'left'
-                          }
-                        />
-                      </div>
-                    )
-                  })}
+          <Main fullWidth className="pt-6 overflow-y-auto">
+            <Container>
+              <div className="grid grid-cols-11">
+                <div className="col-start-1 col-end-5">
+                  <Intro title={title} text={intro} />
                 </div>
-              ))}
-            </div>
+                <div className="col-start-6 col-end-12">
+                  <Profile profile={profile} />
+                </div>
+              </div>
+
+              <div className="mt-[100px]">
+                {chunk(displayFields, 3).map((fields, idx) => (
+                  <div key={`fields-grid-${idx}`} className="grid gap-x-[80px] xl:gap-x-[120px] gap-y-14 grid-cols-12">
+                    {fields.map((field, idx) => {
+                      const one = idx % 3 === 0
+                      const two = idx % 3 === 1
+                      const three = idx % 3 === 2
+                      return (
+                        <div
+                          key={field.id}
+                          className={`${
+                            one
+                              ? 'row-start-1 col-start-1'
+                              : two
+                              ? 'row-start-2 col-start-1 lg:row-start-1 xl:mt-[80px] lg:col-start-7'
+                              : three
+                              ? 'row-start-3 col-start-1 lg:row-start-2 lg:col-start-4 xl:col-start-3 '
+                              : ''
+                          } col-end-12 lg:col-span-6`}
+                        >
+                          <Field
+                            field={field}
+                            alignment={
+                              breakpoints.lg ? (one ? 'right' : two ? 'left' : three ? 'center' : 'left') : 'left'
+                            }
+                          />
+                        </div>
+                      )
+                    })}
+                  </div>
+                ))}
+              </div>
+            </Container>
           </Main>
         </Layout>
       </>

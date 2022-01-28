@@ -5,8 +5,6 @@ import React, { FC, useContext } from 'react'
 import { NavDataQuery } from '../../../graphql-types'
 import { ThemeContext } from './ThemeContextProvider'
 
-export const NAVBAR_HEIGHT = 56
-
 export const Navbar: FC<{ className?: string }> = ({ children, className = '' }) => {
   const { strapiGlobal } = useStaticQuery<NavDataQuery>(query)
   const { theme } = useContext(ThemeContext)
@@ -16,7 +14,7 @@ export const Navbar: FC<{ className?: string }> = ({ children, className = '' })
   }
   const { siteName, logo } = strapiGlobal
   return (
-    <nav className={`flex items-center justify-between px-8 h-14 bg-primary ${className}`}>
+    <nav className={`flex items-center justify-between px-8 h-full bg-primary ${className}`}>
       <div className="flex-1">
         <Link to="/" className="font-bold">
           <div className="flex align-center">

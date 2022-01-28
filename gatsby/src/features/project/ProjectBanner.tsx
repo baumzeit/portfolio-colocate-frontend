@@ -1,5 +1,4 @@
-import useIntersectionObserver from '@react-hook/intersection-observer'
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useState } from 'react'
 
 import { ProjectDetailFragment } from '../../../graphql-types'
 
@@ -53,7 +52,7 @@ export const ProjectBanner = ({
         <img
           src={src}
           alt={firstImage?.alternativeText || ''}
-          className={`object-cover object-center w-full max-h-inherit transition-all duration-500 ease-out group-hover:scale-[1.01] ${
+          className={`object-cover object-center w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.01] ${
             isZoomed ? 'scale-[1.01]' : ''
           }`}
         />
@@ -63,7 +62,7 @@ export const ProjectBanner = ({
         <div
           className={`z-10 h-full stripe-pattern transition-all ease-out duration-200 group-hover:opacity-5 ${
             isZoomed ? 'scale-[1.01]' : 'group-hover:scale-[1.01]'
-          } ${hidePattern ? 'opacity-0' : ''}`}
+          } ${hidePattern ? 'opacity-5' : ''}`}
         />
       </div>
 
