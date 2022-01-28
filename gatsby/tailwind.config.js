@@ -3,7 +3,7 @@ module.exports = {
   content: ['./src/**/*.{js,jsx,ts,tsx}'],
   safelist: [
     ...Array.from({ length: 9 }, (_, idx) => 'animate-delay-' + (idx + 1) * 100),
-    'items-start', 'items-center', 'items-end'
+    'items-start', 'items-center', 'items-end', 'inset-0'
   ],
   darkMode: 'class',
   mode: 'jit',

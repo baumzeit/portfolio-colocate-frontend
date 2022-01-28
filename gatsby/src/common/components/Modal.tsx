@@ -11,7 +11,7 @@ export const Modal: FC<{
 }> = ({ show, id, enterClass = '', containerClassName = '', className = '', children }) => {
   if (!show) return null
   return ReactDOM.createPortal(
-    <div className={`relative z-20 ${containerClassName}`}>
+    <div className={`${containerClassName} absolute top-0 left-0 w-full z-20`}>
       <Transition
         appear={true}
         show={show}
@@ -30,4 +30,4 @@ export const Modal: FC<{
   )
 }
 
-export const ModalRoot = () => <div id="app-modal" className={`absolute top-0 left-0 w-full h-full`} />
+export const ModalRoot = () => <div id="app-modal" />

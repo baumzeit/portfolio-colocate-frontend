@@ -2,8 +2,8 @@ import { useState, useEffect, useCallback } from 'react'
 
 type UseJitterGridProps = {
   minItems: number
-  width: number
-  height: number
+  width: number | null
+  height: number | null
   relMargin: {
     top: number
     right: number

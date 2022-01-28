@@ -1,7 +1,7 @@
-import { useWindowSize } from '@react-hook/window-size'
 import * as d3 from 'd3'
 import { graphql } from 'gatsby'
-import React, { useCallback, useMemo, useRef } from 'react'
+import React, { useCallback, useMemo } from 'react'
+import { useWindowSize } from 'rooks'
 import { StringParam, useQueryParams } from 'use-query-params'
 
 import { FieldBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
@@ -34,17 +34,18 @@ export const ProjectsMap = ({
   fields: FieldBaseFragment[]
   projects: ProjectDetailFragment[]
 }) => {
-  const chartRef = useRef(null)
-  const [width, height] = useWindowSize({ initialHeight: 100, initialWidth: 100, wait: 300, leading: true })
+  const { outerWidth: width, innerHeight: height } = useWindowSize()
   const [{ field: highlightedFieldSlug, project: exposedSlug }, setQuery] = useQueryParams({
     project: StringParam,
     field: StringParam
   })
 
+  console.log(width)
+
   const { getGridPosition, numCols, numRows } = useJitterGrid({
     minItems: projects.length,
     width,
-    height: height - NAVBAR_HEIGHT,
+    height: height ? height - NAVBAR_HEIGHT : height,
     relMargin: { top: 0.18, right: 0.14, bottom: 0.15, left: 0.14 },
     jitter
   })
@@ -89,7 +90,7 @@ export const ProjectsMap = ({
 
   return (
     <>
-      <div ref={chartRef} id="voronoiContainer" className={`max-h-[calc(100vh-${NAVBAR_HEIGHT})]`}>
+      <div id="voronoiContainer" className="overflow-hidden">
         {width && height && chartData ? (
           <VoronoiChart
             data={chartData}

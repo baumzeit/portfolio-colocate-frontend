@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react'
-import { graphql, PageProps } from 'gatsby'
+import { graphql, PageProps, useScrollRestoration } from 'gatsby'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { useMemo } from 'react'
 
@@ -20,7 +20,7 @@ const ProjectsPage = ({ data: { allStrapiField, allStrapiProject } }: PageProps<
 
   return (
     <Layout>
-      <Navbar>
+      <Navbar className="sticky top-0 left-0 z-30 ">
         <ProjectsNavContent />
       </Navbar>
       <Main fullWidth>

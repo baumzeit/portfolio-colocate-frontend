@@ -1,9 +1,9 @@
-import React, { useMemo, useRef } from 'react'
+import React, { useMemo } from 'react'
 import { StringParam, useQueryParams } from 'use-query-params'
 
 import { FieldBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
 import { Modal } from '../../common/components/Modal'
-import { NAVBAR_HEIGHT } from '../../common/components/Navbar'
+import { useBodyScrollLock } from '../../common/hooks/useBodyScrollLock'
 import { ProjectDetail } from '../project/Detail'
 import { ProjectBanner } from '../project/ProjectBanner'
 import { useProjectModalData } from './../../common/hooks/useProjectModalData'
@@ -19,11 +19,12 @@ export type SetModalFn = ({ onClose, onNext, onPrev, data }: SetModalProps) => v
 
 export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projects: ProjectDetailFragment[] }) => {
   const modalData = useProjectModalData(projects)
-  const [{ field: highlightedFieldSlug }, setQuery] = useQueryParams({
+  const [{ field: highlightedFieldSlug, project: selectedProject }, setQuery] = useQueryParams({
     project: StringParam,
     field: StringParam
   })
-  const container = useRef(null)
+
+  useBodyScrollLock({ addPadding: true, enable: !!selectedProject })
 
   const displayProjects = useMemo(
     () =>
@@ -37,21 +38,30 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
   )
 
   return (
-    <div ref={container}>
-      <div className={`max-h-[calc(100vh-${NAVBAR_HEIGHT}px)] pb-12 overflow-auto`}>
+    <div>
+      <ul>
         {displayProjects.map((project, idx) => {
           return (
-            <button
-              key={project.id}
-              className={`block w-full mb-1 xs:mb-2 last:mb-0 first:mt-[25px]`}
-              onClick={() => setQuery({ project: project.slug })}
-            >
-              <ProjectBanner project={project} index={idx} shift="25px" />
-            </button>
+            <li key={project.id} className="mb-2 xs:mb-3 last:mb-0 first:mt-[25px]">
+              <button
+                className={`block w-full`}
+                onClick={(e) => {
+                  setQuery({ project: project.slug })
+                }}
+                tabIndex={selectedProject ? -1 : 0}
+              >
+                <ProjectBanner project={project} index={idx} shift="25px" className="h-[160px] xs:h-[240px]" />
+              </button>
+            </li>
           )
         })}
-      </div>
-      <Modal id="project-list-detail" show={!!modalData?.data} className="bg-primary">
+      </ul>
+      <Modal
+        id="project-list-detail"
+        show={!!modalData?.data}
+        containerClassName="!fixed !inset-0 overflow-y-auto"
+        className="bg-primary"
+      >
         {modalData?.data && (
           <ProjectDetail {...modalData}>
             <div className="mx-10 animate-fadeInFast">
@@ -61,6 +71,7 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
                 shift="25px"
                 hideTitle
                 disableImageOpacity
+                className="max-h-[160px]"
               />
             </div>
           </ProjectDetail>
