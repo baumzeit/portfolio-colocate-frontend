@@ -12,7 +12,7 @@ export const Navbar: FC<{ className?: string }> = ({ children, className = '' })
   const { theme } = useContext(ThemeContext)
 
   return (
-    <nav className={`flex items-center justify-between px-8 h-full bg-primary ${className}`}>
+    <nav className={`flex items-center justify-between px-8 h-full bg-primary ${className} z-20`}>
       <div className="flex-1">
         <Link to="/" className="font-bold">
           <div className="flex align-center">
@@ -53,7 +53,7 @@ const ThemeSelect = () => {
                   <div
                     className={`inline-block px-1.5 py-0.5 rounded mt-1.5 animate-fadeInFast animate-delay-${
                       50 * idx
-                    } cursor-pointer bg-primary ${isActive ? 'text-brand' : 'text-primary'}`}
+                    } cursor-pointer bg-primary ${isActive ? 'text-brand' : 'text-primary'} cursor-pointer`}
                   >
                     {val}
                   </div>
