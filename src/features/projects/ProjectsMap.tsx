@@ -4,9 +4,9 @@ import React, { useCallback, useMemo } from 'react'
 import { useWindowSize } from 'rooks'
 import { StringParam, useQueryParams } from 'use-query-params'
 
-import { FieldBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
+import { AreaBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
+import { NAVBAR_HEIGHT } from '../../common/components/Layout'
 import { Modal } from '../../common/components/Modal'
-import { NAVBAR_HEIGHT } from '../../common/components/Navbar'
 import { useJitterGrid } from '../../common/hooks/useJitterGrid'
 import { useProjectModalData } from '../../common/hooks/useProjectModalData'
 import notEmpty from '../../common/utility/notEmpty'
@@ -31,7 +31,7 @@ export const ProjectsMap = ({
   fields,
   projects
 }: {
-  fields: FieldBaseFragment[]
+  fields: AreaBaseFragment[]
   projects: ProjectDetailFragment[]
 }) => {
   const { outerWidth: width, innerHeight: height } = useWindowSize()
@@ -40,7 +40,7 @@ export const ProjectsMap = ({
     field: StringParam
   })
 
-  console.log(width)
+  console.log(projects)
 
   const { getGridPosition, numCols, numRows } = useJitterGrid({
     minItems: projects.length,
@@ -54,6 +54,7 @@ export const ProjectsMap = ({
     () => findIdBySlug(fields, highlightedFieldSlug || undefined),
     [fields, highlightedFieldSlug]
   )
+
   const exposedProjectId = useMemo(() => findIdBySlug(projects, exposedSlug || undefined), [projects, exposedSlug])
 
   const onClickCell = useCallback(
@@ -68,20 +69,20 @@ export const ProjectsMap = ({
   const chartData = useMemo(
     () =>
       getGridPosition
-        ? projects.map(({ images, id, strapiFields, title, slug }, idx) => ({
+        ? projects.map(({ images, id, areas, title, slug }, idx) => ({
             x: getGridPosition(idx)[0],
             y: getGridPosition(idx)[1],
             imageUrl: images
-              ? images?.[0]?.localFile?.childImageSharp?.fixed?.srcSet || 'https://picsum.photos/600/300'
+              ? images?.[0]?.file?.childImageSharp?.fixed?.srcSet || 'https://picsum.photos/600/300'
               : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
-            id: String(id),
+            id: id,
             title: String(title),
             slug: String(slug),
             fields:
-              strapiFields?.filter(notEmpty).map((d) => ({
+              areas?.filter(notEmpty).map((d) => ({
                 color: String(d.color),
                 name: String(d.name),
-                id: 'Field_' + d.id
+                id: d.id
               })) || []
           }))
         : null,
@@ -114,7 +115,7 @@ export const ProjectsMap = ({
 }
 
 export const query = graphql`
-  fragment FieldBase on StrapiField {
+  fragment AreaBase on StrapiArea {
     id
     slug
     name
@@ -127,17 +128,15 @@ export const query = graphql`
     name
     slug
     description
-    organization {
-      id
-      name
-      website
-    }
+    # organization {
+
+    # }
     images {
       id
       url
       alternativeText
       caption
-      localFile {
+      file {
         childImageSharp {
           fixed(width: 600) {
             srcSet
@@ -150,7 +149,7 @@ export const query = graphql`
       id
       name
     }
-    strapiFields {
+    areas {
       id
       name
       description

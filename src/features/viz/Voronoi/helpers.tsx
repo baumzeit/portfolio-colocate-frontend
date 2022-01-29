@@ -71,7 +71,6 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
     d3.selectAll<SVGGElement, EnrichedDatum>('g.cell').each(function (d) {
       const cellG = d3.select(this)
       const highlightPath = cellG.select('.highlight-pattern')
-
       const shouldHighlight = Boolean(d.fields.find((field) => highlightId && field.id === highlightId))
 
       if (highlightId) {
@@ -92,10 +91,25 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
 
     baseLayerCells.style('transform', function (d) {
       const scale = opts.exposeCellHeight / opts.imageSize
+      const cellRect = d3
+        .select<SVGGElement, EnrichedDatum>(this)
+        ?.select<SVGPathElement>('.cell-border')
+        ?.node()
+        ?.getBBox()
 
-      const navbarAndScaledImageCenter = opts.exposeOffsetTop + opts.exposeCellHeight / 2
+      const ratio = cellRect?.width && cellRect?.height ? cellRect.width / cellRect.height : 1
+
+      const relOffsetX = cellRect ? 0.5 - (d.x - cellRect.x) / cellRect.width : 0
+      const relOffsetY = cellRect ? 0.5 - (d.y - cellRect.y) / cellRect.height : 0
+
+      const exposeCellWidth = opts.exposeCellHeight * ratio
+
+      const navbarAndHeightCenter = opts.exposeOffsetTop + opts.exposeCellHeight / 2
+
       const transform = isExposed(d)
-        ? `translate(${opts.width / 2 - d.x}px, ${navbarAndScaledImageCenter - d.y}px) scale(${scale})`
+        ? ` translate(${opts.width / 2 - d.x - (relOffsetX * exposeCellWidth) / 2}px, ${
+            navbarAndHeightCenter - d.y - (relOffsetY * opts.exposeCellHeight) / 2
+          }px) scale(${scale})`
         : 'translate(0, 0) scale(1) '
       return transform
     })

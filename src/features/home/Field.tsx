@@ -1,7 +1,7 @@
 import { graphql } from 'gatsby'
 import React from 'react'
 
-import { FieldDetailFragment } from '../../../graphql-types'
+import { AreaDetailFragment } from '../../../graphql-types'
 import { Tags } from './../../common/components/Tags'
 
 const flex = {
@@ -10,7 +10,7 @@ const flex = {
   right: 'end'
 }
 
-type FieldProps = { field: FieldDetailFragment; alignment: 'left' | 'center' | 'right' }
+type FieldProps = { field: AreaDetailFragment; alignment: 'left' | 'center' | 'right' }
 export const Field = ({ field: { name, description, color: fieldColor, tags }, alignment }: FieldProps) => (
   <div className="">
     <h2
@@ -29,7 +29,7 @@ export const Field = ({ field: { name, description, color: fieldColor, tags }, a
 )
 
 export const query = graphql`
-  fragment FieldDetail on StrapiField {
+  fragment AreaDetail on StrapiArea {
     id
     slug
     name
@@ -38,7 +38,7 @@ export const query = graphql`
     projects {
       id
       images {
-        localFile {
+        file {
           childImageSharp {
             gatsbyImageData(height: 30, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF], aspectRatio: 1)
           }

@@ -1,11 +1,11 @@
 import React from 'react'
 
-import { FieldDetailFragment } from '../../../graphql-types'
+import { AreaDetailFragment } from '../../../graphql-types'
 import { alignFlex, Alignment } from '../utility/alignment'
 import notEmpty from '../utility/notEmpty'
 
 type TagsProps = {
-  tags: FieldDetailFragment['tags']
+  tags: AreaDetailFragment['tags']
   color?: string
   alignment?: Alignment
 }

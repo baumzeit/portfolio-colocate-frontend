@@ -8,7 +8,7 @@ import { NavFilterFields, NavFilterFieldsSelect } from './NavFilterFields'
 
 export const ProjectsNavContent = () => {
   const {
-    allStrapiField: { edges }
+    allStrapiArea: { edges }
   } = useStaticQuery<ProjectsNavDataQuery>(query)
   const fields = edges.map((d) => d.node)
 
@@ -40,10 +40,10 @@ export const ProjectsNavContent = () => {
 }
 const query = graphql`
   query ProjectsNavData {
-    allStrapiField {
+    allStrapiArea {
       edges {
         node {
-          strapiId
+          id
           name
           color
           slug

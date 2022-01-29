@@ -1,4 +1,4 @@
-import { ArrowNarrowRightIcon, ArrowRightIcon, ArrowSmRightIcon } from '@heroicons/react/solid'
+import { ArrowNarrowRightIcon } from '@heroicons/react/solid'
 import { Link } from 'gatsby'
 import React from 'react'
 

@@ -226,19 +226,7 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
         return update
       }
     )
-    .style('transform-origin', function (d) {
-      const cellRect = d3
-        .select<SVGGElement, EnrichedDatum>(this)
-        ?.select<SVGPathElement>('.cell-border')
-        ?.node()
-        ?.getBBox()
-      if (cellRect) {
-        const originX = (100 * (d.x - cellRect.x)) / cellRect.width // adjust for point offset from cell center
-        const originY = (100 * (d.y - cellRect.y)) / cellRect.height
-        return `${originX}% ${originY}%`
-      }
-      return 'center'
-    })
+    .style('transform-origin', (d) => `${d.x}px ${d.y}px`)
 
   svg
     .selectAll('path.bounds')

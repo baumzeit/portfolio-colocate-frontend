@@ -90,26 +90,26 @@ const SEO: FC<{ seo?: any }> = ({ seo = {} }) => {
   )
 }
 
-const query = graphql`
-  query SeoData {
-    strapiGlobal {
-      siteName
-      favIcon {
-        localFile {
-          publicURL
-        }
-      }
-      defaultSeo {
-        metaTitle
-        metaDescription
-        shareImage {
-          localFile {
-            publicURL
-          }
-        }
-      }
-    }
-  }
-`
+// const query = graphql`
+//   query SeoData {
+//     strapiGlobal {
+//       siteName
+//       favIcon {
+//         file {
+//           publicURL
+//         }
+//       }
+//       defaultSeo {
+//         metaTitle
+//         metaDescription
+//         shareImage {
+//           file {
+//             publicURL
+//           }
+//         }
+//       }
+//     }
+//   }
+// `
 
 export default SEO

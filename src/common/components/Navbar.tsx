@@ -1,31 +1,30 @@
 import { Listbox } from '@headlessui/react'
-import { Link, graphql, useStaticQuery } from 'gatsby'
+import { graphql, Link, useStaticQuery } from 'gatsby'
+import { StaticImage } from 'gatsby-plugin-image'
 import React, { FC, useContext } from 'react'
 
 import { NavDataQuery } from '../../../graphql-types'
+import logo from '../../images/logo.png'
 import { ThemeContext } from './ThemeContextProvider'
 
 export const Navbar: FC<{ className?: string }> = ({ children, className = '' }) => {
-  const { strapiGlobal } = useStaticQuery<NavDataQuery>(query)
+  const { site } = useStaticQuery<NavDataQuery>(query)
   const { theme } = useContext(ThemeContext)
 
-  if (!strapiGlobal) {
-    return <p>no data</p>
-  }
-  const { siteName, logo } = strapiGlobal
   return (
     <nav className={`flex items-center justify-between px-8 h-full bg-primary ${className}`}>
       <div className="flex-1">
         <Link to="/" className="font-bold">
           <div className="flex align-center">
             {logo?.url && (
-              <img
-                src={process.env.GATSBY_API_URL! + logo.url}
-                className={`h-5 mr-4 filter ${theme === 'dark' ? 'invert' : ''}`}
-                alt="logo"
-              />
+              <StaticImage src={logo} alt="logo" className={`h-5 mr-4 filter ${theme === 'dark' ? 'invert' : ''}`} />
+              // <img
+              //   src={process.env.GATSBY_API_URL! + logo.url}
+              //   className={`h-5 mr-4 filter ${theme === 'dark' ? 'invert' : ''}`}
+              //   alt="logo"
+              // />
             )}
-            <div className="hidden md:block text-secondary">{siteName}</div>
+            <div className="hidden md:block text-secondary">{site?.siteMetadata?.title || ''}</div>
           </div>
         </Link>
       </div>
@@ -72,12 +71,7 @@ const query = graphql`
     site {
       siteMetadata {
         siteURL
-      }
-    }
-    strapiGlobal {
-      siteName
-      logo {
-        url
+        title
       }
     }
   }

@@ -8,7 +8,7 @@ export const useProjectModalData = (projects: ProjectDetailFragment[]) => {
   return useMemo(() => {
     if (projects) {
       const exposedIndex = projects.findIndex((project) => project.slug === exposedSlug)
-      const nextIndex = (exposedIndex % (projects.length - 1)) + 1
+      const nextIndex = (exposedIndex + 1) % projects.length
       const prevIndex = exposedIndex > 0 ? exposedIndex - 1 : projects.length - 1
       return {
         data: exposedIndex > -1 ? projects[exposedIndex] : null,

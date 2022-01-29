@@ -70,7 +70,7 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({ data, onClose, onNext, o
               )}
               {/* <InfoRow
                 rowTitle="Field:"
-                data={data.strapiFields?.filter(notEmpty) || []}
+                data={data.StrapiAreas?.filter(notEmpty) || []}
                 render={(field) => field.name}
               /> */}
               <InfoRow rowTitle="Technologies:" data={data.tags?.filter(notEmpty) || []} render={(tag) => tag.name} />

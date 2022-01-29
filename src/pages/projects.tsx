@@ -12,8 +12,8 @@ import { ProjectsNavContent } from '../features/projects/NavContent'
 import { ProjectsList } from '../features/projects/ProjectsList'
 import { ProjectsMap } from '../features/projects/ProjectsMap'
 
-const ProjectsPage = ({ data: { allStrapiField, allStrapiProject } }: PageProps<ProjectsPageDataQuery>) => {
-  const fields = useMemo(() => assertAndExtractNodes(allStrapiField), [allStrapiField])
+const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<ProjectsPageDataQuery>) => {
+  const fields = useMemo(() => assertAndExtractNodes(allStrapiArea), [allStrapiArea])
   const projects = useMemo(() => assertAndExtractNodes(allStrapiProject), [allStrapiProject])
 
   const breakpoints = useBreakpoint()
@@ -55,10 +55,10 @@ export const query = graphql`
         }
       }
     }
-    allStrapiField {
+    allStrapiArea {
       edges {
         node {
-          ...FieldBase
+          ...AreaBase
         }
       }
     }

@@ -28,14 +28,14 @@ module.exports = {
         queries: mediaQueries
       },
     },
-    {
-      resolve: 'gatsby-source-filesystem',
-      options: {
-        name: 'images',
-        path: './src/images/'
-      },
-      __key: 'images'
-    },
+    // {
+    //   resolve: 'gatsby-source-filesystem',
+    //   options: {
+    //     name: 'images',
+    //     path: './src/images/'
+    //   },
+    //   __key: 'images'
+    // },
     {
       resolve: 'gatsby-source-filesystem',
       options: {
@@ -48,9 +48,22 @@ module.exports = {
       resolve: 'gatsby-source-strapi',
       options: {
         apiURL: process.env.GATSBY_API_URL,
-        collectionTypes: ['project', 'tag', 'field'],
-        singleTypes: ['global', 'home']
-      }
-    }
+        // apiURL: 'http://localhost:1337',
+        collectionTypes: ['Project', 'Tag', 'Area'],
+        singleTypes: ['Home'],
+        // Extract images from markdown fields.
+        // markdownImages: {
+        //   typesToParse: {
+        //     Article: ['body'],
+        //     ComponentBlockBody: ['text'],
+        //   },
+        // },
+        // Only include specific locale.
+        //locale: 'en', // default to all
+        // Include drafts in build.
+        //preview: true, // defaults to false
+        //headers: {},
+      },
+    },
   ]
 }

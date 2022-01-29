@@ -1,9 +1,9 @@
 import React, { useMemo } from 'react'
 import { StringParam, useQueryParams } from 'use-query-params'
 
-import { FieldBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
+import { AreaBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
+import { NAVBAR_HEIGHT } from '../../common/components/Layout'
 import { Modal } from '../../common/components/Modal'
-import { NAVBAR_HEIGHT } from '../../common/components/Navbar'
 import { useBodyScrollLock } from '../../common/hooks/useBodyScrollLock'
 import { ProjectDetail } from '../project/Detail'
 import { ProjectBanner } from '../project/ProjectBanner'
@@ -18,7 +18,7 @@ export type SetModalProps = {
 
 export type SetModalFn = ({ onClose, onNext, onPrev, data }: SetModalProps) => void
 
-export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projects: ProjectDetailFragment[] }) => {
+export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; projects: ProjectDetailFragment[] }) => {
   const modalData = useProjectModalData(projects)
   const [{ field: highlightedFieldSlug, project: selectedProject }, setQuery] = useQueryParams({
     project: StringParam,
@@ -31,9 +31,7 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
     () =>
       projects.filter(
         (project) =>
-          !highlightedFieldSlug ||
-          project.strapiFields?.map((field) => field?.slug).includes(highlightedFieldSlug) ||
-          false
+          !highlightedFieldSlug || project.areas?.map((field) => field?.slug).includes(highlightedFieldSlug) || false
       ),
     [highlightedFieldSlug, projects]
   )
@@ -65,7 +63,7 @@ export const ProjectsList = ({ projects }: { fields: FieldBaseFragment[]; projec
       <Modal
         show={!!modalData?.data}
         className="bg-primary"
-        containerClassName={`fixed left-0 right-0 bottom-0 top-[${NAVBAR_HEIGHT}px] overflow-y-auto`}
+        containerClassName={`fixed left-0 right-0 bottom-0 overflow-y-auto`}
         style={{ top: NAVBAR_HEIGHT + 'px' }}
       >
         {modalData?.data && (

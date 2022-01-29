@@ -5,18 +5,18 @@ import { useQueryParam } from 'use-query-params'
 import { ProjectsNavDataQuery } from '../../../graphql-types'
 
 type NavFilterFieldsProps = {
-  fields: ProjectsNavDataQuery['allStrapiField']['edges'][number]['node'][]
+  fields: ProjectsNavDataQuery['allStrapiArea']['edges'][number]['node'][]
 }
 
 export const NavFilterFields = ({ fields }: NavFilterFieldsProps) => {
   const [selectedFieldSlug, setSelectedFieldSlug] = useQueryParam<string | undefined>('field')
   return (
     <div className="flex items-center justify-center gap-4 text-bg-secondary">
-      {fields.map(({ strapiId = null, color, name, slug }, idx) => {
+      {fields.map(({ id = null, color, name, slug }, idx) => {
         const isActive = slug === selectedFieldSlug
         return (
           <button
-            key={strapiId}
+            key={id}
             onClick={(e) => {
               setSelectedFieldSlug(isActive ? undefined : slug || undefined)
             }}
@@ -62,10 +62,10 @@ export const NavFilterFieldsSelect = ({ fields }: NavFilterFieldsProps) => {
         </Listbox.Button>
         <Listbox.Options className="flex flex-col items-center">
           {fields.map((field, idx) => {
-            const { strapiId = null, color, name, slug } = field
+            const { id = null, color, name, slug } = field
             const isActive = slug === selectedFieldSlug
             return (
-              <Listbox.Option key={strapiId} value={field} className="text-bg-secondary">
+              <Listbox.Option key={id} value={field} className="text-bg-secondary">
                 <div
                   style={{
                     color: isActive ? 'inherit' : color || 'inherit',

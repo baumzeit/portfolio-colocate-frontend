@@ -17,28 +17,29 @@ import { HomeNavContent } from '../features/home/NavContent'
 import { Profile } from '../features/home/Profile'
 
 // markup
-const HomePage = ({ data: { strapiHome, allStrapiField } }: PageProps<HomeDataQuery>) => {
+const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQuery>) => {
   const breakpoints = useBreakpoint()
 
   const displayFields = useMemo(() => {
-    if (allStrapiField && strapiHome) {
-      const strapiFields = strapiHome.strapiFields?.filter(notEmpty)
-      if (strapiFields) {
-        return assertAndExtractNodes(allStrapiField).filter((field) =>
-          strapiFields.map((homeField) => 'Field_' + homeField.id).includes(field.id)
+    if (allStrapiArea && strapiHome) {
+      console.log(allStrapiArea, strapiHome)
+      const homeAreas = strapiHome.areas?.filter(notEmpty)
+      if (homeAreas) {
+        return assertAndExtractNodes(allStrapiArea).filter((area) =>
+          homeAreas.find((homeArea) => homeArea.id === area.id)
         )
       }
     }
-  }, [allStrapiField, strapiHome])
+  }, [allStrapiArea, strapiHome])
 
-  if (!(strapiHome && allStrapiField && displayFields)) {
+  if (!(strapiHome && allStrapiArea && displayFields)) {
     return <div>No Data</div>
   }
-  const { title, intro, seo, profile } = strapiHome
+  const { title, introText, seo, profile } = strapiHome
 
   return (
     title &&
-    intro &&
+    introText &&
     profile && (
       <>
         <Helmet>
@@ -52,7 +53,7 @@ const HomePage = ({ data: { strapiHome, allStrapiField } }: PageProps<HomeDataQu
             <Container>
               <div className="grid grid-cols-11">
                 <div className="col-start-1 col-end-5">
-                  <Intro title={title} text={intro} />
+                  <Intro title={title} text={introText} />
                 </div>
                 <div className="col-start-6 col-end-12">
                   <Profile profile={profile} />
@@ -103,20 +104,20 @@ export const query = graphql`
   query HomeData {
     strapiHome {
       title
-      intro
+      introText
       profile {
-        ...HomeProfile
+        ...Profile
       }
       seo {
         metaTitle
       }
-      strapiFields {
+      areas {
         id
         name
         description
       }
     }
-    allStrapiField(sort: { fields: name, order: DESC }) {
+    allStrapiArea(sort: { fields: name, order: DESC }) {
       edges {
         node {
           projects {
@@ -124,7 +125,7 @@ export const query = graphql`
             title
             slug
           }
-          ...FieldDetail
+          ...AreaDetail
         }
       }
     }
