@@ -31,6 +31,9 @@ module.exports = {
         primaryLayer: 'var(--bg-primary-layer)',
         secondary: 'var(--bg-secondary)'
       },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(farthest-side, var(--tw-gradient-stops))',
+      },
       textColor: {
         primary: 'var(--text-primary)',
         secondary: 'var(--text-secondary)',

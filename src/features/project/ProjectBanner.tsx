@@ -1,3 +1,4 @@
+import { GatsbyImage } from 'gatsby-plugin-image'
 import React, { useState } from 'react'
 
 import { ProjectDetailFragment } from '../../../graphql-types'
@@ -7,24 +8,17 @@ type ProjectBannerProps = {
   index: number
   shift: number | string
   hideTitle?: boolean
-  disableImageOpacity?: boolean
+  highlight?: boolean
   className?: string
 }
-export const ProjectBanner = ({
-  project,
-  index,
-  shift,
-  hideTitle,
-  disableImageOpacity: hidePattern,
-  className = ''
-}: ProjectBannerProps) => {
+export const ProjectBanner = ({ project, index, shift, hideTitle, highlight, className = '' }: ProjectBannerProps) => {
   const firstImage = project.images?.[0]
-  const src = firstImage?.localFile?.childImageSharp?.fixed?.src
+  const srcSet = firstImage?.file?.childImageSharp?.fixed?.srcSet
   const isEven = index % 2 === 0
   const clipPolyEven = `polygon(0 0, 0 100%, 100% calc(100% - ${shift}), 100% ${shift})`
   const clipPolyOdd = `polygon(0 ${shift}, 0 calc(100% - ${shift}), 100% 100%, 100% 0)`
 
-  const [isZoomed, setIsZoomed] = useState(false)
+  const [isTouched, setIsTouched] = useState(highlight)
 
   // const banner = useRef<HTMLDivElement>(null)
   // const entry = useIntersectionObserver(banner, {
@@ -44,25 +38,25 @@ export const ProjectBanner = ({
 
   return (
     <div
-      onTouchStart={() => setIsZoomed(true)}
+      onTouchStart={() => !highlight && setIsTouched(true)}
       className={`grid group ${className} overflow-hidden`}
       style={{ gridTemplateAreas: '"banner"' }}
     >
       <div style={layerStyle}>
         <img
-          src={src}
+          srcSet={srcSet}
           alt={firstImage?.alternativeText || ''}
           className={`object-cover object-center w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.01] ${
-            isZoomed ? 'scale-[1.01]' : ''
+            isTouched ? 'scale-[1.01]' : ''
           }`}
         />
       </div>
 
-      <div style={layerStyle}>
+      <div style={layerStyle} className={`${highlight}`}>
         <div
-          className={`z-10 h-full stripe-pattern transition-all ease-out duration-200 group-hover:opacity-5 ${
-            isZoomed ? 'scale-[1.01]' : 'group-hover:scale-[1.01]'
-          } ${hidePattern ? 'opacity-5' : ''}`}
+          className={`z-10 h-full stripe-pattern transition-all ease-out duration-200 group-hover:opacity-5 group-hover:scale-[1.01] ${
+            isTouched ? 'scale-[1.01] opacity-5' : 'opacity-50 '
+          }`}
         />
       </div>
 

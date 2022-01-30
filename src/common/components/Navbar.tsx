@@ -4,29 +4,28 @@ import { StaticImage } from 'gatsby-plugin-image'
 import React, { FC, useContext } from 'react'
 
 import { NavDataQuery } from '../../../graphql-types'
-import logo from '../../images/logo.png'
 import { ThemeContext } from './ThemeContextProvider'
 
 export const Navbar: FC<{ className?: string }> = ({ children, className = '' }) => {
   const { site } = useStaticQuery<NavDataQuery>(query)
   const { theme } = useContext(ThemeContext)
-
   return (
-    <nav className={`flex items-center justify-between px-8 h-full bg-primary ${className} z-20`}>
+    <nav className={`flex items-center justify-between px-4 sm:px-6 h-full bg-primary ${className} z-20`}>
       <div className="flex-1">
-        <Link to="/" className="font-bold">
-          <div className="flex align-center">
-            {logo?.url && (
-              <StaticImage src={logo} alt="logo" className={`h-5 mr-4 filter ${theme === 'dark' ? 'invert' : ''}`} />
-              // <img
-              //   src={process.env.GATSBY_API_URL! + logo.url}
-              //   className={`h-5 mr-4 filter ${theme === 'dark' ? 'invert' : ''}`}
-              //   alt="logo"
-              // />
-            )}
-            <div className="hidden md:block text-secondary">{site?.siteMetadata?.title || ''}</div>
-          </div>
-        </Link>
+        <div className="flex items-center">
+          <Link to="/" className="font-bold">
+            <div className="flex items-center">
+              <StaticImage
+                src="../../images/logo.png"
+                alt="Canopies Logo"
+                imgClassName={`filter ${theme === 'dark' ? 'invert' : ''}`}
+                loading="eager"
+                height={35}
+              />
+              <div className="hidden ml-4 md:block text-secondary">{site?.siteMetadata?.title || ''}</div>
+            </div>
+          </Link>
+        </div>
       </div>
       {children}
       <div className="flex-1 self-start flex justify-end mt-3.5">

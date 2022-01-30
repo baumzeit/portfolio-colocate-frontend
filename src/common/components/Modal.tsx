@@ -12,6 +12,7 @@ export const Modal: FC<{
   return (
     <div className={`z-20 ${containerClassName}`} style={style}>
       <Transition
+        className="h-full"
         appear={true}
         show={show}
         enter={`transition-opacity duration-600 ${enterClass}`}
@@ -21,7 +22,7 @@ export const Modal: FC<{
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div className={className}>{children}</div>
+        <div className={`h-full ${className}`}>{children}</div>
       </Transition>
     </div>
   )

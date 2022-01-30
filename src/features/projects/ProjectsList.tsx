@@ -62,8 +62,8 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
       </ul>
       <Modal
         show={!!modalData?.data}
-        className="bg-primary"
         containerClassName={`fixed left-0 right-0 bottom-0 overflow-y-auto`}
+        className="bg-primary"
         style={{ top: NAVBAR_HEIGHT + 'px' }}
       >
         {modalData?.data && (
@@ -74,7 +74,7 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
                 index={projects.findIndex((d) => d.slug === modalData.data?.slug)}
                 shift="25px"
                 hideTitle
-                disableImageOpacity
+                highlight
                 className="max-h-[160px]"
               />
             </div>

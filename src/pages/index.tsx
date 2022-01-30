@@ -51,18 +51,18 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
           </Navbar>
           <Main fullWidth className="pt-6 overflow-y-auto">
             <Container>
-              <div className="grid grid-cols-11">
-                <div className="col-start-1 col-end-5">
+              <div className="flex flex-col gap-5 sm:flex-row">
+                <div className="flex-1">
                   <Intro title={title} text={introText} />
                 </div>
-                <div className="col-start-6 col-end-12">
+                <div className="w-auto shrink-0">
                   <Profile profile={profile} />
                 </div>
               </div>
 
               <div className="mt-[100px]">
                 {chunk(displayFields, 3).map((fields, idx) => (
-                  <div key={`fields-grid-${idx}`} className="grid gap-x-[80px] xl:gap-x-[120px] gap-y-14 grid-cols-12">
+                  <div key={`fields-grid-${idx}`} className="grid grid-cols-12">
                     {fields.map((field, idx) => {
                       const one = idx % 3 === 0
                       const two = idx % 3 === 1
@@ -70,7 +70,9 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
                       return (
                         <div
                           key={field.id}
-                          className={`${
+                          className={`
+                          lg:mr-20 xl:mr-32 mb-14 last:mb-0
+                          ${
                             one
                               ? 'row-start-1 col-start-1'
                               : two
@@ -78,7 +80,7 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
                               : three
                               ? 'row-start-3 col-start-1 lg:row-start-2 lg:col-start-4 xl:col-start-3 '
                               : ''
-                          } col-end-12 lg:col-span-6`}
+                          } col-end-13 lg:col-span-6`}
                         >
                           <Field
                             field={field}

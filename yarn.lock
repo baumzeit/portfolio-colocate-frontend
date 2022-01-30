@@ -3659,6 +3659,11 @@ bl@^4.0.0, bl@^4.0.3:
     inherits "^2.0.4"
     readable-stream "^3.4.0"
 
+blobshape@^1.0.0:
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/blobshape/-/blobshape-1.0.0.tgz#8c96184439ac21b181ff4d8e0609681f181ecd12"
+  integrity sha512-GUD6tUIvj7k8zLSMtfdM1RyusWDjFqYL9g6J6QIgwxbVjL3b6mbRz5peerDc+6kbZX/14BSr3ed9sizrJKdkQQ==
+
 bluebird@^3.7.2:
   version "3.7.2"
   resolved "https://registry.yarnpkg.com/bluebird/-/bluebird-3.7.2.tgz#9f229c15be272454ffa973ace0dbee79a1b0c36f"
@@ -11075,6 +11080,13 @@ react-side-effect@^2.1.0:
   version "2.1.1"
   resolved "https://registry.yarnpkg.com/react-side-effect/-/react-side-effect-2.1.1.tgz#66c5701c3e7560ab4822a4ee2742dee215d72eb3"
   integrity sha512-2FoTQzRNTncBVtnzxFOk2mCpcfxQpenBMbk5kSVBg5UcPqV9fRbgY2zhb7GTWWOlpFmAxhClBDlIq8Rsubz1yQ==
+
+react-svg-blob@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/react-svg-blob/-/react-svg-blob-0.3.0.tgz#f759b1fd7139877572ee423aaacd6971bc6a023b"
+  integrity sha512-L4NVrifVEJVtTQL336qT/9BNs/UicLVloxLqsbTjPKnLhlXUMrhaCCzlbB3/TlQZ9SmfYfw/OnFvf/FM16VSdQ==
+  dependencies:
+    blobshape "^1.0.0"
 
 react@^17.0.1, react@^17.0.2:
   version "17.0.2"
