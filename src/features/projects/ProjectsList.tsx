@@ -63,7 +63,7 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
       <Modal
         show={!!modalData?.data}
         containerClassName={`fixed left-0 right-0 bottom-0 overflow-y-auto`}
-        className="bg-primary"
+        className="min-h-full bg-primary "
         style={{ top: NAVBAR_HEIGHT + 'px' }}
       >
         {modalData?.data && (

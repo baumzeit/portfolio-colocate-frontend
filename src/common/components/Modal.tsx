@@ -22,7 +22,7 @@ export const Modal: FC<{
         leaveFrom="opacity-100"
         leaveTo="opacity-0"
       >
-        <div className={`h-full ${className}`}>{children}</div>
+        <div className={`${className}`}>{children}</div>
       </Transition>
     </div>
   )
