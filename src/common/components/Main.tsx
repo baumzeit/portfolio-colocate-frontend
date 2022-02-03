@@ -1,10 +1,13 @@
-import React, { FC } from 'react'
+import React, { FC, forwardRef, PropsWithChildren } from 'react'
 
 type MainProps = {
-  fullWidth?: boolean
   className?: string
 }
 
-export const Main: FC<MainProps> = ({ children, fullWidth, className = '' }) => {
-  return <main className={`relative ${className}`}>{children}</main>
-}
+export const Main = forwardRef<HTMLDivElement, PropsWithChildren<MainProps>>(({ children, className = '' }, ref) => {
+  return (
+    <main className={`relative ${className}`} ref={ref}>
+      {children}
+    </main>
+  )
+})

@@ -48,7 +48,8 @@ module.exports = {
       resolve: 'gatsby-source-strapi',
       options: {
         apiURL: process.env.GATSBY_API_URL,
-        collectionTypes: ['Project', 'Tag', 'Area'],
+        // apiURL: 'http://localhost:1337',
+        collectionTypes: ['Project', 'Tag', 'Area', 'Organization'],
         singleTypes: ['Home'],
         // Extract images from markdown fields.
         // markdownImages: {

@@ -9,15 +9,17 @@ type ImageContainerProps = {
 }
 export const ImageContainer = ({ image, caption, alternativeText, onClose }: ImageContainerProps) => {
   return image ? (
-    <div>
-      <div className="flex justify-between gap-2">
+    <div className="grid">
+      <div className="order-2">
+        <GatsbyImage image={image} alt={alternativeText || ''} className="w-full rounded-sm animate-fadeIn" />
+      </div>
+      <div className="flex justify-between order-3 gap-2 mt-2 md:order-1 md:mt-0">
         {caption && <div>{caption}</div>}
-        <button onClick={onClose} className="flex items-center gap-2 py-1 mb-2 ml-auto tracking-wide text-highlight">
+        <button onClick={onClose} className="flex items-center gap-2 mb-2 ml-auto tracking-wide text-highlight">
           {/* <ArrowDownIcon className="w-6 h-6" /> */}
           show description
         </button>
       </div>
-      <GatsbyImage image={image} alt={alternativeText || ''} className="w-full rounded-sm animate-fadeIn" />
     </div>
   ) : null
 }

@@ -1,6 +1,5 @@
 import { graphql, PageProps } from 'gatsby'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
-import chunk from 'lodash.chunk'
 import React, { useMemo } from 'react'
 import { Helmet } from 'react-helmet'
 
@@ -11,15 +10,13 @@ import { Main } from '../common/components/Main'
 import { Navbar } from '../common/components/Navbar'
 import { assertAndExtractNodes } from '../common/utility/assertAndExtractNodes'
 import notEmpty from '../common/utility/notEmpty'
-import { Field } from '../features/home/Field'
+import { FieldsMap } from '../features/home/FieldsMap'
 import { Intro } from '../features/home/Intro'
 import { HomeNavContent } from '../features/home/NavContent'
 import { Profile } from '../features/home/Profile'
 
 // markup
 const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQuery>) => {
-  const breakpoints = useBreakpoint()
-
   const displayFields = useMemo(() => {
     if (allStrapiArea && strapiHome) {
       console.log(allStrapiArea, strapiHome)
@@ -51,7 +48,7 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
           </Navbar>
           <Main fullWidth className="pt-6 overflow-y-auto">
             <Container>
-              <div className="flex flex-col gap-5 sm:flex-row">
+              <div className="flex flex-col gap-24 sm:flex-row">
                 <div className="flex-1">
                   <Intro title={title} text={introText} />
                 </div>
@@ -59,40 +56,8 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
                   <Profile profile={profile} />
                 </div>
               </div>
-
-              <div className="mt-[100px]">
-                {chunk(displayFields, 3).map((fields, idx) => (
-                  <div key={`fields-grid-${idx}`} className="grid grid-cols-12">
-                    {fields.map((field, idx) => {
-                      const one = idx % 3 === 0
-                      const two = idx % 3 === 1
-                      const three = idx % 3 === 2
-                      return (
-                        <div
-                          key={field.id}
-                          className={`
-                          lg:mr-20 xl:mr-32 mb-14 last:mb-0
-                          ${
-                            one
-                              ? 'row-start-1 col-start-1'
-                              : two
-                              ? 'row-start-2 col-start-1 lg:row-start-1 xl:mt-[80px] lg:col-start-7'
-                              : three
-                              ? 'row-start-3 col-start-1 lg:row-start-2 lg:col-start-4 xl:col-start-3 '
-                              : ''
-                          } col-end-13 lg:col-span-6`}
-                        >
-                          <Field
-                            field={field}
-                            alignment={
-                              breakpoints.lg ? (one ? 'right' : two ? 'left' : three ? 'center' : 'left') : 'left'
-                            }
-                          />
-                        </div>
-                      )
-                    })}
-                  </div>
-                ))}
+              <div className="mt-24">
+                <FieldsMap fields={displayFields} />
               </div>
             </Container>
           </Main>

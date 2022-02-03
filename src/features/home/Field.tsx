@@ -2,7 +2,6 @@ import { graphql } from 'gatsby'
 import React from 'react'
 
 import { AreaDetailFragment } from '../../../graphql-types'
-import { lines } from '../blob/patterns'
 import { SvgBlob } from '../blob/SvgBlob'
 import { Tags } from './../../common/components/Tags'
 
@@ -10,6 +9,12 @@ const flex = {
   left: 'start',
   center: 'center',
   right: 'end'
+}
+
+const blobOffset = {
+  left: '-top-[100px] -left-[220px] lg:-left-[160px] lg:-top-[80px]',
+  center: 'lg:-top-[160px] left-0',
+  right: 'lg:-right-[160px] lg:-top-[80px]'
 }
 
 type FieldProps = { field: AreaDetailFragment; alignment: 'left' | 'center' | 'right' }
@@ -32,8 +37,8 @@ export const Field = ({ field: { name, description, id, color: fieldColor, tags 
         <Tags tags={tags} color={fieldColor || ''} />
       </div>
     </div>
-    <div className={`absolute -top-24 left-0 w-full flex`} style={{ justifyContent: flex[alignment] }}>
-      <div className="w-full opacity-60 -mx-14 -my-14 ">
+    <div className={`absolute w-full flex ${blobOffset[alignment]}`} style={{ justifyContent: flex[alignment] }}>
+      <div className="w-[700px] lg:w-[550px] opacity-60 -mx-14 -my-14 ">
         <SvgBlob
           variant="gradient"
           colors={[fieldColor || '', 'var(--color-brand)']}

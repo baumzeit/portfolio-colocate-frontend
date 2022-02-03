@@ -1,7 +1,7 @@
 import { Transition } from '@headlessui/react'
 import { graphql, PageProps } from 'gatsby'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
-import React, { useMemo } from 'react'
+import React, { useMemo, useRef } from 'react'
 
 import { ProjectsPageDataQuery } from '../../graphql-types'
 import Layout from '../common/components/Layout'
@@ -17,13 +17,14 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<P
   const projects = useMemo(() => assertAndExtractNodes(allStrapiProject), [allStrapiProject])
 
   const breakpoints = useBreakpoint()
+  const scrollContainer = useRef(null)
 
   return (
     <Layout>
       <Navbar className="z-30">
         <ProjectsNavContent />
       </Navbar>
-      <Main fullWidth className="overflow-y-auto">
+      <Main className="overflow-y-auto" ref={scrollContainer}>
         <Transition
           appear={true}
           show={true}
@@ -78,9 +79,9 @@ export const query = graphql`
     slug
     description
     organization {
-      data {
-        id
-      }
+      id
+      name
+      link
     }
     coverImage {
       id
@@ -98,7 +99,7 @@ export const query = graphql`
       caption
       file {
         childImageSharp {
-          gatsbyImageData(width: 600, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
+          gatsbyImageData(width: 800, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
         }
       }
     }

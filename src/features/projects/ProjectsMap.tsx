@@ -1,5 +1,4 @@
 import * as d3 from 'd3'
-import { graphql } from 'gatsby'
 import { getSrcSet } from 'gatsby-plugin-image'
 import React, { useCallback, useMemo } from 'react'
 import { useWindowSize } from 'rooks'

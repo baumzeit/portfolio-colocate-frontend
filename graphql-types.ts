@@ -640,26 +640,15 @@ export type StrapiProject = Node & {
   images?: Maybe<Array<Maybe<StrapiUploadFile>>>;
   tags?: Maybe<Array<Maybe<StrapiTag>>>;
   areas?: Maybe<Array<Maybe<StrapiArea>>>;
+  organization?: Maybe<StrapiOrganization>;
   createdAt?: Maybe<Scalars['Date']>;
   updatedAt?: Maybe<Scalars['Date']>;
   publishedAt?: Maybe<Scalars['Date']>;
   _xtypename?: Maybe<Scalars['String']>;
-  organization?: Maybe<StrapiProjectOrganization>;
   id: Scalars['ID'];
   parent?: Maybe<Node>;
   children: Array<Node>;
   internal: Internal;
-};
-
-export type StrapiProjectOrganization = {
-  _xtypename?: Maybe<Scalars['String']>;
-  data?: Maybe<StrapiProjectOrganizationData>;
-  nodeId?: Maybe<Scalars['String']>;
-};
-
-export type StrapiProjectOrganizationData = {
-  _xtypename?: Maybe<Scalars['String']>;
-  id?: Maybe<Scalars['String']>;
 };
 
 export type StrapiTag = Node & {
@@ -693,6 +682,28 @@ export type StrapiArea = Node & {
   parent?: Maybe<Node>;
   children: Array<Node>;
   internal: Internal;
+};
+
+export type StrapiOrganization = Node & {
+  strapiId?: Maybe<Scalars['Int']>;
+  name: Scalars['String'];
+  link?: Maybe<Scalars['String']>;
+  projects?: Maybe<Array<Maybe<StrapiProject>>>;
+  createdAt?: Maybe<Scalars['Date']>;
+  updatedAt?: Maybe<Scalars['Date']>;
+  publishedAt?: Maybe<Scalars['Date']>;
+  _xtypename?: Maybe<Scalars['String']>;
+  data?: Maybe<StrapiProjectOrganizationData>;
+  nodeId?: Maybe<Scalars['String']>;
+  id: Scalars['ID'];
+  parent?: Maybe<Node>;
+  children: Array<Node>;
+  internal: Internal;
+};
+
+export type StrapiProjectOrganizationData = {
+  _xtypename?: Maybe<Scalars['String']>;
+  id?: Maybe<Scalars['String']>;
 };
 
 export type StrapiHome = Node & {
@@ -760,6 +771,8 @@ export type Query = {
   allStrapiTag: StrapiTagConnection;
   strapiArea?: Maybe<StrapiArea>;
   allStrapiArea: StrapiAreaConnection;
+  strapiOrganization?: Maybe<StrapiOrganization>;
+  allStrapiOrganization: StrapiOrganizationConnection;
   strapiHome?: Maybe<StrapiHome>;
   allStrapiHome: StrapiHomeConnection;
 };
@@ -1044,11 +1057,11 @@ export type QueryStrapiProjectArgs = {
   images?: InputMaybe<StrapiUploadFileFilterListInput>;
   tags?: InputMaybe<StrapiTagFilterListInput>;
   areas?: InputMaybe<StrapiAreaFilterListInput>;
+  organization?: InputMaybe<StrapiOrganizationFilterInput>;
   createdAt?: InputMaybe<DateQueryOperatorInput>;
   updatedAt?: InputMaybe<DateQueryOperatorInput>;
   publishedAt?: InputMaybe<DateQueryOperatorInput>;
   _xtypename?: InputMaybe<StringQueryOperatorInput>;
-  organization?: InputMaybe<StrapiProjectOrganizationFilterInput>;
   id?: InputMaybe<StringQueryOperatorInput>;
   parent?: InputMaybe<NodeFilterInput>;
   children?: InputMaybe<NodeFilterListInput>;
@@ -1110,6 +1123,32 @@ export type QueryStrapiAreaArgs = {
 export type QueryAllStrapiAreaArgs = {
   filter?: InputMaybe<StrapiAreaFilterInput>;
   sort?: InputMaybe<StrapiAreaSortInput>;
+  skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+};
+
+
+export type QueryStrapiOrganizationArgs = {
+  strapiId?: InputMaybe<IntQueryOperatorInput>;
+  name?: InputMaybe<StringQueryOperatorInput>;
+  link?: InputMaybe<StringQueryOperatorInput>;
+  projects?: InputMaybe<StrapiProjectFilterListInput>;
+  createdAt?: InputMaybe<DateQueryOperatorInput>;
+  updatedAt?: InputMaybe<DateQueryOperatorInput>;
+  publishedAt?: InputMaybe<DateQueryOperatorInput>;
+  _xtypename?: InputMaybe<StringQueryOperatorInput>;
+  data?: InputMaybe<StrapiProjectOrganizationDataFilterInput>;
+  nodeId?: InputMaybe<StringQueryOperatorInput>;
+  id?: InputMaybe<StringQueryOperatorInput>;
+  parent?: InputMaybe<NodeFilterInput>;
+  children?: InputMaybe<NodeFilterListInput>;
+  internal?: InputMaybe<InternalFilterInput>;
+};
+
+
+export type QueryAllStrapiOrganizationArgs = {
+  filter?: InputMaybe<StrapiOrganizationFilterInput>;
+  sort?: InputMaybe<StrapiOrganizationSortInput>;
   skip?: InputMaybe<Scalars['Int']>;
   limit?: InputMaybe<Scalars['Int']>;
 };
@@ -3633,11 +3672,11 @@ export type StrapiProjectFilterInput = {
   images?: InputMaybe<StrapiUploadFileFilterListInput>;
   tags?: InputMaybe<StrapiTagFilterListInput>;
   areas?: InputMaybe<StrapiAreaFilterListInput>;
+  organization?: InputMaybe<StrapiOrganizationFilterInput>;
   createdAt?: InputMaybe<DateQueryOperatorInput>;
   updatedAt?: InputMaybe<DateQueryOperatorInput>;
   publishedAt?: InputMaybe<DateQueryOperatorInput>;
   _xtypename?: InputMaybe<StringQueryOperatorInput>;
-  organization?: InputMaybe<StrapiProjectOrganizationFilterInput>;
   id?: InputMaybe<StringQueryOperatorInput>;
   parent?: InputMaybe<NodeFilterInput>;
   children?: InputMaybe<NodeFilterListInput>;
@@ -3666,10 +3705,21 @@ export type StrapiAreaFilterInput = {
   internal?: InputMaybe<InternalFilterInput>;
 };
 
-export type StrapiProjectOrganizationFilterInput = {
+export type StrapiOrganizationFilterInput = {
+  strapiId?: InputMaybe<IntQueryOperatorInput>;
+  name?: InputMaybe<StringQueryOperatorInput>;
+  link?: InputMaybe<StringQueryOperatorInput>;
+  projects?: InputMaybe<StrapiProjectFilterListInput>;
+  createdAt?: InputMaybe<DateQueryOperatorInput>;
+  updatedAt?: InputMaybe<DateQueryOperatorInput>;
+  publishedAt?: InputMaybe<DateQueryOperatorInput>;
   _xtypename?: InputMaybe<StringQueryOperatorInput>;
   data?: InputMaybe<StrapiProjectOrganizationDataFilterInput>;
   nodeId?: InputMaybe<StringQueryOperatorInput>;
+  id?: InputMaybe<StringQueryOperatorInput>;
+  parent?: InputMaybe<NodeFilterInput>;
+  children?: InputMaybe<NodeFilterListInput>;
+  internal?: InputMaybe<InternalFilterInput>;
 };
 
 export type StrapiProjectOrganizationDataFilterInput = {
@@ -4036,12 +4086,21 @@ export type StrapiProjectFieldsEnum =
   | 'tags___projects___areas____xtypename'
   | 'tags___projects___areas___id'
   | 'tags___projects___areas___children'
+  | 'tags___projects___organization___strapiId'
+  | 'tags___projects___organization___name'
+  | 'tags___projects___organization___link'
+  | 'tags___projects___organization___projects'
+  | 'tags___projects___organization___createdAt'
+  | 'tags___projects___organization___updatedAt'
+  | 'tags___projects___organization___publishedAt'
+  | 'tags___projects___organization____xtypename'
+  | 'tags___projects___organization___nodeId'
+  | 'tags___projects___organization___id'
+  | 'tags___projects___organization___children'
   | 'tags___projects___createdAt'
   | 'tags___projects___updatedAt'
   | 'tags___projects___publishedAt'
   | 'tags___projects____xtypename'
-  | 'tags___projects___organization____xtypename'
-  | 'tags___projects___organization___nodeId'
   | 'tags___projects___id'
   | 'tags___projects___parent___id'
   | 'tags___projects___parent___children'
@@ -4278,12 +4337,21 @@ export type StrapiProjectFieldsEnum =
   | 'areas___projects___areas____xtypename'
   | 'areas___projects___areas___id'
   | 'areas___projects___areas___children'
+  | 'areas___projects___organization___strapiId'
+  | 'areas___projects___organization___name'
+  | 'areas___projects___organization___link'
+  | 'areas___projects___organization___projects'
+  | 'areas___projects___organization___createdAt'
+  | 'areas___projects___organization___updatedAt'
+  | 'areas___projects___organization___publishedAt'
+  | 'areas___projects___organization____xtypename'
+  | 'areas___projects___organization___nodeId'
+  | 'areas___projects___organization___id'
+  | 'areas___projects___organization___children'
   | 'areas___projects___createdAt'
   | 'areas___projects___updatedAt'
   | 'areas___projects___publishedAt'
   | 'areas___projects____xtypename'
-  | 'areas___projects___organization____xtypename'
-  | 'areas___projects___organization___nodeId'
   | 'areas___projects___id'
   | 'areas___projects___parent___id'
   | 'areas___projects___parent___children'
@@ -4340,14 +4408,161 @@ export type StrapiProjectFieldsEnum =
   | 'areas___internal___mediaType'
   | 'areas___internal___owner'
   | 'areas___internal___type'
-  | 'createdAt'
-  | 'updatedAt'
-  | 'publishedAt'
-  | '_xtypename'
+  | 'organization___strapiId'
+  | 'organization___name'
+  | 'organization___link'
+  | 'organization___projects'
+  | 'organization___projects___strapiId'
+  | 'organization___projects___title'
+  | 'organization___projects___name'
+  | 'organization___projects___description'
+  | 'organization___projects___slug'
+  | 'organization___projects___coverImage___strapiId'
+  | 'organization___projects___coverImage___name'
+  | 'organization___projects___coverImage___alternativeText'
+  | 'organization___projects___coverImage___caption'
+  | 'organization___projects___coverImage___width'
+  | 'organization___projects___coverImage___height'
+  | 'organization___projects___coverImage___formats'
+  | 'organization___projects___coverImage___hash'
+  | 'organization___projects___coverImage___ext'
+  | 'organization___projects___coverImage___mime'
+  | 'organization___projects___coverImage___size'
+  | 'organization___projects___coverImage___url'
+  | 'organization___projects___coverImage___previewUrl'
+  | 'organization___projects___coverImage___provider'
+  | 'organization___projects___coverImage___provider_metadata'
+  | 'organization___projects___coverImage___createdAt'
+  | 'organization___projects___coverImage___updatedAt'
+  | 'organization___projects___coverImage____xtypename'
+  | 'organization___projects___coverImage___nodeId'
+  | 'organization___projects___coverImage___id'
+  | 'organization___projects___coverImage___children'
+  | 'organization___projects___images'
+  | 'organization___projects___images___strapiId'
+  | 'organization___projects___images___name'
+  | 'organization___projects___images___alternativeText'
+  | 'organization___projects___images___caption'
+  | 'organization___projects___images___width'
+  | 'organization___projects___images___height'
+  | 'organization___projects___images___formats'
+  | 'organization___projects___images___hash'
+  | 'organization___projects___images___ext'
+  | 'organization___projects___images___mime'
+  | 'organization___projects___images___size'
+  | 'organization___projects___images___url'
+  | 'organization___projects___images___previewUrl'
+  | 'organization___projects___images___provider'
+  | 'organization___projects___images___provider_metadata'
+  | 'organization___projects___images___createdAt'
+  | 'organization___projects___images___updatedAt'
+  | 'organization___projects___images____xtypename'
+  | 'organization___projects___images___nodeId'
+  | 'organization___projects___images___id'
+  | 'organization___projects___images___children'
+  | 'organization___projects___tags'
+  | 'organization___projects___tags___strapiId'
+  | 'organization___projects___tags___name'
+  | 'organization___projects___tags___projects'
+  | 'organization___projects___tags___areas'
+  | 'organization___projects___tags___createdAt'
+  | 'organization___projects___tags___updatedAt'
+  | 'organization___projects___tags___publishedAt'
+  | 'organization___projects___tags____xtypename'
+  | 'organization___projects___tags___id'
+  | 'organization___projects___tags___children'
+  | 'organization___projects___areas'
+  | 'organization___projects___areas___strapiId'
+  | 'organization___projects___areas___name'
+  | 'organization___projects___areas___description'
+  | 'organization___projects___areas___color'
+  | 'organization___projects___areas___slug'
+  | 'organization___projects___areas___tags'
+  | 'organization___projects___areas___projects'
+  | 'organization___projects___areas___createdAt'
+  | 'organization___projects___areas___updatedAt'
+  | 'organization___projects___areas___publishedAt'
+  | 'organization___projects___areas____xtypename'
+  | 'organization___projects___areas___id'
+  | 'organization___projects___areas___children'
+  | 'organization___projects___organization___strapiId'
+  | 'organization___projects___organization___name'
+  | 'organization___projects___organization___link'
+  | 'organization___projects___organization___projects'
+  | 'organization___projects___organization___createdAt'
+  | 'organization___projects___organization___updatedAt'
+  | 'organization___projects___organization___publishedAt'
+  | 'organization___projects___organization____xtypename'
+  | 'organization___projects___organization___nodeId'
+  | 'organization___projects___organization___id'
+  | 'organization___projects___organization___children'
+  | 'organization___projects___createdAt'
+  | 'organization___projects___updatedAt'
+  | 'organization___projects___publishedAt'
+  | 'organization___projects____xtypename'
+  | 'organization___projects___id'
+  | 'organization___projects___parent___id'
+  | 'organization___projects___parent___children'
+  | 'organization___projects___children'
+  | 'organization___projects___children___id'
+  | 'organization___projects___children___children'
+  | 'organization___projects___internal___content'
+  | 'organization___projects___internal___contentDigest'
+  | 'organization___projects___internal___description'
+  | 'organization___projects___internal___fieldOwners'
+  | 'organization___projects___internal___ignoreType'
+  | 'organization___projects___internal___mediaType'
+  | 'organization___projects___internal___owner'
+  | 'organization___projects___internal___type'
+  | 'organization___createdAt'
+  | 'organization___updatedAt'
+  | 'organization___publishedAt'
   | 'organization____xtypename'
   | 'organization___data____xtypename'
   | 'organization___data___id'
   | 'organization___nodeId'
+  | 'organization___id'
+  | 'organization___parent___id'
+  | 'organization___parent___parent___id'
+  | 'organization___parent___parent___children'
+  | 'organization___parent___children'
+  | 'organization___parent___children___id'
+  | 'organization___parent___children___children'
+  | 'organization___parent___internal___content'
+  | 'organization___parent___internal___contentDigest'
+  | 'organization___parent___internal___description'
+  | 'organization___parent___internal___fieldOwners'
+  | 'organization___parent___internal___ignoreType'
+  | 'organization___parent___internal___mediaType'
+  | 'organization___parent___internal___owner'
+  | 'organization___parent___internal___type'
+  | 'organization___children'
+  | 'organization___children___id'
+  | 'organization___children___parent___id'
+  | 'organization___children___parent___children'
+  | 'organization___children___children'
+  | 'organization___children___children___id'
+  | 'organization___children___children___children'
+  | 'organization___children___internal___content'
+  | 'organization___children___internal___contentDigest'
+  | 'organization___children___internal___description'
+  | 'organization___children___internal___fieldOwners'
+  | 'organization___children___internal___ignoreType'
+  | 'organization___children___internal___mediaType'
+  | 'organization___children___internal___owner'
+  | 'organization___children___internal___type'
+  | 'organization___internal___content'
+  | 'organization___internal___contentDigest'
+  | 'organization___internal___description'
+  | 'organization___internal___fieldOwners'
+  | 'organization___internal___ignoreType'
+  | 'organization___internal___mediaType'
+  | 'organization___internal___owner'
+  | 'organization___internal___type'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'publishedAt'
+  | '_xtypename'
   | 'id'
   | 'parent___id'
   | 'parent___parent___id'
@@ -4782,14 +4997,49 @@ export type StrapiTagFieldsEnum =
   | 'projects___areas___internal___mediaType'
   | 'projects___areas___internal___owner'
   | 'projects___areas___internal___type'
-  | 'projects___createdAt'
-  | 'projects___updatedAt'
-  | 'projects___publishedAt'
-  | 'projects____xtypename'
+  | 'projects___organization___strapiId'
+  | 'projects___organization___name'
+  | 'projects___organization___link'
+  | 'projects___organization___projects'
+  | 'projects___organization___projects___strapiId'
+  | 'projects___organization___projects___title'
+  | 'projects___organization___projects___name'
+  | 'projects___organization___projects___description'
+  | 'projects___organization___projects___slug'
+  | 'projects___organization___projects___images'
+  | 'projects___organization___projects___tags'
+  | 'projects___organization___projects___areas'
+  | 'projects___organization___projects___createdAt'
+  | 'projects___organization___projects___updatedAt'
+  | 'projects___organization___projects___publishedAt'
+  | 'projects___organization___projects____xtypename'
+  | 'projects___organization___projects___id'
+  | 'projects___organization___projects___children'
+  | 'projects___organization___createdAt'
+  | 'projects___organization___updatedAt'
+  | 'projects___organization___publishedAt'
   | 'projects___organization____xtypename'
   | 'projects___organization___data____xtypename'
   | 'projects___organization___data___id'
   | 'projects___organization___nodeId'
+  | 'projects___organization___id'
+  | 'projects___organization___parent___id'
+  | 'projects___organization___parent___children'
+  | 'projects___organization___children'
+  | 'projects___organization___children___id'
+  | 'projects___organization___children___children'
+  | 'projects___organization___internal___content'
+  | 'projects___organization___internal___contentDigest'
+  | 'projects___organization___internal___description'
+  | 'projects___organization___internal___fieldOwners'
+  | 'projects___organization___internal___ignoreType'
+  | 'projects___organization___internal___mediaType'
+  | 'projects___organization___internal___owner'
+  | 'projects___organization___internal___type'
+  | 'projects___createdAt'
+  | 'projects___updatedAt'
+  | 'projects___publishedAt'
+  | 'projects____xtypename'
   | 'projects___id'
   | 'projects___parent___id'
   | 'projects___parent___parent___id'
@@ -4958,12 +5208,21 @@ export type StrapiTagFieldsEnum =
   | 'areas___projects___areas____xtypename'
   | 'areas___projects___areas___id'
   | 'areas___projects___areas___children'
+  | 'areas___projects___organization___strapiId'
+  | 'areas___projects___organization___name'
+  | 'areas___projects___organization___link'
+  | 'areas___projects___organization___projects'
+  | 'areas___projects___organization___createdAt'
+  | 'areas___projects___organization___updatedAt'
+  | 'areas___projects___organization___publishedAt'
+  | 'areas___projects___organization____xtypename'
+  | 'areas___projects___organization___nodeId'
+  | 'areas___projects___organization___id'
+  | 'areas___projects___organization___children'
   | 'areas___projects___createdAt'
   | 'areas___projects___updatedAt'
   | 'areas___projects___publishedAt'
   | 'areas___projects____xtypename'
-  | 'areas___projects___organization____xtypename'
-  | 'areas___projects___organization___nodeId'
   | 'areas___projects___id'
   | 'areas___projects___parent___id'
   | 'areas___projects___parent___children'
@@ -5285,12 +5544,21 @@ export type StrapiAreaFieldsEnum =
   | 'tags___projects___areas____xtypename'
   | 'tags___projects___areas___id'
   | 'tags___projects___areas___children'
+  | 'tags___projects___organization___strapiId'
+  | 'tags___projects___organization___name'
+  | 'tags___projects___organization___link'
+  | 'tags___projects___organization___projects'
+  | 'tags___projects___organization___createdAt'
+  | 'tags___projects___organization___updatedAt'
+  | 'tags___projects___organization___publishedAt'
+  | 'tags___projects___organization____xtypename'
+  | 'tags___projects___organization___nodeId'
+  | 'tags___projects___organization___id'
+  | 'tags___projects___organization___children'
   | 'tags___projects___createdAt'
   | 'tags___projects___updatedAt'
   | 'tags___projects___publishedAt'
   | 'tags___projects____xtypename'
-  | 'tags___projects___organization____xtypename'
-  | 'tags___projects___organization___nodeId'
   | 'tags___projects___id'
   | 'tags___projects___parent___id'
   | 'tags___projects___parent___children'
@@ -5650,14 +5918,49 @@ export type StrapiAreaFieldsEnum =
   | 'projects___areas___internal___mediaType'
   | 'projects___areas___internal___owner'
   | 'projects___areas___internal___type'
-  | 'projects___createdAt'
-  | 'projects___updatedAt'
-  | 'projects___publishedAt'
-  | 'projects____xtypename'
+  | 'projects___organization___strapiId'
+  | 'projects___organization___name'
+  | 'projects___organization___link'
+  | 'projects___organization___projects'
+  | 'projects___organization___projects___strapiId'
+  | 'projects___organization___projects___title'
+  | 'projects___organization___projects___name'
+  | 'projects___organization___projects___description'
+  | 'projects___organization___projects___slug'
+  | 'projects___organization___projects___images'
+  | 'projects___organization___projects___tags'
+  | 'projects___organization___projects___areas'
+  | 'projects___organization___projects___createdAt'
+  | 'projects___organization___projects___updatedAt'
+  | 'projects___organization___projects___publishedAt'
+  | 'projects___organization___projects____xtypename'
+  | 'projects___organization___projects___id'
+  | 'projects___organization___projects___children'
+  | 'projects___organization___createdAt'
+  | 'projects___organization___updatedAt'
+  | 'projects___organization___publishedAt'
   | 'projects___organization____xtypename'
   | 'projects___organization___data____xtypename'
   | 'projects___organization___data___id'
   | 'projects___organization___nodeId'
+  | 'projects___organization___id'
+  | 'projects___organization___parent___id'
+  | 'projects___organization___parent___children'
+  | 'projects___organization___children'
+  | 'projects___organization___children___id'
+  | 'projects___organization___children___children'
+  | 'projects___organization___internal___content'
+  | 'projects___organization___internal___contentDigest'
+  | 'projects___organization___internal___description'
+  | 'projects___organization___internal___fieldOwners'
+  | 'projects___organization___internal___ignoreType'
+  | 'projects___organization___internal___mediaType'
+  | 'projects___organization___internal___owner'
+  | 'projects___organization___internal___type'
+  | 'projects___createdAt'
+  | 'projects___updatedAt'
+  | 'projects___publishedAt'
+  | 'projects____xtypename'
   | 'projects___id'
   | 'projects___parent___id'
   | 'projects___parent___parent___id'
@@ -5830,6 +6133,529 @@ export type StrapiAreaGroupConnectionGroupArgs = {
 
 export type StrapiAreaSortInput = {
   fields?: InputMaybe<Array<InputMaybe<StrapiAreaFieldsEnum>>>;
+  order?: InputMaybe<Array<InputMaybe<SortOrderEnum>>>;
+};
+
+export type StrapiOrganizationConnection = {
+  totalCount: Scalars['Int'];
+  edges: Array<StrapiOrganizationEdge>;
+  nodes: Array<StrapiOrganization>;
+  pageInfo: PageInfo;
+  distinct: Array<Scalars['String']>;
+  max?: Maybe<Scalars['Float']>;
+  min?: Maybe<Scalars['Float']>;
+  sum?: Maybe<Scalars['Float']>;
+  group: Array<StrapiOrganizationGroupConnection>;
+};
+
+
+export type StrapiOrganizationConnectionDistinctArgs = {
+  field: StrapiOrganizationFieldsEnum;
+};
+
+
+export type StrapiOrganizationConnectionMaxArgs = {
+  field: StrapiOrganizationFieldsEnum;
+};
+
+
+export type StrapiOrganizationConnectionMinArgs = {
+  field: StrapiOrganizationFieldsEnum;
+};
+
+
+export type StrapiOrganizationConnectionSumArgs = {
+  field: StrapiOrganizationFieldsEnum;
+};
+
+
+export type StrapiOrganizationConnectionGroupArgs = {
+  skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  field: StrapiOrganizationFieldsEnum;
+};
+
+export type StrapiOrganizationEdge = {
+  next?: Maybe<StrapiOrganization>;
+  node: StrapiOrganization;
+  previous?: Maybe<StrapiOrganization>;
+};
+
+export type StrapiOrganizationFieldsEnum =
+  | 'strapiId'
+  | 'name'
+  | 'link'
+  | 'projects'
+  | 'projects___strapiId'
+  | 'projects___title'
+  | 'projects___name'
+  | 'projects___description'
+  | 'projects___slug'
+  | 'projects___coverImage___strapiId'
+  | 'projects___coverImage___file___sourceInstanceName'
+  | 'projects___coverImage___file___absolutePath'
+  | 'projects___coverImage___file___relativePath'
+  | 'projects___coverImage___file___extension'
+  | 'projects___coverImage___file___size'
+  | 'projects___coverImage___file___prettySize'
+  | 'projects___coverImage___file___modifiedTime'
+  | 'projects___coverImage___file___accessTime'
+  | 'projects___coverImage___file___changeTime'
+  | 'projects___coverImage___file___birthTime'
+  | 'projects___coverImage___file___root'
+  | 'projects___coverImage___file___dir'
+  | 'projects___coverImage___file___base'
+  | 'projects___coverImage___file___ext'
+  | 'projects___coverImage___file___name'
+  | 'projects___coverImage___file___relativeDirectory'
+  | 'projects___coverImage___file___dev'
+  | 'projects___coverImage___file___mode'
+  | 'projects___coverImage___file___nlink'
+  | 'projects___coverImage___file___uid'
+  | 'projects___coverImage___file___gid'
+  | 'projects___coverImage___file___rdev'
+  | 'projects___coverImage___file___ino'
+  | 'projects___coverImage___file___atimeMs'
+  | 'projects___coverImage___file___mtimeMs'
+  | 'projects___coverImage___file___ctimeMs'
+  | 'projects___coverImage___file___atime'
+  | 'projects___coverImage___file___mtime'
+  | 'projects___coverImage___file___ctime'
+  | 'projects___coverImage___file___birthtime'
+  | 'projects___coverImage___file___birthtimeMs'
+  | 'projects___coverImage___file___blksize'
+  | 'projects___coverImage___file___blocks'
+  | 'projects___coverImage___file___url'
+  | 'projects___coverImage___file___publicURL'
+  | 'projects___coverImage___file___childrenImageSharp'
+  | 'projects___coverImage___file___id'
+  | 'projects___coverImage___file___children'
+  | 'projects___coverImage___name'
+  | 'projects___coverImage___alternativeText'
+  | 'projects___coverImage___caption'
+  | 'projects___coverImage___width'
+  | 'projects___coverImage___height'
+  | 'projects___coverImage___formats'
+  | 'projects___coverImage___hash'
+  | 'projects___coverImage___ext'
+  | 'projects___coverImage___mime'
+  | 'projects___coverImage___size'
+  | 'projects___coverImage___url'
+  | 'projects___coverImage___previewUrl'
+  | 'projects___coverImage___provider'
+  | 'projects___coverImage___provider_metadata'
+  | 'projects___coverImage___createdAt'
+  | 'projects___coverImage___updatedAt'
+  | 'projects___coverImage____xtypename'
+  | 'projects___coverImage___data____xtypename'
+  | 'projects___coverImage___data___id'
+  | 'projects___coverImage___nodeId'
+  | 'projects___coverImage___id'
+  | 'projects___coverImage___parent___id'
+  | 'projects___coverImage___parent___children'
+  | 'projects___coverImage___children'
+  | 'projects___coverImage___children___id'
+  | 'projects___coverImage___children___children'
+  | 'projects___coverImage___internal___content'
+  | 'projects___coverImage___internal___contentDigest'
+  | 'projects___coverImage___internal___description'
+  | 'projects___coverImage___internal___fieldOwners'
+  | 'projects___coverImage___internal___ignoreType'
+  | 'projects___coverImage___internal___mediaType'
+  | 'projects___coverImage___internal___owner'
+  | 'projects___coverImage___internal___type'
+  | 'projects___images'
+  | 'projects___images___strapiId'
+  | 'projects___images___file___sourceInstanceName'
+  | 'projects___images___file___absolutePath'
+  | 'projects___images___file___relativePath'
+  | 'projects___images___file___extension'
+  | 'projects___images___file___size'
+  | 'projects___images___file___prettySize'
+  | 'projects___images___file___modifiedTime'
+  | 'projects___images___file___accessTime'
+  | 'projects___images___file___changeTime'
+  | 'projects___images___file___birthTime'
+  | 'projects___images___file___root'
+  | 'projects___images___file___dir'
+  | 'projects___images___file___base'
+  | 'projects___images___file___ext'
+  | 'projects___images___file___name'
+  | 'projects___images___file___relativeDirectory'
+  | 'projects___images___file___dev'
+  | 'projects___images___file___mode'
+  | 'projects___images___file___nlink'
+  | 'projects___images___file___uid'
+  | 'projects___images___file___gid'
+  | 'projects___images___file___rdev'
+  | 'projects___images___file___ino'
+  | 'projects___images___file___atimeMs'
+  | 'projects___images___file___mtimeMs'
+  | 'projects___images___file___ctimeMs'
+  | 'projects___images___file___atime'
+  | 'projects___images___file___mtime'
+  | 'projects___images___file___ctime'
+  | 'projects___images___file___birthtime'
+  | 'projects___images___file___birthtimeMs'
+  | 'projects___images___file___blksize'
+  | 'projects___images___file___blocks'
+  | 'projects___images___file___url'
+  | 'projects___images___file___publicURL'
+  | 'projects___images___file___childrenImageSharp'
+  | 'projects___images___file___id'
+  | 'projects___images___file___children'
+  | 'projects___images___name'
+  | 'projects___images___alternativeText'
+  | 'projects___images___caption'
+  | 'projects___images___width'
+  | 'projects___images___height'
+  | 'projects___images___formats'
+  | 'projects___images___hash'
+  | 'projects___images___ext'
+  | 'projects___images___mime'
+  | 'projects___images___size'
+  | 'projects___images___url'
+  | 'projects___images___previewUrl'
+  | 'projects___images___provider'
+  | 'projects___images___provider_metadata'
+  | 'projects___images___createdAt'
+  | 'projects___images___updatedAt'
+  | 'projects___images____xtypename'
+  | 'projects___images___data____xtypename'
+  | 'projects___images___data___id'
+  | 'projects___images___nodeId'
+  | 'projects___images___id'
+  | 'projects___images___parent___id'
+  | 'projects___images___parent___children'
+  | 'projects___images___children'
+  | 'projects___images___children___id'
+  | 'projects___images___children___children'
+  | 'projects___images___internal___content'
+  | 'projects___images___internal___contentDigest'
+  | 'projects___images___internal___description'
+  | 'projects___images___internal___fieldOwners'
+  | 'projects___images___internal___ignoreType'
+  | 'projects___images___internal___mediaType'
+  | 'projects___images___internal___owner'
+  | 'projects___images___internal___type'
+  | 'projects___tags'
+  | 'projects___tags___strapiId'
+  | 'projects___tags___name'
+  | 'projects___tags___projects'
+  | 'projects___tags___projects___strapiId'
+  | 'projects___tags___projects___title'
+  | 'projects___tags___projects___name'
+  | 'projects___tags___projects___description'
+  | 'projects___tags___projects___slug'
+  | 'projects___tags___projects___images'
+  | 'projects___tags___projects___tags'
+  | 'projects___tags___projects___areas'
+  | 'projects___tags___projects___createdAt'
+  | 'projects___tags___projects___updatedAt'
+  | 'projects___tags___projects___publishedAt'
+  | 'projects___tags___projects____xtypename'
+  | 'projects___tags___projects___id'
+  | 'projects___tags___projects___children'
+  | 'projects___tags___areas'
+  | 'projects___tags___areas___strapiId'
+  | 'projects___tags___areas___name'
+  | 'projects___tags___areas___description'
+  | 'projects___tags___areas___color'
+  | 'projects___tags___areas___slug'
+  | 'projects___tags___areas___tags'
+  | 'projects___tags___areas___projects'
+  | 'projects___tags___areas___createdAt'
+  | 'projects___tags___areas___updatedAt'
+  | 'projects___tags___areas___publishedAt'
+  | 'projects___tags___areas____xtypename'
+  | 'projects___tags___areas___id'
+  | 'projects___tags___areas___children'
+  | 'projects___tags___createdAt'
+  | 'projects___tags___updatedAt'
+  | 'projects___tags___publishedAt'
+  | 'projects___tags____xtypename'
+  | 'projects___tags___id'
+  | 'projects___tags___parent___id'
+  | 'projects___tags___parent___children'
+  | 'projects___tags___children'
+  | 'projects___tags___children___id'
+  | 'projects___tags___children___children'
+  | 'projects___tags___internal___content'
+  | 'projects___tags___internal___contentDigest'
+  | 'projects___tags___internal___description'
+  | 'projects___tags___internal___fieldOwners'
+  | 'projects___tags___internal___ignoreType'
+  | 'projects___tags___internal___mediaType'
+  | 'projects___tags___internal___owner'
+  | 'projects___tags___internal___type'
+  | 'projects___areas'
+  | 'projects___areas___strapiId'
+  | 'projects___areas___name'
+  | 'projects___areas___description'
+  | 'projects___areas___color'
+  | 'projects___areas___slug'
+  | 'projects___areas___tags'
+  | 'projects___areas___tags___strapiId'
+  | 'projects___areas___tags___name'
+  | 'projects___areas___tags___projects'
+  | 'projects___areas___tags___areas'
+  | 'projects___areas___tags___createdAt'
+  | 'projects___areas___tags___updatedAt'
+  | 'projects___areas___tags___publishedAt'
+  | 'projects___areas___tags____xtypename'
+  | 'projects___areas___tags___id'
+  | 'projects___areas___tags___children'
+  | 'projects___areas___projects'
+  | 'projects___areas___projects___strapiId'
+  | 'projects___areas___projects___title'
+  | 'projects___areas___projects___name'
+  | 'projects___areas___projects___description'
+  | 'projects___areas___projects___slug'
+  | 'projects___areas___projects___images'
+  | 'projects___areas___projects___tags'
+  | 'projects___areas___projects___areas'
+  | 'projects___areas___projects___createdAt'
+  | 'projects___areas___projects___updatedAt'
+  | 'projects___areas___projects___publishedAt'
+  | 'projects___areas___projects____xtypename'
+  | 'projects___areas___projects___id'
+  | 'projects___areas___projects___children'
+  | 'projects___areas___createdAt'
+  | 'projects___areas___updatedAt'
+  | 'projects___areas___publishedAt'
+  | 'projects___areas____xtypename'
+  | 'projects___areas___id'
+  | 'projects___areas___parent___id'
+  | 'projects___areas___parent___children'
+  | 'projects___areas___children'
+  | 'projects___areas___children___id'
+  | 'projects___areas___children___children'
+  | 'projects___areas___internal___content'
+  | 'projects___areas___internal___contentDigest'
+  | 'projects___areas___internal___description'
+  | 'projects___areas___internal___fieldOwners'
+  | 'projects___areas___internal___ignoreType'
+  | 'projects___areas___internal___mediaType'
+  | 'projects___areas___internal___owner'
+  | 'projects___areas___internal___type'
+  | 'projects___organization___strapiId'
+  | 'projects___organization___name'
+  | 'projects___organization___link'
+  | 'projects___organization___projects'
+  | 'projects___organization___projects___strapiId'
+  | 'projects___organization___projects___title'
+  | 'projects___organization___projects___name'
+  | 'projects___organization___projects___description'
+  | 'projects___organization___projects___slug'
+  | 'projects___organization___projects___images'
+  | 'projects___organization___projects___tags'
+  | 'projects___organization___projects___areas'
+  | 'projects___organization___projects___createdAt'
+  | 'projects___organization___projects___updatedAt'
+  | 'projects___organization___projects___publishedAt'
+  | 'projects___organization___projects____xtypename'
+  | 'projects___organization___projects___id'
+  | 'projects___organization___projects___children'
+  | 'projects___organization___createdAt'
+  | 'projects___organization___updatedAt'
+  | 'projects___organization___publishedAt'
+  | 'projects___organization____xtypename'
+  | 'projects___organization___data____xtypename'
+  | 'projects___organization___data___id'
+  | 'projects___organization___nodeId'
+  | 'projects___organization___id'
+  | 'projects___organization___parent___id'
+  | 'projects___organization___parent___children'
+  | 'projects___organization___children'
+  | 'projects___organization___children___id'
+  | 'projects___organization___children___children'
+  | 'projects___organization___internal___content'
+  | 'projects___organization___internal___contentDigest'
+  | 'projects___organization___internal___description'
+  | 'projects___organization___internal___fieldOwners'
+  | 'projects___organization___internal___ignoreType'
+  | 'projects___organization___internal___mediaType'
+  | 'projects___organization___internal___owner'
+  | 'projects___organization___internal___type'
+  | 'projects___createdAt'
+  | 'projects___updatedAt'
+  | 'projects___publishedAt'
+  | 'projects____xtypename'
+  | 'projects___id'
+  | 'projects___parent___id'
+  | 'projects___parent___parent___id'
+  | 'projects___parent___parent___children'
+  | 'projects___parent___children'
+  | 'projects___parent___children___id'
+  | 'projects___parent___children___children'
+  | 'projects___parent___internal___content'
+  | 'projects___parent___internal___contentDigest'
+  | 'projects___parent___internal___description'
+  | 'projects___parent___internal___fieldOwners'
+  | 'projects___parent___internal___ignoreType'
+  | 'projects___parent___internal___mediaType'
+  | 'projects___parent___internal___owner'
+  | 'projects___parent___internal___type'
+  | 'projects___children'
+  | 'projects___children___id'
+  | 'projects___children___parent___id'
+  | 'projects___children___parent___children'
+  | 'projects___children___children'
+  | 'projects___children___children___id'
+  | 'projects___children___children___children'
+  | 'projects___children___internal___content'
+  | 'projects___children___internal___contentDigest'
+  | 'projects___children___internal___description'
+  | 'projects___children___internal___fieldOwners'
+  | 'projects___children___internal___ignoreType'
+  | 'projects___children___internal___mediaType'
+  | 'projects___children___internal___owner'
+  | 'projects___children___internal___type'
+  | 'projects___internal___content'
+  | 'projects___internal___contentDigest'
+  | 'projects___internal___description'
+  | 'projects___internal___fieldOwners'
+  | 'projects___internal___ignoreType'
+  | 'projects___internal___mediaType'
+  | 'projects___internal___owner'
+  | 'projects___internal___type'
+  | 'createdAt'
+  | 'updatedAt'
+  | 'publishedAt'
+  | '_xtypename'
+  | 'data____xtypename'
+  | 'data___id'
+  | 'nodeId'
+  | 'id'
+  | 'parent___id'
+  | 'parent___parent___id'
+  | 'parent___parent___parent___id'
+  | 'parent___parent___parent___children'
+  | 'parent___parent___children'
+  | 'parent___parent___children___id'
+  | 'parent___parent___children___children'
+  | 'parent___parent___internal___content'
+  | 'parent___parent___internal___contentDigest'
+  | 'parent___parent___internal___description'
+  | 'parent___parent___internal___fieldOwners'
+  | 'parent___parent___internal___ignoreType'
+  | 'parent___parent___internal___mediaType'
+  | 'parent___parent___internal___owner'
+  | 'parent___parent___internal___type'
+  | 'parent___children'
+  | 'parent___children___id'
+  | 'parent___children___parent___id'
+  | 'parent___children___parent___children'
+  | 'parent___children___children'
+  | 'parent___children___children___id'
+  | 'parent___children___children___children'
+  | 'parent___children___internal___content'
+  | 'parent___children___internal___contentDigest'
+  | 'parent___children___internal___description'
+  | 'parent___children___internal___fieldOwners'
+  | 'parent___children___internal___ignoreType'
+  | 'parent___children___internal___mediaType'
+  | 'parent___children___internal___owner'
+  | 'parent___children___internal___type'
+  | 'parent___internal___content'
+  | 'parent___internal___contentDigest'
+  | 'parent___internal___description'
+  | 'parent___internal___fieldOwners'
+  | 'parent___internal___ignoreType'
+  | 'parent___internal___mediaType'
+  | 'parent___internal___owner'
+  | 'parent___internal___type'
+  | 'children'
+  | 'children___id'
+  | 'children___parent___id'
+  | 'children___parent___parent___id'
+  | 'children___parent___parent___children'
+  | 'children___parent___children'
+  | 'children___parent___children___id'
+  | 'children___parent___children___children'
+  | 'children___parent___internal___content'
+  | 'children___parent___internal___contentDigest'
+  | 'children___parent___internal___description'
+  | 'children___parent___internal___fieldOwners'
+  | 'children___parent___internal___ignoreType'
+  | 'children___parent___internal___mediaType'
+  | 'children___parent___internal___owner'
+  | 'children___parent___internal___type'
+  | 'children___children'
+  | 'children___children___id'
+  | 'children___children___parent___id'
+  | 'children___children___parent___children'
+  | 'children___children___children'
+  | 'children___children___children___id'
+  | 'children___children___children___children'
+  | 'children___children___internal___content'
+  | 'children___children___internal___contentDigest'
+  | 'children___children___internal___description'
+  | 'children___children___internal___fieldOwners'
+  | 'children___children___internal___ignoreType'
+  | 'children___children___internal___mediaType'
+  | 'children___children___internal___owner'
+  | 'children___children___internal___type'
+  | 'children___internal___content'
+  | 'children___internal___contentDigest'
+  | 'children___internal___description'
+  | 'children___internal___fieldOwners'
+  | 'children___internal___ignoreType'
+  | 'children___internal___mediaType'
+  | 'children___internal___owner'
+  | 'children___internal___type'
+  | 'internal___content'
+  | 'internal___contentDigest'
+  | 'internal___description'
+  | 'internal___fieldOwners'
+  | 'internal___ignoreType'
+  | 'internal___mediaType'
+  | 'internal___owner'
+  | 'internal___type';
+
+export type StrapiOrganizationGroupConnection = {
+  totalCount: Scalars['Int'];
+  edges: Array<StrapiOrganizationEdge>;
+  nodes: Array<StrapiOrganization>;
+  pageInfo: PageInfo;
+  distinct: Array<Scalars['String']>;
+  max?: Maybe<Scalars['Float']>;
+  min?: Maybe<Scalars['Float']>;
+  sum?: Maybe<Scalars['Float']>;
+  group: Array<StrapiOrganizationGroupConnection>;
+  field: Scalars['String'];
+  fieldValue?: Maybe<Scalars['String']>;
+};
+
+
+export type StrapiOrganizationGroupConnectionDistinctArgs = {
+  field: StrapiOrganizationFieldsEnum;
+};
+
+
+export type StrapiOrganizationGroupConnectionMaxArgs = {
+  field: StrapiOrganizationFieldsEnum;
+};
+
+
+export type StrapiOrganizationGroupConnectionMinArgs = {
+  field: StrapiOrganizationFieldsEnum;
+};
+
+
+export type StrapiOrganizationGroupConnectionSumArgs = {
+  field: StrapiOrganizationFieldsEnum;
+};
+
+
+export type StrapiOrganizationGroupConnectionGroupArgs = {
+  skip?: InputMaybe<Scalars['Int']>;
+  limit?: InputMaybe<Scalars['Int']>;
+  field: StrapiOrganizationFieldsEnum;
+};
+
+export type StrapiOrganizationSortInput = {
+  fields?: InputMaybe<Array<InputMaybe<StrapiOrganizationFieldsEnum>>>;
   order?: InputMaybe<Array<InputMaybe<SortOrderEnum>>>;
 };
 
@@ -6204,12 +7030,21 @@ export type StrapiHomeFieldsEnum =
   | 'areas___projects___areas____xtypename'
   | 'areas___projects___areas___id'
   | 'areas___projects___areas___children'
+  | 'areas___projects___organization___strapiId'
+  | 'areas___projects___organization___name'
+  | 'areas___projects___organization___link'
+  | 'areas___projects___organization___projects'
+  | 'areas___projects___organization___createdAt'
+  | 'areas___projects___organization___updatedAt'
+  | 'areas___projects___organization___publishedAt'
+  | 'areas___projects___organization____xtypename'
+  | 'areas___projects___organization___nodeId'
+  | 'areas___projects___organization___id'
+  | 'areas___projects___organization___children'
   | 'areas___projects___createdAt'
   | 'areas___projects___updatedAt'
   | 'areas___projects___publishedAt'
   | 'areas___projects____xtypename'
-  | 'areas___projects___organization____xtypename'
-  | 'areas___projects___organization___nodeId'
   | 'areas___projects___id'
   | 'areas___projects___parent___id'
   | 'areas___projects___parent___children'
@@ -6442,11 +7277,11 @@ export type HomeDataQuery = { strapiHome?: { title: string, introText: string, p
 export type ProjectsPageDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectsPageDataQuery = { allStrapiProject: { totalCount: number, edges: Array<{ node: { id: string, title: string, name: string, slug: string, description: string, organization?: { data?: { id?: string | null | undefined } | null | undefined } | null | undefined, coverImage?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined, areas?: Array<{ id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } | null | undefined> | null | undefined } }> }, allStrapiArea: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } }> } };
+export type ProjectsPageDataQuery = { allStrapiProject: { totalCount: number, edges: Array<{ node: { id: string, title: string, name: string, slug: string, description: string, organization?: { id: string, name: string, link?: string | null | undefined } | null | undefined, coverImage?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined, areas?: Array<{ id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } | null | undefined> | null | undefined } }> }, allStrapiArea: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } }> } };
 
 export type AreaBaseFragment = { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined };
 
-export type ProjectDetailFragment = { id: string, title: string, name: string, slug: string, description: string, organization?: { data?: { id?: string | null | undefined } | null | undefined } | null | undefined, coverImage?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined, areas?: Array<{ id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } | null | undefined> | null | undefined };
+export type ProjectDetailFragment = { id: string, title: string, name: string, slug: string, description: string, organization?: { id: string, name: string, link?: string | null | undefined } | null | undefined, coverImage?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined, areas?: Array<{ id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } | null | undefined> | null | undefined };
 
 export type GatsbyImageSharpFixedFragment = { base64?: string | null | undefined, width: number, height: number, src: string, srcSet: string };
 

@@ -1,8 +1,8 @@
 import { ExternalLinkIcon } from '@heroicons/react/solid'
-import { getImage, getSrc } from 'gatsby-plugin-image'
-import React, { FC, useEffect, useState } from 'react'
+import { useBreakpoint } from 'gatsby-plugin-breakpoints'
+import React, { FC, RefObject, useEffect, useMemo, useState } from 'react'
 
-import { ProjectDetailFragment } from '../../../graphql-types'
+import { Tags } from '../../common/components/Tags'
 import notEmpty from '../../common/utility/notEmpty'
 import { SetModalProps } from '../projects/ProjectsMap'
 import { ImageContainer } from './ImageContainer'
@@ -10,10 +10,17 @@ import { ImagesPreview } from './ImagesPreview'
 import { InfoRow } from './InfoRow'
 import { SliderControls } from './SliderControls'
 
-type ProjectDetailProps = SetModalProps
+type ProjectDetailProps = SetModalProps & { scrollContainer?: RefObject<HTMLDivElement> }
 
-export const ProjectDetail: FC<ProjectDetailProps> = ({ data, onClose, onNext, onPrev, children }) => {
+export const ProjectDetail: FC<ProjectDetailProps> = ({ data, onClose, onNext, onPrev, scrollContainer, children }) => {
+  const breakpoint = useBreakpoint()
+
   const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null)
+  const selectedImage = useMemo(() => {
+    if (data?.images && selectedImageIdx !== null) {
+      return data.images.filter(notEmpty)[selectedImageIdx]
+    }
+  }, [data, selectedImageIdx])
 
   const id = data?.id
 
@@ -31,31 +38,41 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({ data, onClose, onNext, o
         </div>
         <div className="flex flex-wrap items-center justify-between py-1 pl-2 pr-4 rounded-sm bg-text-secondary text-bg-primary">
           <h1 className="w-full text-2xl md:text-3xl md:w-auto">{data.title}</h1>
-          {/* <Organization organization={data.organization} /> */}
         </div>
 
         <div className="flex flex-col mt-6 mb-6 gap-y-6 gap-x-12 md:flex-row">
-          <div className="flex-1">
-            <div className="grid" style={{ gridTemplateAreas: '"content"' }}>
-              <p
-                className="text-justify transition-opacity"
-                style={{ gridArea: 'content', opacity: selectedImageIdx === null ? 1 : 0 }}
+          <div className="flex-1 order-3 md:order-1">
+            <div className="relative grid" style={{ gridTemplateAreas: '"content"' }}>
+              <div
+                className={`transition-opacity duration-300 ${
+                  selectedImageIdx === null
+                    ? 'opacity-100'
+                    : 'opacity-0 absolute overflow-hidden h-full w-full top-0 left-0'
+                }`}
+                style={{ gridArea: 'content' }}
               >
-                {data.description}
-              </p>
-              {selectedImageIdx !== null && data?.images && (
-                <div style={{ gridArea: 'content' }} className="z-10">
+                <p className={`text-justify`}>{data.description}</p>
+                {data?.tags && (
+                  <div className="hidden mt-5 md:block">
+                    <Tags tags={data.tags} />
+                  </div>
+                )}
+              </div>
+              {selectedImage && (
+                <div style={{ gridArea: 'content' }} className="z-10 min-h-[60vh]">
                   <ImageContainer
-                    image={data.images.filter(notEmpty)[0].file?.childImageSharp?.gatsbyImageData}
+                    image={selectedImage.file?.childImageSharp?.gatsbyImageData}
+                    caption={selectedImage.caption || ''}
+                    alternativeText={selectedImage.alternativeText || ''}
                     onClose={() => setSelectedImageIdx(null)}
                   />
                 </div>
               )}
             </div>
           </div>
-          <div className="md:w-1/3">
-            <div>
-              {data.organization && (
+          <div className="md:w-1/3 md:order-2">
+            <div className={`${selectedImage ? 'hidden md:block md:mb-5' : ''}`}>
+              {data.organization ? (
                 <InfoRow
                   rowTitle="Organization:"
                   data={data.organization || {}}
@@ -68,38 +85,32 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({ data, onClose, onNext, o
                     </a>
                   )}
                 />
+              ) : (
+                <InfoRow rowTitle="Hobby Project" />
               )}
-              {/* <InfoRow
-                rowTitle="Field:"
-                data={data.StrapiAreas?.filter(notEmpty) || []}
-                render={(field) => field.name}
-              /> */}
-              <InfoRow rowTitle="Technologies:" data={data.tags?.filter(notEmpty) || []} render={(tag) => tag.name} />
-              {/* <div className="mt-2">
-                <Tags tags={data.tags} />
-              </div> */}
+              <InfoRow rowTitle="Name:" data={data.name} />
+              {/* {data?.areas && (
+                <InfoRow rowTitle="Field:" data={data.areas?.filter(notEmpty) || []} render={(field) => field.name} />
+              )} */}
+              {data.tags && (
+                <div className="block mt-2 md:hidden">
+                  <Tags tags={data.tags} />
+                </div>
+              )}
             </div>
-            <div className="mt-5">
-              <ImagesPreview images={data.images} onClick={setSelectedImageIdx} />
-            </div>
+            {breakpoint.md && (
+              <div className="mt-5">
+                <ImagesPreview images={data.images} onClick={setSelectedImageIdx} />
+              </div>
+            )}
           </div>
         </div>
+        {!breakpoint.md && (
+          <div className="">
+            <ImagesPreview images={data.images} onClick={setSelectedImageIdx} />
+          </div>
+        )}
       </div>
     </div>
   ) : null
-}
-
-const Organization = ({ organization }: { organization: ProjectDetailFragment['organization'] }) => {
-  return (
-    <div>
-      {organization && (
-        <span className="text-xl md:text-2xl">
-          at
-          <a className="ml-2 text-brand" href={organization.website || ''}>
-            {organization.name}
-          </a>
-        </span>
-      )}
-    </div>
-  )
 }

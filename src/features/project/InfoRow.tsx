@@ -15,9 +15,9 @@ export const InfoRow = <T extends InfoItemData>({
   children
 }: PropsWithChildren<InfoRowProps<T>>) => (
   <div className="flex gap-3">
-    <div className="text-tertiary">{title}</div>
+    {title && <div className="text-tertiary">{title}</div>}
     {data && (
-      <div className="flex flex-wrap gap-x-2">
+      <div className="flex flex-wrap gap-x-2 gap-y-2">
         {Array.isArray(data) ? (
           data.map((item, idx) => <div key={idx}>{render ? render(item) : item}</div>)
         ) : (

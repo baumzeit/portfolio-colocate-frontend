@@ -210,6 +210,13 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
           .attr('d', (d) => d.path)
           .classed('cell-border', true)
 
+        svg
+          .selectAll('path.bounds')
+          .data([voronoi.renderBounds()])
+          .join('path')
+          .attr('d', (d) => d)
+          .classed('bounds', true)
+
         return cell
       },
       (update) => {
@@ -228,12 +235,12 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
     )
     .style('transform-origin', (d) => `${d.x}px ${d.y}px`)
 
-  svg
-    .selectAll('path.bounds')
-    .data([voronoi.renderBounds()])
-    .join('path')
-    .attr('d', (d) => d)
-    .classed('bounds', true)
+  // svg
+  //   .selectAll('path.bounds')
+  //   .data([voronoi.renderBounds()])
+  //   .join('path')
+  //   .attr('d', (d) => d)
+  //   .classed('bounds', true)
 
   const textOffsetY = -32
 

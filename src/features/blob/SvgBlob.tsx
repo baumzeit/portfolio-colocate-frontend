@@ -1,5 +1,4 @@
 import blobshape from 'blobshape'
-import { style } from 'd3'
 import React, { useMemo, forwardRef } from 'react'
 
 import { SvgBlobProps } from './types'
