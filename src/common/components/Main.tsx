@@ -1,4 +1,4 @@
-import React, { FC, forwardRef, PropsWithChildren } from 'react'
+import React, { forwardRef, PropsWithChildren } from 'react'
 
 type MainProps = {
   className?: string

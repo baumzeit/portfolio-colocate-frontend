@@ -11,7 +11,12 @@ export const ImageContainer = ({ image, caption, alternativeText, onClose }: Ima
   return image ? (
     <div className="grid">
       <div className="order-2">
-        <GatsbyImage image={image} alt={alternativeText || ''} className="w-full rounded-sm animate-fadeIn" />
+        <GatsbyImage
+          image={image}
+          alt={alternativeText || ''}
+          className="w-full rounded-sm animate-fadeIn"
+          loading="lazy"
+        />
       </div>
       <div className="flex justify-between order-3 gap-2 mt-2 md:order-1 md:mt-0">
         {caption && <div>{caption}</div>}

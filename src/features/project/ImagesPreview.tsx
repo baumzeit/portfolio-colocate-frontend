@@ -23,6 +23,7 @@ export const ImagesPreview = ({ images, onClick }: ImagesPreviewProps) => {
                 image={image}
                 alt={imageData.alternativeText || ''}
                 className="object-cover object-center aspect-square"
+                loading="lazy"
               />
             </button>
           ) : null
