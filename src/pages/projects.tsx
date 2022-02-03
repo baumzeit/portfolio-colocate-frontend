@@ -1,5 +1,5 @@
 import { Transition } from '@headlessui/react'
-import { graphql, PageProps, useScrollRestoration } from 'gatsby'
+import { graphql, PageProps } from 'gatsby'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { useMemo } from 'react'
 
@@ -61,6 +61,53 @@ export const query = graphql`
           ...AreaBase
         }
       }
+    }
+  }
+
+  fragment AreaBase on StrapiArea {
+    id
+    slug
+    name
+    description
+    color
+  }
+  fragment ProjectDetail on StrapiProject {
+    id
+    title
+    name
+    slug
+    description
+    organization {
+      data {
+        id
+      }
+    }
+    coverImage {
+      id
+      alternativeText
+      caption
+      file {
+        childImageSharp {
+          gatsbyImageData(width: 600, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
+        }
+      }
+    }
+    images {
+      id
+      alternativeText
+      caption
+      file {
+        childImageSharp {
+          gatsbyImageData(width: 600, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
+        }
+      }
+    }
+    tags {
+      id
+      name
+    }
+    areas {
+      ...AreaBase
     }
   }
 `

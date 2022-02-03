@@ -190,7 +190,7 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
           .append('xhtml:img')
           .classed('image', true)
           .attr('xmlns', 'http://www.w3.org/1999/xhtml')
-          .attr('srcSet', (d) => d.imageUrl)
+          .attr('srcSet', (d) => d.imageSrcSet)
 
         cell
           .append('path')

@@ -8,7 +8,7 @@ import notEmpty from '../../common/utility/notEmpty'
 type ProfileProps = { profile: ProfileFragment }
 export const Profile = ({ profile: { picture, qualities } }: ProfileProps) => (
   <div className="flex flex-row gap-4 sm:flex-col md:flex-row">
-    <div className="shrink-0">
+    <div className=" shrink-0">
       {picture?.file && (
         <GatsbyImage
           image={picture.file.childImageSharp?.gatsbyImageData}
@@ -30,7 +30,7 @@ export const query = graphql`
     picture {
       file {
         childImageSharp {
-          gatsbyImageData(height: 160, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
+          gatsbyImageData(height: 180, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
         }
       }
       alternativeText

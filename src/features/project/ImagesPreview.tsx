@@ -1,3 +1,4 @@
+import { GatsbyImage } from 'gatsby-plugin-image'
 import React from 'react'
 
 import { ProjectDetailFragment } from '../../../graphql-types'
@@ -11,15 +12,15 @@ export const ImagesPreview = ({ images, onClick }: ImagesPreviewProps) => {
     <>
       <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-2 lg:grid-cols-3">
         {images.map((imageData, idx) => {
-          const srcSet = imageData?.localFile?.childImageSharp?.fixed?.srcSet
-          return srcSet ? (
+          const image = imageData?.file?.childImageSharp?.gatsbyImageData
+          return image ? (
             <button
               key={imageData.id}
               className={`overflow-hidden rounded-sm animate-fadeInFast`}
               onClick={() => onClick(idx)}
             >
-              <img
-                srcSet={srcSet}
+              <GatsbyImage
+                image={image}
                 alt={imageData.alternativeText || ''}
                 className="object-cover object-center aspect-square"
               />

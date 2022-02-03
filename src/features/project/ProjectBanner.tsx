@@ -13,7 +13,6 @@ type ProjectBannerProps = {
 }
 export const ProjectBanner = ({ project, index, shift, hideTitle, highlight, className = '' }: ProjectBannerProps) => {
   const firstImage = project.images?.[0]
-  const srcSet = firstImage?.file?.childImageSharp?.fixed?.srcSet
   const isEven = index % 2 === 0
   const clipPolyEven = `polygon(0 0, 0 100%, 100% calc(100% - ${shift}), 100% ${shift})`
   const clipPolyOdd = `polygon(0 ${shift}, 0 calc(100% - ${shift}), 100% 100%, 100% 0)`
@@ -43,8 +42,8 @@ export const ProjectBanner = ({ project, index, shift, hideTitle, highlight, cla
       style={{ gridTemplateAreas: '"banner"' }}
     >
       <div style={layerStyle}>
-        <img
-          srcSet={srcSet}
+        <GatsbyImage
+          image={firstImage?.file?.childImageSharp?.gatsbyImageData}
           alt={firstImage?.alternativeText || ''}
           className={`object-cover object-center w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.01] ${
             isTouched ? 'scale-[1.01]' : ''

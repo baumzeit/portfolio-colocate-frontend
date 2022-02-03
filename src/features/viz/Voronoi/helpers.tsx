@@ -3,7 +3,7 @@ import * as d3 from 'd3'
 export type VoronoiDatum = {
   x: number
   y: number
-  imageUrl: string
+  imageSrcSet: string
   id: string
   title: string
   slug: string

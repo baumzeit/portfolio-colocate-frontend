@@ -1,4 +1,5 @@
 import { ExternalLinkIcon } from '@heroicons/react/solid'
+import { getImage, getSrc } from 'gatsby-plugin-image'
 import React, { FC, useEffect, useState } from 'react'
 
 import { ProjectDetailFragment } from '../../../graphql-types'
@@ -22,7 +23,7 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({ data, onClose, onNext, o
 
   return data ? (
     <div className="flex justify-center overflow-x-hidden">
-      <div className="mx-8 md:mx-14 xl:max-w-[960px] mt-14 mb-16 ">
+      <div className="mx-8 md:mx-14 w-full xl:max-w-[960px] mt-14 mb-16 ">
         <div className={`${children ? '' : 'min-h-[200px] h-[30vh]'} mb-16`}>
           <SliderControls onPrev={onPrev} onNext={onNext} onClose={onClose}>
             {children}
@@ -45,7 +46,7 @@ export const ProjectDetail: FC<ProjectDetailProps> = ({ data, onClose, onNext, o
               {selectedImageIdx !== null && data?.images && (
                 <div style={{ gridArea: 'content' }} className="z-10">
                   <ImageContainer
-                    image={data.images.filter(notEmpty)[selectedImageIdx]}
+                    image={data.images.filter(notEmpty)[0].file?.childImageSharp?.gatsbyImageData}
                     onClose={() => setSelectedImageIdx(null)}
                   />
                 </div>

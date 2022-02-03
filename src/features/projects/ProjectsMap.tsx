@@ -1,5 +1,6 @@
 import * as d3 from 'd3'
 import { graphql } from 'gatsby'
+import { getSrcSet } from 'gatsby-plugin-image'
 import React, { useCallback, useMemo } from 'react'
 import { useWindowSize } from 'rooks'
 import { StringParam, useQueryParams } from 'use-query-params'
@@ -34,13 +35,11 @@ export const ProjectsMap = ({
   fields: AreaBaseFragment[]
   projects: ProjectDetailFragment[]
 }) => {
-  const { outerWidth: width, innerHeight: height } = useWindowSize()
+  const { innerWidth: width, innerHeight: height } = useWindowSize()
   const [{ field: highlightedFieldSlug, project: exposedSlug }, setQuery] = useQueryParams({
     project: StringParam,
     field: StringParam
   })
-
-  console.log(projects)
 
   const { getGridPosition, numCols, numRows } = useJitterGrid({
     minItems: projects.length,
@@ -69,12 +68,14 @@ export const ProjectsMap = ({
   const chartData = useMemo(
     () =>
       getGridPosition
-        ? projects.map(({ images, id, areas, title, slug }, idx) => ({
+        ? projects.map(({ coverImage, id, areas, title, slug }, idx) => ({
             x: getGridPosition(idx)[0],
             y: getGridPosition(idx)[1],
-            imageUrl: images
-              ? images?.[0]?.file?.childImageSharp?.fixed?.srcSet || 'https://picsum.photos/600/300'
+            imageSrcSet: coverImage
+              ? getSrcSet(coverImage?.file?.childImageSharp?.gatsbyImageData) || 'https://picsum.photos/600/300'
               : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
+            // ? images?.[0]?.file?.childImageSharp?.fixed?.srcSet || 'https://picsum.photos/600/300'
+            // : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
             id: id,
             title: String(title),
             slug: String(slug),
@@ -114,47 +115,50 @@ export const ProjectsMap = ({
   )
 }
 
-export const query = graphql`
-  fragment AreaBase on StrapiArea {
-    id
-    slug
-    name
-    description
-    color
-  }
-  fragment ProjectDetail on StrapiProject {
-    id
-    title
-    name
-    slug
-    description
-    # organization {
-
-    # }
-    images {
-      id
-      url
-      alternativeText
-      caption
-      file {
-        childImageSharp {
-          fixed(width: 600) {
-            srcSet
-            src
-          }
-        }
-      }
-    }
-    tags {
-      id
-      name
-    }
-    areas {
-      id
-      name
-      description
-      color
-      slug
-    }
-  }
-`
+// export const query = graphql`
+//   fragment AreaBase on StrapiArea {
+//     id
+//     slug
+//     name
+//     description
+//     color
+//   }
+//   fragment ProjectDetail on StrapiProject {
+//     id
+//     title
+//     name
+//     slug
+//     description
+//     organization {
+//       data {
+//         id
+//       }
+//     }
+//     images {
+//       id
+//       url
+//       alternativeText
+//       caption
+//       file {
+//         childImageSharp {
+//           gatsbyImageData(placeholder: BLURRED, formats: [AUTO, WEBP, AVIF], width: 600)
+//           fixed(width: 600) {
+//             srcSet
+//             src
+//           }
+//         }
+//       }
+//     }
+//     tags {
+//       id
+//       name
+//     }
+//     areas {
+//       id
+//       name
+//       description
+//       color
+//       slug
+//     }
+//   }
+// `
