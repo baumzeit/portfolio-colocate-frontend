@@ -62,28 +62,8 @@ export const SvgBlob = forwardRef<SVGSVGElement, SvgBlobProps>(function SvgBlob(
               <stop offset="0%" style={{ stopColor: props.colors[0] }} />
               <stop offset="100%" style={{ stopColor: props.colors[1] }} />
             </linearGradient>
-            <mask id={'mask-' + props.id}>
-              <path d={svgPath} {...pathProps}>
-                <animateTransform
-                  attributeName="transform"
-                  attributeType="XML"
-                  type="rotate"
-                  from="0"
-                  to="360"
-                  dur="300s"
-                  repeatCount="indefinite"
-                />
-              </path>
-            </mask>
           </defs>
-          <rect
-            x={0}
-            y={0}
-            width="100%"
-            height="100%"
-            fill={`url(#gradient-${props.id})`}
-            mask={`url(#mask-${props.id})`}
-          ></rect>
+          <path d={svgPath} {...pathProps} />
         </>
       )}
 

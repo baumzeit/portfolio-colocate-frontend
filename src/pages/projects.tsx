@@ -65,6 +65,11 @@ export const query = graphql`
     }
   }
 
+  fragment ImageBase on StrapiUploadFile {
+    id
+    alternativeText
+    caption
+  }
   fragment AreaBase on StrapiArea {
     id
     slug
@@ -84,9 +89,7 @@ export const query = graphql`
       link
     }
     coverImage {
-      id
-      alternativeText
-      caption
+      ...ImageBase
       file {
         childImageSharp {
           gatsbyImageData(width: 600, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
@@ -94,9 +97,7 @@ export const query = graphql`
       }
     }
     images {
-      id
-      alternativeText
-      caption
+      ...ImageBase
       file {
         childImageSharp {
           gatsbyImageData(width: 800, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])

@@ -12,9 +12,9 @@ const flex = {
 }
 
 const blobOffset = {
-  left: '-top-[100px] -left-[220px] lg:-left-[160px] lg:-top-[80px]',
-  center: 'lg:-top-[160px] left-0',
-  right: 'lg:-right-[160px] lg:-top-[80px]'
+  left: '-top-[50px] -left-[100px] lg:-left-[150px] lg:-top-[80px]',
+  center: 'lg:-top-[150px] left-0',
+  right: 'lg:-right-[150px] lg:-top-[80px]'
 }
 
 type FieldProps = { field: AreaDetailFragment; alignment: 'left' | 'center' | 'right' }
@@ -29,7 +29,7 @@ export const Field = ({ field: { name, description, id, color: fieldColor, tags 
     <div style={{ justifyContent: flex[alignment] }} className={`flex w-full mt-3`}>
       <div
         style={{ alignItems: flex[alignment], alignContent: flex[alignment] }}
-        className={`w-4/5 flex flex-col gap-y-4`}
+        className={`md:w-4/5 flex flex-col gap-y-4`}
       >
         <p style={{ textAlign: alignment }} className={`text-secondary`}>
           {description}
@@ -38,13 +38,14 @@ export const Field = ({ field: { name, description, id, color: fieldColor, tags 
       </div>
     </div>
     <div className={`absolute w-full flex ${blobOffset[alignment]}`} style={{ justifyContent: flex[alignment] }}>
-      <div className="w-[700px] lg:w-[550px] opacity-60 -mx-14 -my-14 ">
+      <div className="w-[500px] lg:w-[550px] opacity-30 -mx-14 -my-14">
         <SvgBlob
           variant="gradient"
           colors={[fieldColor || '', 'var(--color-brand)']}
           isOutline
           shapeProps={{ growth: 5, edges: 5 }}
           id={id}
+          pathClassName="animate-spinVerySlow"
         />
       </div>
     </div>

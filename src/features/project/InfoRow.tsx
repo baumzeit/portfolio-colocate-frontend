@@ -17,7 +17,7 @@ export const InfoRow = <T extends InfoItemData>({
   <div className="flex gap-3">
     {title && <div className="text-tertiary">{title}</div>}
     {data && (
-      <div className="flex flex-wrap gap-x-2 gap-y-2">
+      <div className="flex flex-wrap gap-x-2">
         {Array.isArray(data) ? (
           data.map((item, idx) => <div key={idx}>{render ? render(item) : item}</div>)
         ) : (

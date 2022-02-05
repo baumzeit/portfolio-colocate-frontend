@@ -50,6 +50,7 @@ module.exports = {
         fadeIn: 'fade-in 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
         fadeInFast: 'fade-in 250ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
         fadeOut: 'fade-out 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards',
+        spinVerySlow: 'spin 240s linear infinite',
       },
       keyframes: {
         'fade-in': {

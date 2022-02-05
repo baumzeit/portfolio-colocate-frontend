@@ -1,5 +1,4 @@
 import { graphql, PageProps } from 'gatsby'
-import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { useMemo } from 'react'
 import { Helmet } from 'react-helmet'
 
@@ -43,21 +42,21 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
           <title>{seo?.metaTitle}</title>
         </Helmet>
         <Layout>
-          <Navbar>
+          <Navbar className="shadow-sm">
             <HomeNavContent />
           </Navbar>
-          <Main fullWidth className="pt-6 overflow-y-auto">
+          <Main className="pt-6 pb-20 overflow-x-hidden overflow-y-auto md:pt-10">
             <Container>
-              <div className="flex flex-col gap-24 sm:flex-row">
-                <div className="flex-1">
+              <div className="grid grid-cols-8 gap-y-8 gap-x-10">
+                <div className="col-start-1 col-end-9 md:col-end-5">
                   <Intro title={title} text={introText} />
                 </div>
-                <div className="w-auto shrink-0">
+                <div className="col-start-1 col-end-9 md:col-start-5">
                   <Profile profile={profile} />
                 </div>
-              </div>
-              <div className="mt-24">
-                <FieldsMap fields={displayFields} />
+                <div className="col-start-1 col-end-9 mt-6 md:mt-10">
+                  <FieldsMap fields={displayFields} />
+                </div>
               </div>
             </Container>
           </Main>

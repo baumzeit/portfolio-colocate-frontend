@@ -8,26 +8,21 @@ type ProjectBannerProps = {
   index: number
   shift: number | string
   hideTitle?: boolean
-  highlight?: boolean
+  hideOverlay?: boolean
   className?: string
 }
-export const ProjectBanner = ({ project, index, shift, hideTitle, highlight, className = '' }: ProjectBannerProps) => {
+export const ProjectBanner = ({
+  project,
+  index,
+  shift,
+  hideTitle,
+  hideOverlay,
+  className = ''
+}: ProjectBannerProps) => {
   const firstImage = project.images?.[0]
   const isEven = index % 2 === 0
   const clipPolyEven = `polygon(0 0, 0 100%, 100% calc(100% - ${shift}), 100% ${shift})`
   const clipPolyOdd = `polygon(0 ${shift}, 0 calc(100% - ${shift}), 100% 100%, 100% 0)`
-
-  const [isTouched, setIsTouched] = useState(highlight)
-
-  // const banner = useRef<HTMLDivElement>(null)
-  // const entry = useIntersectionObserver(banner, {
-  //   rootMargin: `-${window.innerHeight * 0.4}px 0px -${window.innerHeight * 0.6}px 0px`
-  // })
-  // useEffect(() => {
-  //   if (entry.isIntersecting !== isZoomed) {
-  //     setIsZoomed(entry.isIntersecting)
-  //   }
-  // }, [isZoomed, project.title, entry])
 
   const layerStyle = {
     clipPath: isEven ? clipPolyEven : clipPolyOdd,
@@ -36,28 +31,22 @@ export const ProjectBanner = ({ project, index, shift, hideTitle, highlight, cla
   }
 
   return (
-    <div
-      onTouchStart={() => !highlight && setIsTouched(true)}
-      className={`grid group ${className} overflow-hidden`}
-      style={{ gridTemplateAreas: '"banner"' }}
-    >
+    <div className={`grid group ${className} overflow-hidden`} style={{ gridTemplateAreas: '"banner"' }}>
       <div style={layerStyle}>
         <GatsbyImage
           image={firstImage?.file?.childImageSharp?.gatsbyImageData}
           alt={firstImage?.alternativeText || ''}
-          className={`object-cover object-center w-full h-full transition-transform duration-700 ease-out group-hover:scale-[1.01] ${
-            isTouched ? 'scale-[1.01]' : ''
-          }`}
+          className={`object-cover object-center w-full h-full transition-transform duration-700 group-hover:scale-[1.01] ease-out`}
         />
       </div>
 
-      <div style={layerStyle} className={`${highlight}`}>
-        <div
-          className={`z-10 h-full stripe-pattern transition-all ease-out duration-200 group-hover:opacity-5 group-hover:scale-[1.01] ${
-            isTouched ? 'scale-[1.01] opacity-5' : 'opacity-50 '
-          }`}
-        />
-      </div>
+      {!hideOverlay && (
+        <div style={layerStyle}>
+          <div
+            className={`z-10 h-full stripe-pattern transition-all ease-out duration-200 opacity-90 group-hover:scale-[1.01] group-hover:opacity-5`}
+          />
+        </div>
+      )}
 
       {!hideTitle && (
         <div className={`flex ${isEven ? 'justify-start' : 'justify-end'} items-start `} style={{ gridArea: 'banner' }}>

@@ -3,7 +3,7 @@ import React from 'react'
 
 import { ProjectDetailFragment } from '../../../graphql-types'
 
-type ImagesPreviewProps = {
+export type ImagesPreviewProps = {
   images: ProjectDetailFragment['images']
   onClick: (idx: number | null) => void
 }

@@ -53,7 +53,7 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
                   project={project}
                   index={idx}
                   shift="25px"
-                  className="h-[160px] max-h-[160px] xs:h-[240px] xs:max-h-[240px]"
+                  className="h-[200px] max-h-[200px] xs:h-[240px] xs:max-h-[240px]"
                 />
               </button>
             </li>
@@ -74,7 +74,7 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
                 index={projects.findIndex((d) => d.slug === modalData.data?.slug)}
                 shift="25px"
                 hideTitle
-                highlight
+                hideOverlay
                 className="max-h-[160px]"
               />
             </div>

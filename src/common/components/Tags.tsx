@@ -12,7 +12,7 @@ type TagsProps = {
 
 export const Tags = ({ tags, color, alignment = 'left' }: TagsProps) => {
   return (
-    <div className={`flex flex-wrap gap-2.5 justify-${alignFlex[alignment]}`}>
+    <div className={`flex flex-wrap gap-1.5 md:gap-2.5 justify-${alignFlex[alignment]}`}>
       {tags?.filter(notEmpty).map(({ name, id }) => (
         <Tag key={id} color={color} label={name || ''} />
       ))}
@@ -31,7 +31,7 @@ export const Tag = ({ label, color }: TagProps) => {
       style={{
         borderColor: color || ''
       }}
-      className="px-2.5 py-0.5 text-sm border rounded-sm text-secondary"
+      className="px-1.5 md:px-2.5 py-0.5 text-xs md:text-sm border rounded-sm text-secondary"
     >
       {label}
     </div>
