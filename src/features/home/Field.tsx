@@ -35,9 +35,9 @@ export const Field = ({ field: { name, description, id, color: fieldColor, tags,
           <p style={{ textAlign: alignment }} className={`text-secondary`}>
             {description}
             <Link to={`${PATH.PROJECTS}?field=${slug}`}>
-              <div className="inline-flex items-center gap-1 ml-4 text-sm tracking-wide align-middle text-tertiary">
-                Show projects
-                <ArrowSmRightIcon style={{ color: fieldColor || '' }} className="w-5 h-5" />
+              <div className="inline-flex items-center gap-0.5 ml-4 text-sm tracking-wide align-middle text-tertiary">
+                Projects
+                <ArrowSmRightIcon style={{ color: fieldColor || '' }} className="w-4 h-4" />
               </div>
             </Link>
           </p>

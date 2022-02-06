@@ -20,7 +20,6 @@ export type SetModalProps = {
 export type SetModalFn = ({ onClose, onNext, onPrev, data }: SetModalProps) => void
 
 export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; projects: ProjectDetailFragment[] }) => {
-  const modalData = useProjectModalData(projects)
   const [{ field: highlightedFieldSlug, project: selectedProject }, setQuery] = useQueryParams({
     project: StringParam,
     field: StringParam
@@ -30,13 +29,21 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
 
   const fieldMatch = useCallback(
     (project: ProjectDetailFragment) =>
-      project.areas?.map((field) => field?.slug).includes(highlightedFieldSlug) || false,
+      !highlightedFieldSlug || project.areas?.map((area) => area?.slug).includes(highlightedFieldSlug) || false,
     [highlightedFieldSlug]
   )
 
   const displayProjects = useMemo(() => {
-    return highlightedFieldSlug ? sort(projects, (a, b) => (!fieldMatch(b) && fieldMatch(a) ? -1 : 0)) : projects
+    return highlightedFieldSlug
+      ? sort(projects, (a, b) => {
+          const matchA = fieldMatch(a)
+          const matchB = fieldMatch(b)
+          return matchA === matchB ? 0 : matchA ? -1 : 1
+        })
+      : projects
   }, [fieldMatch, highlightedFieldSlug, projects])
+
+  const modalData = useProjectModalData(displayProjects)
 
   return (
     <div>
@@ -45,9 +52,7 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
           return (
             <li
               key={project.id}
-              className={`-mb-[20px] last:mb-0 first:mt-2 ${
-                highlightedFieldSlug && !fieldMatch(project) ? 'opacity-40' : ''
-              }`}
+              className={`-mb-[20px] last:mb-0 first:mt-2 ${!fieldMatch(project) ? 'opacity-40' : ''}`}
             >
               <button
                 className={`block w-full`}
@@ -61,6 +66,7 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
                   index={idx}
                   shift="25px"
                   className="h-[200px] max-h-[200px] xs:h-[240px] xs:max-h-[240px]"
+                  hideOverlay
                 />
               </button>
             </li>

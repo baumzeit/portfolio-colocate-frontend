@@ -7,7 +7,7 @@ import notEmpty from '../../common/utility/notEmpty'
 type ProfileProps = { profile: ProfileFragment }
 export const Profile = ({ profile: { picture, qualities } }: ProfileProps) => (
   <div className="flex justify-center gap-4">
-    <div className="px-3 shrink-0">
+    <div className="px-1 shrink-0">
       {picture?.file && (
         <GatsbyImage
           image={picture.file.childImageSharp?.gatsbyImageData}
