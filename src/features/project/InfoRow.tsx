@@ -14,7 +14,7 @@ export const InfoRow = <T extends InfoItemData>({
   render,
   children
 }: PropsWithChildren<InfoRowProps<T>>) => (
-  <div className="flex gap-3">
+  <div className="flex leading-snug gap-x-3">
     {title && <div className="text-tertiary">{title}</div>}
     {data && (
       <div className="flex flex-wrap gap-x-2">

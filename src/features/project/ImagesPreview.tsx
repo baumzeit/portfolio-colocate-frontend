@@ -16,7 +16,7 @@ export const ImagesPreview = ({ images, onClick }: ImagesPreviewProps) => {
           return image ? (
             <button
               key={imageData.id}
-              className={`overflow-hidden rounded-sm animate-fadeInFast`}
+              className={`relative overflow-hidden rounded-sm shadow-sm animate-fadeInFast`}
               onClick={() => onClick(idx)}
             >
               <GatsbyImage

@@ -3,9 +3,11 @@ import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { useEffect, useState } from 'react'
 
 import { ProjectDetailFragment } from '../../../graphql-types'
+import { Tags } from '../../common/components/Tags'
 import notEmpty from '../../common/utility/notEmpty'
+import { ExternalLink } from './../../common/components/ExternalLink'
 import { DetailContent } from './DetailContent'
-import { ImagesPreview, ImagesPreviewProps } from './ImagesPreview'
+import { ImagesPreview } from './ImagesPreview'
 import { InfoRow } from './InfoRow'
 
 type DetailContentProps = {
@@ -13,11 +15,10 @@ type DetailContentProps = {
 }
 
 export const DetailBody = ({ project }: DetailContentProps) => {
-  const { id, title, areas, organization, images } = project
+  const { id, title, tags, links, images } = project
   const breakpoint = useBreakpoint()
 
   const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null)
-  const imageView = selectedImageIdx !== null
 
   useEffect(() => {
     setSelectedImageIdx(null)
@@ -28,36 +29,66 @@ export const DetailBody = ({ project }: DetailContentProps) => {
       <div className="flex flex-wrap items-center justify-between py-1 pl-2 pr-4 rounded-sm bg-text-secondary text-bg-primary">
         <h1 className="w-full text-xl md:text-3xl md:w-auto">{title}</h1>
       </div>
-      <div className="flex flex-col mt-6 mb-6 gap-x-12 md:flex-row">
-        <DetailContent
-          project={project}
-          selectedImageIdx={selectedImageIdx}
-          onClosePreview={() => setSelectedImageIdx(null)}
-        />
-        <div className="order-1 md:w-1/3 md:order-2">
-          <div className={`${imageView ? 'hidden md:block md:mb-5' : 'mb-5'}`}>
-            {organization ? (
-              <InfoRow
-                rowTitle="Organization:"
-                data={organization || {}}
-                render={(organization) => (
-                  <a href={organization?.link || ''} target="_blank" rel="noreferrer" className="hover:text-brand">
-                    <div className="flex items-center gap-1">
-                      {organization?.name || ''}
-                      <ExternalLinkIcon className="w-4 h-4" />
-                    </div>
-                  </a>
-                )}
-              />
-            ) : (
-              <InfoRow rowTitle="Hobby Project" />
+      <div className="flex flex-col mt-6 mb-6 md:mt-8 gap-x-12 gap-y-4 md:flex-row">
+        {!breakpoint.md && <MainInfo project={project} />}
+        <div className="flex-1 mb-4">
+          <DetailContent
+            project={project}
+            selectedImageIdx={selectedImageIdx}
+            onClosePreview={() => setSelectedImageIdx(null)}
+          />
+        </div>
+        <div className="md:w-1/3">
+          <div className={`grid gap-y-4 mb-4`}>
+            {breakpoint.md && <MainInfo project={project} />}
+            {images && (
+              <div className="row-start-1 mb-1 md:row-start-auto">
+                <ImagesPreview images={images} onClick={setSelectedImageIdx} />
+              </div>
             )}
-            {areas && <InfoRow rowTitle="Field:" data={areas.filter(notEmpty) || []} render={(field) => field.name} />}
+
+            {selectedImageIdx === null && <SecondaryInfo project={project} />}
           </div>
-          {breakpoint.md && <ImagesPreview images={images} onClick={setSelectedImageIdx} />}
         </div>
       </div>
-      {!breakpoint.md && <ImagesPreview images={images} onClick={setSelectedImageIdx} />}
+    </>
+  )
+}
+
+type MainInfoProps = { project: ProjectDetailFragment }
+const MainInfo = ({ project: { organization, areas } }: MainInfoProps) => {
+  return (
+    <div>
+      {organization?.link ? (
+        <InfoRow
+          rowTitle="Organization:"
+          data={organization}
+          render={(organization) => <ExternalLink link={organization.link || ''} label={organization.name} />}
+        />
+      ) : (
+        <InfoRow data="Hobby Project" />
+      )}
+      {areas && <InfoRow rowTitle="Areas:" data={areas.filter(notEmpty)} render={(area) => area.name} />}
+    </div>
+  )
+}
+
+type SecondaryInfoProps = { project: ProjectDetailFragment }
+const SecondaryInfo = ({ project: { links, tags } }: SecondaryInfoProps) => {
+  return (
+    <>
+      {links && links?.length > 0 && (
+        <div className="leading-snug">
+          {links.filter(notEmpty).map((link) => (
+            <ExternalLink {...link} />
+          ))}
+        </div>
+      )}
+      {tags && (
+        <div className="mt-1">
+          <Tags tags={tags} />
+        </div>
+      )}
     </>
   )
 }

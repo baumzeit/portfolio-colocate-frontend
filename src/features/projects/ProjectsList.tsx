@@ -1,4 +1,5 @@
-import React, { useMemo } from 'react'
+import { sort } from 'd3-array'
+import React, { useCallback, useMemo } from 'react'
 import { StringParam, useQueryParams } from 'use-query-params'
 
 import { AreaBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
@@ -27,21 +28,27 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
 
   useBodyScrollLock({ enable: !!selectedProject })
 
-  const displayProjects = useMemo(
-    () =>
-      projects.filter(
-        (project) =>
-          !highlightedFieldSlug || project.areas?.map((field) => field?.slug).includes(highlightedFieldSlug) || false
-      ),
-    [highlightedFieldSlug, projects]
+  const fieldMatch = useCallback(
+    (project: ProjectDetailFragment) =>
+      project.areas?.map((field) => field?.slug).includes(highlightedFieldSlug) || false,
+    [highlightedFieldSlug]
   )
+
+  const displayProjects = useMemo(() => {
+    return highlightedFieldSlug ? sort(projects, (a, b) => (!fieldMatch(b) && fieldMatch(a) ? -1 : 0)) : projects
+  }, [fieldMatch, highlightedFieldSlug, projects])
 
   return (
     <div>
       <ul>
         {displayProjects.map((project, idx) => {
           return (
-            <li key={project.id} className="-mb-[20px] xs:-mb-[16px] last:mb-0 first:mt-8">
+            <li
+              key={project.id}
+              className={`-mb-[20px] last:mb-0 first:mt-2 ${
+                highlightedFieldSlug && !fieldMatch(project) ? 'opacity-40' : ''
+              }`}
+            >
               <button
                 className={`block w-full`}
                 onClick={(e) => {

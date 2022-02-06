@@ -10,7 +10,7 @@ export const Navbar: FC<{ className?: string }> = ({ children, className = '' })
   const { site } = useStaticQuery<NavDataQuery>(query)
   const { theme } = useContext(ThemeContext)
   return (
-    <nav className={`flex items-center justify-between px-4 sm:px-6 h-full bg-primary ${className} z-20`}>
+    <nav className={`flex items-center justify-between shadow-sm px-4 sm:px-6 h-full bg-primary ${className} z-20`}>
       <div className="flex-1">
         <div className="flex items-center">
           <Link to="/" className="font-bold">
@@ -18,9 +18,9 @@ export const Navbar: FC<{ className?: string }> = ({ children, className = '' })
               <StaticImage
                 src="../../images/logo.png"
                 alt="Canopies Logo"
-                imgClassName={`filter ${theme === 'dark' ? 'invert' : ''}`}
+                imgClassName={`filter rounded-full ${theme === 'dark' ? 'invert' : ''}`}
                 loading="eager"
-                height={35}
+                height={30}
               />
               <div className="hidden ml-4 md:block text-secondary">{site?.siteMetadata?.title || ''}</div>
             </div>

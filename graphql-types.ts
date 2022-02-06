@@ -641,6 +641,7 @@ export type StrapiProject = Node & {
   tags?: Maybe<Array<Maybe<StrapiTag>>>;
   areas?: Maybe<Array<Maybe<StrapiArea>>>;
   organization?: Maybe<StrapiOrganization>;
+  links?: Maybe<Array<Maybe<StrapiComponentSharedLinks>>>;
   createdAt?: Maybe<Scalars['Date']>;
   updatedAt?: Maybe<Scalars['Date']>;
   publishedAt?: Maybe<Scalars['Date']>;
@@ -723,6 +724,14 @@ export type StrapiHome = Node & {
   internal: Internal;
 };
 
+export type StrapiComponentSharedLinks = {
+  strapiId?: Maybe<Scalars['Int']>;
+  id: Scalars['ID'];
+  link: Scalars['String'];
+  label?: Maybe<Scalars['String']>;
+  _xtypename?: Maybe<Scalars['String']>;
+};
+
 export type StrapiComponentSharedProfile = {
   strapiId?: Maybe<Scalars['Int']>;
   id: Scalars['ID'];
@@ -744,109 +753,6 @@ export type StrapiComponentSharedTextItem = {
   id: Scalars['ID'];
   text: Scalars['String'];
   _xtypename?: Maybe<Scalars['String']>;
-};
-
-export type StaticImage = Node & {
-  id: Scalars['ID'];
-  parent?: Maybe<Node>;
-  children: Array<Node>;
-  internal: Internal;
-  sourceInstanceName?: Maybe<Scalars['String']>;
-  relativePath?: Maybe<Scalars['String']>;
-  extension?: Maybe<Scalars['String']>;
-  prettySize?: Maybe<Scalars['String']>;
-  modifiedTime?: Maybe<Scalars['Date']>;
-  accessTime?: Maybe<Scalars['Date']>;
-  changeTime?: Maybe<Scalars['Date']>;
-  birthTime?: Maybe<Scalars['Date']>;
-  root?: Maybe<Scalars['String']>;
-  dir?: Maybe<Scalars['String']>;
-  base?: Maybe<Scalars['String']>;
-  ext?: Maybe<Scalars['String']>;
-  name?: Maybe<Scalars['String']>;
-  absolutePath?: Maybe<Scalars['String']>;
-  relativeDirectory?: Maybe<Scalars['String']>;
-  dev?: Maybe<Scalars['Int']>;
-  mode?: Maybe<Scalars['Int']>;
-  nlink?: Maybe<Scalars['Int']>;
-  uid?: Maybe<Scalars['Int']>;
-  rdev?: Maybe<Scalars['Int']>;
-  blksize?: Maybe<Scalars['Int']>;
-  ino?: Maybe<Scalars['Int']>;
-  size?: Maybe<Scalars['Int']>;
-  blocks?: Maybe<Scalars['Int']>;
-  atimeMs?: Maybe<Scalars['Float']>;
-  mtimeMs?: Maybe<Scalars['Float']>;
-  ctimeMs?: Maybe<Scalars['Float']>;
-  birthtimeMs?: Maybe<Scalars['Float']>;
-  atime?: Maybe<Scalars['Date']>;
-  mtime?: Maybe<Scalars['Date']>;
-  ctime?: Maybe<Scalars['Date']>;
-  birthtime?: Maybe<Scalars['Date']>;
-};
-
-
-export type StaticImageModifiedTimeArgs = {
-  formatString?: InputMaybe<Scalars['String']>;
-  fromNow?: InputMaybe<Scalars['Boolean']>;
-  difference?: InputMaybe<Scalars['String']>;
-  locale?: InputMaybe<Scalars['String']>;
-};
-
-
-export type StaticImageAccessTimeArgs = {
-  formatString?: InputMaybe<Scalars['String']>;
-  fromNow?: InputMaybe<Scalars['Boolean']>;
-  difference?: InputMaybe<Scalars['String']>;
-  locale?: InputMaybe<Scalars['String']>;
-};
-
-
-export type StaticImageChangeTimeArgs = {
-  formatString?: InputMaybe<Scalars['String']>;
-  fromNow?: InputMaybe<Scalars['Boolean']>;
-  difference?: InputMaybe<Scalars['String']>;
-  locale?: InputMaybe<Scalars['String']>;
-};
-
-
-export type StaticImageBirthTimeArgs = {
-  formatString?: InputMaybe<Scalars['String']>;
-  fromNow?: InputMaybe<Scalars['Boolean']>;
-  difference?: InputMaybe<Scalars['String']>;
-  locale?: InputMaybe<Scalars['String']>;
-};
-
-
-export type StaticImageAtimeArgs = {
-  formatString?: InputMaybe<Scalars['String']>;
-  fromNow?: InputMaybe<Scalars['Boolean']>;
-  difference?: InputMaybe<Scalars['String']>;
-  locale?: InputMaybe<Scalars['String']>;
-};
-
-
-export type StaticImageMtimeArgs = {
-  formatString?: InputMaybe<Scalars['String']>;
-  fromNow?: InputMaybe<Scalars['Boolean']>;
-  difference?: InputMaybe<Scalars['String']>;
-  locale?: InputMaybe<Scalars['String']>;
-};
-
-
-export type StaticImageCtimeArgs = {
-  formatString?: InputMaybe<Scalars['String']>;
-  fromNow?: InputMaybe<Scalars['Boolean']>;
-  difference?: InputMaybe<Scalars['String']>;
-  locale?: InputMaybe<Scalars['String']>;
-};
-
-
-export type StaticImageBirthtimeArgs = {
-  formatString?: InputMaybe<Scalars['String']>;
-  fromNow?: InputMaybe<Scalars['Boolean']>;
-  difference?: InputMaybe<Scalars['String']>;
-  locale?: InputMaybe<Scalars['String']>;
 };
 
 export type Query = {
@@ -878,8 +784,6 @@ export type Query = {
   allStrapiOrganization: StrapiOrganizationConnection;
   strapiHome?: Maybe<StrapiHome>;
   allStrapiHome: StrapiHomeConnection;
-  staticImage?: Maybe<StaticImage>;
-  allStaticImage: StaticImageConnection;
 };
 
 
@@ -1163,6 +1067,7 @@ export type QueryStrapiProjectArgs = {
   tags?: InputMaybe<StrapiTagFilterListInput>;
   areas?: InputMaybe<StrapiAreaFilterListInput>;
   organization?: InputMaybe<StrapiOrganizationFilterInput>;
+  links?: InputMaybe<StrapiComponentSharedLinksFilterListInput>;
   createdAt?: InputMaybe<DateQueryOperatorInput>;
   updatedAt?: InputMaybe<DateQueryOperatorInput>;
   publishedAt?: InputMaybe<DateQueryOperatorInput>;
@@ -1280,54 +1185,6 @@ export type QueryStrapiHomeArgs = {
 export type QueryAllStrapiHomeArgs = {
   filter?: InputMaybe<StrapiHomeFilterInput>;
   sort?: InputMaybe<StrapiHomeSortInput>;
-  skip?: InputMaybe<Scalars['Int']>;
-  limit?: InputMaybe<Scalars['Int']>;
-};
-
-
-export type QueryStaticImageArgs = {
-  id?: InputMaybe<StringQueryOperatorInput>;
-  parent?: InputMaybe<NodeFilterInput>;
-  children?: InputMaybe<NodeFilterListInput>;
-  internal?: InputMaybe<InternalFilterInput>;
-  sourceInstanceName?: InputMaybe<StringQueryOperatorInput>;
-  relativePath?: InputMaybe<StringQueryOperatorInput>;
-  extension?: InputMaybe<StringQueryOperatorInput>;
-  prettySize?: InputMaybe<StringQueryOperatorInput>;
-  modifiedTime?: InputMaybe<DateQueryOperatorInput>;
-  accessTime?: InputMaybe<DateQueryOperatorInput>;
-  changeTime?: InputMaybe<DateQueryOperatorInput>;
-  birthTime?: InputMaybe<DateQueryOperatorInput>;
-  root?: InputMaybe<StringQueryOperatorInput>;
-  dir?: InputMaybe<StringQueryOperatorInput>;
-  base?: InputMaybe<StringQueryOperatorInput>;
-  ext?: InputMaybe<StringQueryOperatorInput>;
-  name?: InputMaybe<StringQueryOperatorInput>;
-  absolutePath?: InputMaybe<StringQueryOperatorInput>;
-  relativeDirectory?: InputMaybe<StringQueryOperatorInput>;
-  dev?: InputMaybe<IntQueryOperatorInput>;
-  mode?: InputMaybe<IntQueryOperatorInput>;
-  nlink?: InputMaybe<IntQueryOperatorInput>;
-  uid?: InputMaybe<IntQueryOperatorInput>;
-  rdev?: InputMaybe<IntQueryOperatorInput>;
-  blksize?: InputMaybe<IntQueryOperatorInput>;
-  ino?: InputMaybe<IntQueryOperatorInput>;
-  size?: InputMaybe<IntQueryOperatorInput>;
-  blocks?: InputMaybe<IntQueryOperatorInput>;
-  atimeMs?: InputMaybe<FloatQueryOperatorInput>;
-  mtimeMs?: InputMaybe<FloatQueryOperatorInput>;
-  ctimeMs?: InputMaybe<FloatQueryOperatorInput>;
-  birthtimeMs?: InputMaybe<FloatQueryOperatorInput>;
-  atime?: InputMaybe<DateQueryOperatorInput>;
-  mtime?: InputMaybe<DateQueryOperatorInput>;
-  ctime?: InputMaybe<DateQueryOperatorInput>;
-  birthtime?: InputMaybe<DateQueryOperatorInput>;
-};
-
-
-export type QueryAllStaticImageArgs = {
-  filter?: InputMaybe<StaticImageFilterInput>;
-  sort?: InputMaybe<StaticImageSortInput>;
   skip?: InputMaybe<Scalars['Int']>;
   limit?: InputMaybe<Scalars['Int']>;
 };
@@ -3826,6 +3683,7 @@ export type StrapiProjectFilterInput = {
   tags?: InputMaybe<StrapiTagFilterListInput>;
   areas?: InputMaybe<StrapiAreaFilterListInput>;
   organization?: InputMaybe<StrapiOrganizationFilterInput>;
+  links?: InputMaybe<StrapiComponentSharedLinksFilterListInput>;
   createdAt?: InputMaybe<DateQueryOperatorInput>;
   updatedAt?: InputMaybe<DateQueryOperatorInput>;
   publishedAt?: InputMaybe<DateQueryOperatorInput>;
@@ -3878,6 +3736,25 @@ export type StrapiOrganizationFilterInput = {
 export type StrapiProjectOrganizationDataFilterInput = {
   _xtypename?: InputMaybe<StringQueryOperatorInput>;
   id?: InputMaybe<StringQueryOperatorInput>;
+};
+
+export type StrapiComponentSharedLinksFilterListInput = {
+  elemMatch?: InputMaybe<StrapiComponentSharedLinksFilterInput>;
+};
+
+export type StrapiComponentSharedLinksFilterInput = {
+  strapiId?: InputMaybe<IntQueryOperatorInput>;
+  id?: InputMaybe<IdQueryOperatorInput>;
+  link?: InputMaybe<StringQueryOperatorInput>;
+  label?: InputMaybe<StringQueryOperatorInput>;
+  _xtypename?: InputMaybe<StringQueryOperatorInput>;
+};
+
+export type IdQueryOperatorInput = {
+  eq?: InputMaybe<Scalars['ID']>;
+  ne?: InputMaybe<Scalars['ID']>;
+  in?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
+  nin?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
 
 export type StrapiProjectConnection = {
@@ -4250,6 +4127,12 @@ export type StrapiProjectFieldsEnum =
   | 'tags___projects___organization___nodeId'
   | 'tags___projects___organization___id'
   | 'tags___projects___organization___children'
+  | 'tags___projects___links'
+  | 'tags___projects___links___strapiId'
+  | 'tags___projects___links___id'
+  | 'tags___projects___links___link'
+  | 'tags___projects___links___label'
+  | 'tags___projects___links____xtypename'
   | 'tags___projects___createdAt'
   | 'tags___projects___updatedAt'
   | 'tags___projects___publishedAt'
@@ -4294,6 +4177,7 @@ export type StrapiProjectFieldsEnum =
   | 'tags___areas___projects___images'
   | 'tags___areas___projects___tags'
   | 'tags___areas___projects___areas'
+  | 'tags___areas___projects___links'
   | 'tags___areas___projects___createdAt'
   | 'tags___areas___projects___updatedAt'
   | 'tags___areas___projects___publishedAt'
@@ -4378,6 +4262,7 @@ export type StrapiProjectFieldsEnum =
   | 'areas___tags___projects___images'
   | 'areas___tags___projects___tags'
   | 'areas___tags___projects___areas'
+  | 'areas___tags___projects___links'
   | 'areas___tags___projects___createdAt'
   | 'areas___tags___projects___updatedAt'
   | 'areas___tags___projects___publishedAt'
@@ -4501,6 +4386,12 @@ export type StrapiProjectFieldsEnum =
   | 'areas___projects___organization___nodeId'
   | 'areas___projects___organization___id'
   | 'areas___projects___organization___children'
+  | 'areas___projects___links'
+  | 'areas___projects___links___strapiId'
+  | 'areas___projects___links___id'
+  | 'areas___projects___links___link'
+  | 'areas___projects___links___label'
+  | 'areas___projects___links____xtypename'
   | 'areas___projects___createdAt'
   | 'areas___projects___updatedAt'
   | 'areas___projects___publishedAt'
@@ -4649,6 +4540,12 @@ export type StrapiProjectFieldsEnum =
   | 'organization___projects___organization___nodeId'
   | 'organization___projects___organization___id'
   | 'organization___projects___organization___children'
+  | 'organization___projects___links'
+  | 'organization___projects___links___strapiId'
+  | 'organization___projects___links___id'
+  | 'organization___projects___links___link'
+  | 'organization___projects___links___label'
+  | 'organization___projects___links____xtypename'
   | 'organization___projects___createdAt'
   | 'organization___projects___updatedAt'
   | 'organization___projects___publishedAt'
@@ -4712,6 +4609,12 @@ export type StrapiProjectFieldsEnum =
   | 'organization___internal___mediaType'
   | 'organization___internal___owner'
   | 'organization___internal___type'
+  | 'links'
+  | 'links___strapiId'
+  | 'links___id'
+  | 'links___link'
+  | 'links___label'
+  | 'links____xtypename'
   | 'createdAt'
   | 'updatedAt'
   | 'publishedAt'
@@ -5062,6 +4965,7 @@ export type StrapiTagFieldsEnum =
   | 'projects___tags___projects___images'
   | 'projects___tags___projects___tags'
   | 'projects___tags___projects___areas'
+  | 'projects___tags___projects___links'
   | 'projects___tags___projects___createdAt'
   | 'projects___tags___projects___updatedAt'
   | 'projects___tags___projects___publishedAt'
@@ -5126,6 +5030,7 @@ export type StrapiTagFieldsEnum =
   | 'projects___areas___projects___images'
   | 'projects___areas___projects___tags'
   | 'projects___areas___projects___areas'
+  | 'projects___areas___projects___links'
   | 'projects___areas___projects___createdAt'
   | 'projects___areas___projects___updatedAt'
   | 'projects___areas___projects___publishedAt'
@@ -5162,6 +5067,7 @@ export type StrapiTagFieldsEnum =
   | 'projects___organization___projects___images'
   | 'projects___organization___projects___tags'
   | 'projects___organization___projects___areas'
+  | 'projects___organization___projects___links'
   | 'projects___organization___projects___createdAt'
   | 'projects___organization___projects___updatedAt'
   | 'projects___organization___projects___publishedAt'
@@ -5189,6 +5095,12 @@ export type StrapiTagFieldsEnum =
   | 'projects___organization___internal___mediaType'
   | 'projects___organization___internal___owner'
   | 'projects___organization___internal___type'
+  | 'projects___links'
+  | 'projects___links___strapiId'
+  | 'projects___links___id'
+  | 'projects___links___link'
+  | 'projects___links___label'
+  | 'projects___links____xtypename'
   | 'projects___createdAt'
   | 'projects___updatedAt'
   | 'projects___publishedAt'
@@ -5249,6 +5161,7 @@ export type StrapiTagFieldsEnum =
   | 'areas___tags___projects___images'
   | 'areas___tags___projects___tags'
   | 'areas___tags___projects___areas'
+  | 'areas___tags___projects___links'
   | 'areas___tags___projects___createdAt'
   | 'areas___tags___projects___updatedAt'
   | 'areas___tags___projects___publishedAt'
@@ -5372,6 +5285,12 @@ export type StrapiTagFieldsEnum =
   | 'areas___projects___organization___nodeId'
   | 'areas___projects___organization___id'
   | 'areas___projects___organization___children'
+  | 'areas___projects___links'
+  | 'areas___projects___links___strapiId'
+  | 'areas___projects___links___id'
+  | 'areas___projects___links___link'
+  | 'areas___projects___links___label'
+  | 'areas___projects___links____xtypename'
   | 'areas___projects___createdAt'
   | 'areas___projects___updatedAt'
   | 'areas___projects___publishedAt'
@@ -5708,6 +5627,12 @@ export type StrapiAreaFieldsEnum =
   | 'tags___projects___organization___nodeId'
   | 'tags___projects___organization___id'
   | 'tags___projects___organization___children'
+  | 'tags___projects___links'
+  | 'tags___projects___links___strapiId'
+  | 'tags___projects___links___id'
+  | 'tags___projects___links___link'
+  | 'tags___projects___links___label'
+  | 'tags___projects___links____xtypename'
   | 'tags___projects___createdAt'
   | 'tags___projects___updatedAt'
   | 'tags___projects___publishedAt'
@@ -5752,6 +5677,7 @@ export type StrapiAreaFieldsEnum =
   | 'tags___areas___projects___images'
   | 'tags___areas___projects___tags'
   | 'tags___areas___projects___areas'
+  | 'tags___areas___projects___links'
   | 'tags___areas___projects___createdAt'
   | 'tags___areas___projects___updatedAt'
   | 'tags___areas___projects___publishedAt'
@@ -5983,6 +5909,7 @@ export type StrapiAreaFieldsEnum =
   | 'projects___tags___projects___images'
   | 'projects___tags___projects___tags'
   | 'projects___tags___projects___areas'
+  | 'projects___tags___projects___links'
   | 'projects___tags___projects___createdAt'
   | 'projects___tags___projects___updatedAt'
   | 'projects___tags___projects___publishedAt'
@@ -6047,6 +5974,7 @@ export type StrapiAreaFieldsEnum =
   | 'projects___areas___projects___images'
   | 'projects___areas___projects___tags'
   | 'projects___areas___projects___areas'
+  | 'projects___areas___projects___links'
   | 'projects___areas___projects___createdAt'
   | 'projects___areas___projects___updatedAt'
   | 'projects___areas___projects___publishedAt'
@@ -6083,6 +6011,7 @@ export type StrapiAreaFieldsEnum =
   | 'projects___organization___projects___images'
   | 'projects___organization___projects___tags'
   | 'projects___organization___projects___areas'
+  | 'projects___organization___projects___links'
   | 'projects___organization___projects___createdAt'
   | 'projects___organization___projects___updatedAt'
   | 'projects___organization___projects___publishedAt'
@@ -6110,6 +6039,12 @@ export type StrapiAreaFieldsEnum =
   | 'projects___organization___internal___mediaType'
   | 'projects___organization___internal___owner'
   | 'projects___organization___internal___type'
+  | 'projects___links'
+  | 'projects___links___strapiId'
+  | 'projects___links___id'
+  | 'projects___links___link'
+  | 'projects___links___label'
+  | 'projects___links____xtypename'
   | 'projects___createdAt'
   | 'projects___updatedAt'
   | 'projects___publishedAt'
@@ -6503,6 +6438,7 @@ export type StrapiOrganizationFieldsEnum =
   | 'projects___tags___projects___images'
   | 'projects___tags___projects___tags'
   | 'projects___tags___projects___areas'
+  | 'projects___tags___projects___links'
   | 'projects___tags___projects___createdAt'
   | 'projects___tags___projects___updatedAt'
   | 'projects___tags___projects___publishedAt'
@@ -6567,6 +6503,7 @@ export type StrapiOrganizationFieldsEnum =
   | 'projects___areas___projects___images'
   | 'projects___areas___projects___tags'
   | 'projects___areas___projects___areas'
+  | 'projects___areas___projects___links'
   | 'projects___areas___projects___createdAt'
   | 'projects___areas___projects___updatedAt'
   | 'projects___areas___projects___publishedAt'
@@ -6603,6 +6540,7 @@ export type StrapiOrganizationFieldsEnum =
   | 'projects___organization___projects___images'
   | 'projects___organization___projects___tags'
   | 'projects___organization___projects___areas'
+  | 'projects___organization___projects___links'
   | 'projects___organization___projects___createdAt'
   | 'projects___organization___projects___updatedAt'
   | 'projects___organization___projects___publishedAt'
@@ -6630,6 +6568,12 @@ export type StrapiOrganizationFieldsEnum =
   | 'projects___organization___internal___mediaType'
   | 'projects___organization___internal___owner'
   | 'projects___organization___internal___type'
+  | 'projects___links'
+  | 'projects___links___strapiId'
+  | 'projects___links___id'
+  | 'projects___links___link'
+  | 'projects___links___label'
+  | 'projects___links____xtypename'
   | 'projects___createdAt'
   | 'projects___updatedAt'
   | 'projects___publishedAt'
@@ -6818,13 +6762,6 @@ export type StrapiComponentSharedProfileFilterInput = {
   picture?: InputMaybe<StrapiUploadFileFilterInput>;
   qualities?: InputMaybe<StrapiComponentSharedTextItemFilterListInput>;
   _xtypename?: InputMaybe<StringQueryOperatorInput>;
-};
-
-export type IdQueryOperatorInput = {
-  eq?: InputMaybe<Scalars['ID']>;
-  ne?: InputMaybe<Scalars['ID']>;
-  in?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
-  nin?: InputMaybe<Array<InputMaybe<Scalars['ID']>>>;
 };
 
 export type StrapiComponentSharedTextItemFilterListInput = {
@@ -7071,6 +7008,7 @@ export type StrapiHomeFieldsEnum =
   | 'areas___tags___projects___images'
   | 'areas___tags___projects___tags'
   | 'areas___tags___projects___areas'
+  | 'areas___tags___projects___links'
   | 'areas___tags___projects___createdAt'
   | 'areas___tags___projects___updatedAt'
   | 'areas___tags___projects___publishedAt'
@@ -7194,6 +7132,12 @@ export type StrapiHomeFieldsEnum =
   | 'areas___projects___organization___nodeId'
   | 'areas___projects___organization___id'
   | 'areas___projects___organization___children'
+  | 'areas___projects___links'
+  | 'areas___projects___links___strapiId'
+  | 'areas___projects___links___id'
+  | 'areas___projects___links___link'
+  | 'areas___projects___links___label'
+  | 'areas___projects___links____xtypename'
   | 'areas___projects___createdAt'
   | 'areas___projects___updatedAt'
   | 'areas___projects___publishedAt'
@@ -7408,264 +7352,24 @@ export type StrapiHomeSortInput = {
   order?: InputMaybe<Array<InputMaybe<SortOrderEnum>>>;
 };
 
-export type StaticImageConnection = {
-  totalCount: Scalars['Int'];
-  edges: Array<StaticImageEdge>;
-  nodes: Array<StaticImage>;
-  pageInfo: PageInfo;
-  distinct: Array<Scalars['String']>;
-  max?: Maybe<Scalars['Float']>;
-  min?: Maybe<Scalars['Float']>;
-  sum?: Maybe<Scalars['Float']>;
-  group: Array<StaticImageGroupConnection>;
-};
-
-
-export type StaticImageConnectionDistinctArgs = {
-  field: StaticImageFieldsEnum;
-};
-
-
-export type StaticImageConnectionMaxArgs = {
-  field: StaticImageFieldsEnum;
-};
-
-
-export type StaticImageConnectionMinArgs = {
-  field: StaticImageFieldsEnum;
-};
-
-
-export type StaticImageConnectionSumArgs = {
-  field: StaticImageFieldsEnum;
-};
-
-
-export type StaticImageConnectionGroupArgs = {
-  skip?: InputMaybe<Scalars['Int']>;
-  limit?: InputMaybe<Scalars['Int']>;
-  field: StaticImageFieldsEnum;
-};
-
-export type StaticImageEdge = {
-  next?: Maybe<StaticImage>;
-  node: StaticImage;
-  previous?: Maybe<StaticImage>;
-};
-
-export type StaticImageFieldsEnum =
-  | 'id'
-  | 'parent___id'
-  | 'parent___parent___id'
-  | 'parent___parent___parent___id'
-  | 'parent___parent___parent___children'
-  | 'parent___parent___children'
-  | 'parent___parent___children___id'
-  | 'parent___parent___children___children'
-  | 'parent___parent___internal___content'
-  | 'parent___parent___internal___contentDigest'
-  | 'parent___parent___internal___description'
-  | 'parent___parent___internal___fieldOwners'
-  | 'parent___parent___internal___ignoreType'
-  | 'parent___parent___internal___mediaType'
-  | 'parent___parent___internal___owner'
-  | 'parent___parent___internal___type'
-  | 'parent___children'
-  | 'parent___children___id'
-  | 'parent___children___parent___id'
-  | 'parent___children___parent___children'
-  | 'parent___children___children'
-  | 'parent___children___children___id'
-  | 'parent___children___children___children'
-  | 'parent___children___internal___content'
-  | 'parent___children___internal___contentDigest'
-  | 'parent___children___internal___description'
-  | 'parent___children___internal___fieldOwners'
-  | 'parent___children___internal___ignoreType'
-  | 'parent___children___internal___mediaType'
-  | 'parent___children___internal___owner'
-  | 'parent___children___internal___type'
-  | 'parent___internal___content'
-  | 'parent___internal___contentDigest'
-  | 'parent___internal___description'
-  | 'parent___internal___fieldOwners'
-  | 'parent___internal___ignoreType'
-  | 'parent___internal___mediaType'
-  | 'parent___internal___owner'
-  | 'parent___internal___type'
-  | 'children'
-  | 'children___id'
-  | 'children___parent___id'
-  | 'children___parent___parent___id'
-  | 'children___parent___parent___children'
-  | 'children___parent___children'
-  | 'children___parent___children___id'
-  | 'children___parent___children___children'
-  | 'children___parent___internal___content'
-  | 'children___parent___internal___contentDigest'
-  | 'children___parent___internal___description'
-  | 'children___parent___internal___fieldOwners'
-  | 'children___parent___internal___ignoreType'
-  | 'children___parent___internal___mediaType'
-  | 'children___parent___internal___owner'
-  | 'children___parent___internal___type'
-  | 'children___children'
-  | 'children___children___id'
-  | 'children___children___parent___id'
-  | 'children___children___parent___children'
-  | 'children___children___children'
-  | 'children___children___children___id'
-  | 'children___children___children___children'
-  | 'children___children___internal___content'
-  | 'children___children___internal___contentDigest'
-  | 'children___children___internal___description'
-  | 'children___children___internal___fieldOwners'
-  | 'children___children___internal___ignoreType'
-  | 'children___children___internal___mediaType'
-  | 'children___children___internal___owner'
-  | 'children___children___internal___type'
-  | 'children___internal___content'
-  | 'children___internal___contentDigest'
-  | 'children___internal___description'
-  | 'children___internal___fieldOwners'
-  | 'children___internal___ignoreType'
-  | 'children___internal___mediaType'
-  | 'children___internal___owner'
-  | 'children___internal___type'
-  | 'internal___content'
-  | 'internal___contentDigest'
-  | 'internal___description'
-  | 'internal___fieldOwners'
-  | 'internal___ignoreType'
-  | 'internal___mediaType'
-  | 'internal___owner'
-  | 'internal___type'
-  | 'sourceInstanceName'
-  | 'relativePath'
-  | 'extension'
-  | 'prettySize'
-  | 'modifiedTime'
-  | 'accessTime'
-  | 'changeTime'
-  | 'birthTime'
-  | 'root'
-  | 'dir'
-  | 'base'
-  | 'ext'
-  | 'name'
-  | 'absolutePath'
-  | 'relativeDirectory'
-  | 'dev'
-  | 'mode'
-  | 'nlink'
-  | 'uid'
-  | 'rdev'
-  | 'blksize'
-  | 'ino'
-  | 'size'
-  | 'blocks'
-  | 'atimeMs'
-  | 'mtimeMs'
-  | 'ctimeMs'
-  | 'birthtimeMs'
-  | 'atime'
-  | 'mtime'
-  | 'ctime'
-  | 'birthtime';
-
-export type StaticImageGroupConnection = {
-  totalCount: Scalars['Int'];
-  edges: Array<StaticImageEdge>;
-  nodes: Array<StaticImage>;
-  pageInfo: PageInfo;
-  distinct: Array<Scalars['String']>;
-  max?: Maybe<Scalars['Float']>;
-  min?: Maybe<Scalars['Float']>;
-  sum?: Maybe<Scalars['Float']>;
-  group: Array<StaticImageGroupConnection>;
-  field: Scalars['String'];
-  fieldValue?: Maybe<Scalars['String']>;
-};
-
-
-export type StaticImageGroupConnectionDistinctArgs = {
-  field: StaticImageFieldsEnum;
-};
-
-
-export type StaticImageGroupConnectionMaxArgs = {
-  field: StaticImageFieldsEnum;
-};
-
-
-export type StaticImageGroupConnectionMinArgs = {
-  field: StaticImageFieldsEnum;
-};
-
-
-export type StaticImageGroupConnectionSumArgs = {
-  field: StaticImageFieldsEnum;
-};
-
-
-export type StaticImageGroupConnectionGroupArgs = {
-  skip?: InputMaybe<Scalars['Int']>;
-  limit?: InputMaybe<Scalars['Int']>;
-  field: StaticImageFieldsEnum;
-};
-
-export type StaticImageFilterInput = {
-  id?: InputMaybe<StringQueryOperatorInput>;
-  parent?: InputMaybe<NodeFilterInput>;
-  children?: InputMaybe<NodeFilterListInput>;
-  internal?: InputMaybe<InternalFilterInput>;
-  sourceInstanceName?: InputMaybe<StringQueryOperatorInput>;
-  relativePath?: InputMaybe<StringQueryOperatorInput>;
-  extension?: InputMaybe<StringQueryOperatorInput>;
-  prettySize?: InputMaybe<StringQueryOperatorInput>;
-  modifiedTime?: InputMaybe<DateQueryOperatorInput>;
-  accessTime?: InputMaybe<DateQueryOperatorInput>;
-  changeTime?: InputMaybe<DateQueryOperatorInput>;
-  birthTime?: InputMaybe<DateQueryOperatorInput>;
-  root?: InputMaybe<StringQueryOperatorInput>;
-  dir?: InputMaybe<StringQueryOperatorInput>;
-  base?: InputMaybe<StringQueryOperatorInput>;
-  ext?: InputMaybe<StringQueryOperatorInput>;
-  name?: InputMaybe<StringQueryOperatorInput>;
-  absolutePath?: InputMaybe<StringQueryOperatorInput>;
-  relativeDirectory?: InputMaybe<StringQueryOperatorInput>;
-  dev?: InputMaybe<IntQueryOperatorInput>;
-  mode?: InputMaybe<IntQueryOperatorInput>;
-  nlink?: InputMaybe<IntQueryOperatorInput>;
-  uid?: InputMaybe<IntQueryOperatorInput>;
-  rdev?: InputMaybe<IntQueryOperatorInput>;
-  blksize?: InputMaybe<IntQueryOperatorInput>;
-  ino?: InputMaybe<IntQueryOperatorInput>;
-  size?: InputMaybe<IntQueryOperatorInput>;
-  blocks?: InputMaybe<IntQueryOperatorInput>;
-  atimeMs?: InputMaybe<FloatQueryOperatorInput>;
-  mtimeMs?: InputMaybe<FloatQueryOperatorInput>;
-  ctimeMs?: InputMaybe<FloatQueryOperatorInput>;
-  birthtimeMs?: InputMaybe<FloatQueryOperatorInput>;
-  atime?: InputMaybe<DateQueryOperatorInput>;
-  mtime?: InputMaybe<DateQueryOperatorInput>;
-  ctime?: InputMaybe<DateQueryOperatorInput>;
-  birthtime?: InputMaybe<DateQueryOperatorInput>;
-};
-
-export type StaticImageSortInput = {
-  fields?: InputMaybe<Array<InputMaybe<StaticImageFieldsEnum>>>;
-  order?: InputMaybe<Array<InputMaybe<SortOrderEnum>>>;
-};
-
 export type NavDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
 export type NavDataQuery = { site?: { siteMetadata?: { siteURL?: string | null | undefined, title?: string | null | undefined } | null | undefined } | null | undefined };
 
-export type AreaDetailFragment = { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined, projects?: Array<{ id: string, images?: Array<{ alternativeText?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined };
+export type ExternalLinkFragment = { id: string, link: string, label?: string | null | undefined };
 
-export type ProfileFragment = { picture?: { alternativeText?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, qualities: Array<{ text: string } | null | undefined> };
+export type ImageBaseFragment = { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined };
+
+export type AreaBaseFragment = { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined };
+
+export type AreaDetailFragment = { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined, projects?: Array<{ id: string, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined };
+
+export type OrganizationFragment = { id: string, name: string, link?: string | null | undefined };
+
+export type ProjectDetailFragment = { id: string, title: string, name: string, slug: string, description: string, organization?: { id: string, name: string, link?: string | null | undefined } | null | undefined, coverImage?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined, areas?: Array<{ id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } | null | undefined> | null | undefined, links?: Array<{ id: string, link: string, label?: string | null | undefined } | null | undefined> | null | undefined };
+
+export type ProfileFragment = { picture?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, qualities: Array<{ text: string } | null | undefined> };
 
 export type ProjectsNavDataQueryVariables = Exact<{ [key: string]: never; }>;
 
@@ -7675,18 +7379,12 @@ export type ProjectsNavDataQuery = { allStrapiArea: { edges: Array<{ node: { id:
 export type HomeDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HomeDataQuery = { strapiHome?: { title: string, introText: string, profile: { picture?: { alternativeText?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, qualities: Array<{ text: string } | null | undefined> }, seo?: { metaTitle: string } | null | undefined, areas?: Array<{ id: string, name: string, description: string } | null | undefined> | null | undefined } | null | undefined, allStrapiArea: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined, projects?: Array<{ id: string, title: string, slug: string, images?: Array<{ alternativeText?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined } }> } };
+export type HomeDataQuery = { strapiHome?: { title: string, introText: string, profile: { picture?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, qualities: Array<{ text: string } | null | undefined> }, seo?: { metaTitle: string } | null | undefined, areas?: Array<{ id: string, name: string, description: string } | null | undefined> | null | undefined } | null | undefined, allStrapiArea: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined, projects?: Array<{ id: string, title: string, slug: string, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined } }> } };
 
 export type ProjectsPageDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type ProjectsPageDataQuery = { allStrapiProject: { totalCount: number, edges: Array<{ node: { id: string, title: string, name: string, slug: string, description: string, organization?: { id: string, name: string, link?: string | null | undefined } | null | undefined, coverImage?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined, areas?: Array<{ id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } | null | undefined> | null | undefined } }> }, allStrapiArea: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } }> } };
-
-export type ImageBaseFragment = { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined };
-
-export type AreaBaseFragment = { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined };
-
-export type ProjectDetailFragment = { id: string, title: string, name: string, slug: string, description: string, organization?: { id: string, name: string, link?: string | null | undefined } | null | undefined, coverImage?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined, areas?: Array<{ id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } | null | undefined> | null | undefined };
+export type ProjectsPageDataQuery = { allStrapiProject: { totalCount: number, edges: Array<{ node: { id: string, title: string, name: string, slug: string, description: string, organization?: { id: string, name: string, link?: string | null | undefined } | null | undefined, coverImage?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined, areas?: Array<{ id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } | null | undefined> | null | undefined, links?: Array<{ id: string, link: string, label?: string | null | undefined } | null | undefined> | null | undefined } }> }, allStrapiArea: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined } }> } };
 
 export type GatsbyImageSharpFixedFragment = { base64?: string | null | undefined, width: number, height: number, src: string, srcSet: string };
 

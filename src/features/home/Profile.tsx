@@ -1,4 +1,3 @@
-import { graphql } from 'gatsby'
 import { GatsbyImage } from 'gatsby-plugin-image'
 import React from 'react'
 
@@ -7,36 +6,20 @@ import notEmpty from '../../common/utility/notEmpty'
 
 type ProfileProps = { profile: ProfileFragment }
 export const Profile = ({ profile: { picture, qualities } }: ProfileProps) => (
-  <div className="flex flex-row gap-4 sm:flex-col md:flex-row">
-    <div className="order-3 px-3 shrink-0 md:order-1">
+  <div className="flex justify-center gap-4">
+    <div className="px-3 shrink-0">
       {picture?.file && (
         <GatsbyImage
           image={picture.file.childImageSharp?.gatsbyImageData}
           alt={picture.alternativeText || ''}
-          className="w-32 overflow-hidden rounded-md shadow-md"
+          className="w-32 overflow-hidden rounded-md shadow-md sm:w-40"
         />
       )}
     </div>
-    <ul className="flex-1 order-2 ml-5 list-disc">
+    <ul className="flex-1 ml-5 list-disc">
       {qualities?.filter(notEmpty).map(({ text }, idx) => (
         <li key={idx}>{text}</li>
       ))}
     </ul>
   </div>
 )
-
-export const query = graphql`
-  fragment Profile on StrapiComponentSharedProfile {
-    picture {
-      file {
-        childImageSharp {
-          gatsbyImageData(height: 180, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
-        }
-      }
-      alternativeText
-    }
-    qualities {
-      text
-    }
-  }
-`

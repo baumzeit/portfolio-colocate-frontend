@@ -210,13 +210,6 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
           .attr('d', (d) => d.path)
           .classed('cell-border', true)
 
-        svg
-          .selectAll('path.bounds')
-          .data([voronoi.renderBounds()])
-          .join('path')
-          .attr('d', (d) => d)
-          .classed('bounds', true)
-
         return cell
       },
       (update) => {
@@ -285,6 +278,13 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
           .attr('r', 7)
           .attr('tabindex', (d) => 10 + d.index)
           .classed('focus-dot', true)
+
+        svg
+          .selectAll('path.bounds')
+          .data([voronoi.renderBounds()])
+          .join('path')
+          .attr('d', (d) => d)
+          .classed('bounds', true)
 
         cell.append('rect').classed('label-box', true)
 

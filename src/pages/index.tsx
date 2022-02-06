@@ -42,7 +42,7 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
           <title>{seo?.metaTitle}</title>
         </Helmet>
         <Layout>
-          <Navbar className="shadow-sm">
+          <Navbar>
             <HomeNavContent />
           </Navbar>
           <Main className="pt-6 pb-20 overflow-x-hidden overflow-y-auto md:pt-10">
@@ -51,7 +51,7 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
                 <div className="col-start-1 col-end-9 md:col-end-5">
                   <Intro title={title} text={introText} />
                 </div>
-                <div className="col-start-1 col-end-9 md:col-start-5">
+                <div className="col-start-1 col-end-9 md:col-start-5 md:mt-8 lg:mt-0">
                   <Profile profile={profile} />
                 </div>
                 <div className="col-start-1 col-end-9 mt-6 md:mt-10">

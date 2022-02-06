@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
 import { ProjectDetailFragment } from '../../../graphql-types'
-import { Tags } from '../../common/components/Tags'
+import { RenderMd } from '../../common/components/RenderMd'
 import notEmpty from '../../common/utility/notEmpty'
 import { ImageContainer } from './ImageContainer'
 
@@ -11,7 +11,7 @@ type DetailContentProps = {
   onClosePreview: () => void
 }
 export const DetailContent = ({
-  project: { description, tags, images },
+  project: { description, images },
   selectedImageIdx,
   onClosePreview
 }: DetailContentProps) => {
@@ -23,34 +23,16 @@ export const DetailContent = ({
 
   return (
     <div className="flex-1 order-2 md:order-1">
-      <div
-        className="relative grid"
-        style={{
-          gridTemplateAreas: '"content"'
-        }}
-      >
+      <div className="relative grid">
         <article
-          className={`transition-opacity duration-300 ${
+          className={`transition-opacity duration-300 col-start-1 ${
             selectedImage ? 'opacity-0 absolute overflow-hidden h-full w-full top-0 left-0' : 'opacity-100'
           }`}
-          style={{
-            gridArea: 'content'
-          }}
         >
-          <p className={`text-justify`}>{description}</p>
-          {tags && (
-            <div className="mt-6">
-              <Tags tags={tags} />
-            </div>
-          )}
+          <RenderMd className={`text-justify`} content={description} />
         </article>
         {selectedImage && (
-          <div
-            style={{
-              gridArea: 'content'
-            }}
-            className="z-10"
-          >
+          <div className="z-10 col-start-1 min-h-[70vw] md:min-h-0 md:aspect-square">
             <ImageContainer
               image={selectedImage.file?.childImageSharp?.gatsbyImageData}
               caption={selectedImage.caption || ''}

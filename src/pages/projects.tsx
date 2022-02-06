@@ -64,54 +64,6 @@ export const query = graphql`
       }
     }
   }
-
-  fragment ImageBase on StrapiUploadFile {
-    id
-    alternativeText
-    caption
-  }
-  fragment AreaBase on StrapiArea {
-    id
-    slug
-    name
-    description
-    color
-  }
-  fragment ProjectDetail on StrapiProject {
-    id
-    title
-    name
-    slug
-    description
-    organization {
-      id
-      name
-      link
-    }
-    coverImage {
-      ...ImageBase
-      file {
-        childImageSharp {
-          gatsbyImageData(width: 600, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
-        }
-      }
-    }
-    images {
-      ...ImageBase
-      file {
-        childImageSharp {
-          gatsbyImageData(width: 800, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
-        }
-      }
-    }
-    tags {
-      id
-      name
-    }
-    areas {
-      ...AreaBase
-    }
-  }
 `
 
 export default ProjectsPage
