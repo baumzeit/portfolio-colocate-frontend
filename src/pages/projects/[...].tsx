@@ -3,14 +3,14 @@ import { graphql, PageProps } from 'gatsby'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { createContext, useMemo, useRef } from 'react'
 
-import { AreaBaseFragment, ProjectDetailFragment, ProjectsPageDataQuery } from '../../graphql-types'
-import Layout from '../common/components/Layout'
-import { Main } from '../common/components/Main'
-import { Navbar } from '../common/components/Navbar'
-import { assertAndExtractNodes } from '../common/utility/assertAndExtractNodes'
-import { ProjectsNavContent } from '../features/projects/NavContent'
-import { ProjectsList } from '../features/projects/ProjectsList'
-import { ProjectsMap } from '../features/projects/ProjectsMap'
+import { AreaBaseFragment, ProjectDetailFragment, ProjectsPageDataQuery } from '../../../graphql-types'
+import Layout from '../../common/components/Layout'
+import { Main } from '../../common/components/Main'
+import { Navbar } from '../../common/components/Navbar'
+import { assertAndExtractNodes } from '../../common/utility/assertAndExtractNodes'
+import { ProjectsNavContent } from '../../features/projects/NavContent'
+import { ProjectsList } from '../../features/projects/ProjectsList'
+import { ProjectsMap } from '../../features/projects/ProjectsMap'
 
 export const ProjectsAreasContext = createContext<{ areas: AreaBaseFragment[]; projects: ProjectDetailFragment[] }>({
   areas: [],

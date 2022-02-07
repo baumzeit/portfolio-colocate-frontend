@@ -2,7 +2,7 @@ import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { useContext } from 'react'
 import { useQueryParam } from 'use-query-params'
 
-import { ProjectsAreasContext } from '../../pages/projects'
+import { ProjectsAreasContext } from '../../pages/projects/[...]'
 import { NavFilterAreas, NavFilterAreasSelect } from './NavFilterAreas'
 
 export const ProjectsNavContent = () => {

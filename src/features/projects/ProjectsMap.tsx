@@ -10,7 +10,7 @@ import { Modal } from '../../common/components/Modal'
 import { useJitterGrid } from '../../common/hooks/useJitterGrid'
 import { useProjectModalData } from '../../common/hooks/useProjectModalData'
 import notEmpty from '../../common/utility/notEmpty'
-import { ProjectsAreasContext } from '../../pages/projects'
+import { ProjectsAreasContext } from '../../pages/projects/[...]'
 import { ProjectDetail } from '../project/Detail'
 import { VoronoiChart } from '../viz/Voronoi/VoronoiChart'
 
