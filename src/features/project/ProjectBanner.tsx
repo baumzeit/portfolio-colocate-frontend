@@ -20,8 +20,8 @@ export const ProjectBanner = ({ project, hideTitle, hideOverlay, index, classNam
   return (
     <div
       className={`grid grid-rows-1 grid-cols-1 ${className} overflow-hidden`}
-      onTouchStart={() => setIsTouched(true)}
-      onTouchEnd={() => setIsTouched(false)}
+      onMouseDown={() => setIsTouched(true)}
+      onMouseUp={() => setIsTouched(false)}
     >
       <div className="col-start-1 row-start-1">
         <GatsbyImage
