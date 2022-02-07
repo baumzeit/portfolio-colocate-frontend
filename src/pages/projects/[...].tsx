@@ -41,7 +41,7 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<P
             leaveFrom="opacity-100"
             leaveTo="opacity-0"
           >
-            {breakpoints.sm ? <ProjectsMap /> : <ProjectsList />}
+            {breakpoints.md ? <ProjectsMap /> : <ProjectsList />}
           </Transition>
         </Main>
       </Layout>

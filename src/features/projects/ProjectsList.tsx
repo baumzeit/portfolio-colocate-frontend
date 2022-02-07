@@ -56,23 +56,18 @@ export const ProjectsList = () => {
 
   return (
     <div>
-      <ul>
+      <ul className="grid grid-cols-1 gap-3 mx-3 sm:grid-cols-2">
         {displayProjects.map((project, idx) => {
           return (
-            <li key={project.id} className={`-mb-[20px] last:mb-0 first:mt-2`}>
+            <li key={project.id} className="overflow-hidden rounded-md">
               <button
-                className={`block w-full`}
+                className={`block w-full h-full`}
                 onClick={(e) => {
                   setQuery({ project: project.slug })
                 }}
                 tabIndex={selectedProject ? -1 : 0}
               >
-                <ProjectBanner
-                  project={project}
-                  index={idx}
-                  shift="25px"
-                  className="h-[200px] max-h-[200px] xs:h-[240px] xs:max-h-[240px]"
-                />
+                <ProjectBanner project={project} index={idx} />
               </button>
             </li>
           )
@@ -90,7 +85,6 @@ export const ProjectsList = () => {
               <ProjectBanner
                 project={modalData.data}
                 index={projects.findIndex((d) => d.slug === modalData.data?.slug)}
-                shift="25px"
                 hideTitle
                 hideOverlay
                 className="max-h-[160px]"
