@@ -5,7 +5,7 @@ import { QueryParamProvider } from 'use-query-params'
 import { ModalRoot } from './src/common/components/Modal'
 
 function generatePath(location) {
-  return location.pathname + location.search
+  return location.pathname.replace(/\/$/, '') + location.search
 }
 
 const history = {
