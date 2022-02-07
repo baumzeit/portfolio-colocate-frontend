@@ -26,7 +26,7 @@ export const query = graphql`
         ...ImageBase
         file {
           childImageSharp {
-            gatsbyImageData(height: 25, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
+            gatsbyImageData(height: 25, placeholder: BLURRED)
           }
         }
       }
@@ -54,7 +54,7 @@ export const query = graphql`
       ...ImageBase
       file {
         childImageSharp {
-          gatsbyImageData(width: 600, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
+          gatsbyImageData(width: 600, placeholder: BLURRED)
         }
       }
     }
@@ -62,7 +62,7 @@ export const query = graphql`
       ...ImageBase
       file {
         childImageSharp {
-          gatsbyImageData(width: 800, placeholder: BLURRED, formats: [AUTO, WEBP, AVIF])
+          gatsbyImageData(width: 800, placeholder: BLURRED)
         }
       }
     }
@@ -82,7 +82,7 @@ export const query = graphql`
       ...ImageBase
       file {
         childImageSharp {
-          gatsbyImageData(height: 200, placeholder: DOMINANT_COLOR, formats: [AUTO, WEBP, AVIF])
+          gatsbyImageData(height: 200, placeholder: DOMINANT_COLOR)
         }
       }
     }

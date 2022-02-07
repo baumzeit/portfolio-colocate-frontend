@@ -1,7 +1,5 @@
-import React, { FC } from 'react'
-import { UseRemarkOptions, useRemarkSync } from 'react-remark'
-
-import { Tags } from './Tags'
+import React, { FC, useEffect } from 'react'
+import { useRemark, UseRemarkOptions, useRemarkSync } from 'react-remark'
 
 const p: FC = (props) => <p {...props} className="pb-6" />
 const h2: FC = (props) => <h2 {...props} className="pb-1.5 text-2xl" />
@@ -34,12 +32,12 @@ type RenderMdProps = {
 }
 
 export const RenderMd = ({ content, className }: RenderMdProps) => {
-  const reactContent = useRemarkSync(content || '', remarkOptions)
+  const [reactContent, setMarkdownSource] = useRemark(remarkOptions)
 
-  // useEffect(() => {
-  //   if (content) {
-  //     setMarkdownSource(content)
-  //   }
-  // })
+  useEffect(() => {
+    if (content) {
+      setMarkdownSource(content)
+    }
+  }, [content, setMarkdownSource])
   return <div className={`gap-y-0 ${className}`}>{reactContent}</div>
 }

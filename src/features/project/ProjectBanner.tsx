@@ -31,22 +31,16 @@ export const ProjectBanner = ({
     maxHeight: 'inherit'
   }
 
-  const [isTouched, setIsTouched] = useState(false)
-
   return (
-    <div
-      className={`grid group ${className} overflow-hidden`}
-      style={{ gridTemplateAreas: '"banner"' }}
-      onTouchStart={() => setIsTouched(true)}
-      onTouchEnd={() => setIsTouched(false)}
-    >
+    <div className={`grid group ${className} overflow-hidden`} style={{ gridTemplateAreas: '"banner"' }}>
       <div style={layerStyle}>
         <GatsbyImage
           image={firstImage?.file?.childImageSharp?.gatsbyImageData}
           alt={firstImage?.alternativeText || ''}
-          className={`object-cover object-center w-full h-full transition-all ease-out duration-700 ${
-            !hideOverlay ? (isTouched ? 'scale-[1.01]  opacity-100' : 'opacity-90') : ''
-          }`}
+          // className={`object-cover object-center w-full h-full transition-all ease-out duration-700 ${
+          //   !hideOverlay ? (isTouched ? 'scale-[1.01]  opacity-100' : 'opacity-90') : ''
+          // }`}
+          className={`object-cover object-center w-full h-full ${hideOverlay ? 'opacity-100' : 'opacity-90'}`}
         />
       </div>
 
@@ -54,9 +48,10 @@ export const ProjectBanner = ({
         <div style={layerStyle}>
           <div
             style={{ color: project.highlightColor || theme.extend.colors['bg-secondary'] }}
-            className={`z-10 h-full stripe-pattern  ${
-              project.highlightColor ? 'opacity-80' : 'opacity-30'
-            } transition-all ease-out duration-200 ${!hideOverlay && isTouched ? 'scale-[1.01] opacity-5' : ''}`}
+            // className={`z-10 h-full stripe-pattern  ${
+            //   project.highlightColor ? 'opacity-80' : 'opacity-30'
+            // } transition-all ease-out duration-200 ${!hideOverlay && isTouched ? 'scale-[1.01] opacity-5' : ''}`}
+            className={`z-10 h-full stripe-pattern  ${project.highlightColor ? 'opacity-80' : 'opacity-30'}`}
           />
         </div>
       )}
