@@ -16,7 +16,7 @@ export const DetailContent = ({
   onClosePreview
 }: DetailContentProps) => {
   const selectedImage = useMemo(() => {
-    if (images && selectedImageIdx !== null) {
+    if (images && typeof selectedImageIdx === 'number') {
       return images.filter(notEmpty)[selectedImageIdx]
     }
   }, [images, selectedImageIdx])

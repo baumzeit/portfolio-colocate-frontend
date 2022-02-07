@@ -3,27 +3,27 @@ import chunk from 'lodash.chunk'
 import React, { FC } from 'react'
 
 import { AreaDetailFragment } from '../../../graphql-types'
-import { Field } from './Field'
+import { Area } from './Area'
 
-type FieldsMapProps = { fields: AreaDetailFragment[] }
+type AreasMapProps = { areas: AreaDetailFragment[] }
 
-export const FieldsMap: FC<FieldsMapProps> = ({ fields }) => {
+export const AreasMap: FC<AreasMapProps> = ({ areas }) => {
   const breakpoints = useBreakpoint()
 
   return (
     <div>
-      {chunk(fields, 3).map((fields, idx) => (
+      {chunk(areas, 3).map((areas, idx) => (
         <div
-          key={`fields-grid-${idx}`}
+          key={`areas-grid-${idx}`}
           className="grid grid-cols-4 gap-x-0 gap-y-14 md:gap-y-16 lg:gap-x-40 lg:gap-y-20 xl-gap-y-32"
         >
-          {fields.map((field, idx) => {
+          {areas.map((area, idx) => {
             const one = idx % 3 === 0
             const two = idx % 3 === 1
             const three = idx % 3 === 2
             return (
               <div
-                key={field.id}
+                key={area.id}
                 className={`
             ${
               one
@@ -35,8 +35,8 @@ export const FieldsMap: FC<FieldsMapProps> = ({ fields }) => {
                 : ''
             } col-end-5 lg:col-span-2`}
               >
-                <Field
-                  field={field}
+                <Area
+                  area={area}
                   alignment={breakpoints.lg ? (one ? 'right' : two ? 'left' : three ? 'center' : 'left') : 'left'}
                 />
               </div>

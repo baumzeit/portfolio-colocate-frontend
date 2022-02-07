@@ -1,16 +1,12 @@
-import { graphql, useStaticQuery } from 'gatsby'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
-import React from 'react'
+import React, { useContext } from 'react'
 import { useQueryParam } from 'use-query-params'
 
-import { ProjectsNavDataQuery } from '../../../graphql-types'
-import { NavFilterFields, NavFilterFieldsSelect } from './NavFilterFields'
+import { ProjectsAreasContext } from '../../pages/projects'
+import { NavFilterAreas, NavFilterAreasSelect } from './NavFilterAreas'
 
 export const ProjectsNavContent = () => {
-  const {
-    allStrapiArea: { edges }
-  } = useStaticQuery<ProjectsNavDataQuery>(query)
-  const fields = edges.map((d) => d.node)
+  const { areas } = useContext(ProjectsAreasContext)
 
   const [exposedSlug, setExposedSlug] = useQueryParam<string | undefined>('project')
   const breakpoints = useBreakpoint()
@@ -28,30 +24,13 @@ export const ProjectsNavContent = () => {
         </button>
       ) : breakpoints.lg ? (
         <div>
-          <NavFilterFields fields={fields} />
+          <NavFilterAreas areas={areas} />
         </div>
       ) : (
         <div className="self-start block mt-3.5 min-w-[180px] lg:hidden">
-          <NavFilterFieldsSelect fields={fields} />
+          <NavFilterAreasSelect areas={areas} />
         </div>
       )}
     </>
   )
 }
-const query = graphql`
-  query ProjectsNavData {
-    allStrapiArea {
-      edges {
-        node {
-          id
-          name
-          color
-          slug
-          projects {
-            id
-          }
-        }
-      }
-    }
-  }
-`

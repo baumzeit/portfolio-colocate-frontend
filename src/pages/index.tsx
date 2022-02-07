@@ -9,14 +9,14 @@ import { Main } from '../common/components/Main'
 import { Navbar } from '../common/components/Navbar'
 import { assertAndExtractNodes } from '../common/utility/assertAndExtractNodes'
 import notEmpty from '../common/utility/notEmpty'
-import { FieldsMap } from '../features/home/FieldsMap'
+import { AreasMap } from '../features/home/AreasMap'
 import { Intro } from '../features/home/Intro'
 import { HomeNavContent } from '../features/home/NavContent'
 import { Profile } from '../features/home/Profile'
 
 // markup
 const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQuery>) => {
-  const displayFields = useMemo(() => {
+  const displayAreas = useMemo(() => {
     if (allStrapiArea && strapiHome) {
       console.log(allStrapiArea, strapiHome)
       const homeAreas = strapiHome.areas?.filter(notEmpty)
@@ -28,7 +28,7 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
     }
   }, [allStrapiArea, strapiHome])
 
-  if (!(strapiHome && allStrapiArea && displayFields)) {
+  if (!(strapiHome && allStrapiArea && displayAreas)) {
     return <div>No Data</div>
   }
   const { title, introText, seo, profile } = strapiHome
@@ -55,7 +55,7 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
                   <Profile profile={profile} />
                 </div>
                 <div className="col-start-1 col-end-9 mt-6 md:mt-10">
-                  <FieldsMap fields={displayFields} />
+                  <AreasMap areas={displayAreas} />
                 </div>
               </div>
             </Container>

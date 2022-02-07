@@ -1,6 +1,6 @@
 import * as d3 from 'd3'
 import { getSrcSet } from 'gatsby-plugin-image'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import { useWindowSize } from 'rooks'
 import { StringParam, useQueryParams } from 'use-query-params'
 
@@ -10,6 +10,7 @@ import { Modal } from '../../common/components/Modal'
 import { useJitterGrid } from '../../common/hooks/useJitterGrid'
 import { useProjectModalData } from '../../common/hooks/useProjectModalData'
 import notEmpty from '../../common/utility/notEmpty'
+import { ProjectsAreasContext } from '../../pages/projects'
 import { ProjectDetail } from '../project/Detail'
 import { VoronoiChart } from '../viz/Voronoi/VoronoiChart'
 
@@ -27,17 +28,13 @@ export type SetModalProps = {
 
 export type SetModalFn = ({ onClose, onNext, onPrev, data }: SetModalProps) => void
 
-export const ProjectsMap = ({
-  fields,
-  projects
-}: {
-  fields: AreaBaseFragment[]
-  projects: ProjectDetailFragment[]
-}) => {
+export const ProjectsMap = () => {
+  const { projects, areas } = useContext(ProjectsAreasContext)
+
   const { innerWidth: width, innerHeight: height } = useWindowSize()
-  const [{ field: highlightedFieldSlug, project: exposedSlug }, setQuery] = useQueryParams({
+  const [{ area: highlightedAreaSlug, project: exposedSlug }, setQuery] = useQueryParams({
     project: StringParam,
-    field: StringParam
+    area: StringParam
   })
 
   const { getGridPosition, numCols, numRows } = useJitterGrid({
@@ -48,16 +45,16 @@ export const ProjectsMap = ({
     jitter
   })
 
-  const highlightedFieldId = useMemo(
-    () => findIdBySlug(fields, highlightedFieldSlug || undefined),
-    [fields, highlightedFieldSlug]
+  const highlightedAreaId = useMemo(
+    () => findIdBySlug(areas, highlightedAreaSlug || undefined),
+    [areas, highlightedAreaSlug]
   )
 
   const exposedProjectId = useMemo(() => findIdBySlug(projects, exposedSlug || undefined), [projects, exposedSlug])
 
   const onClickCell = useCallback(
     (id) => {
-      setQuery({ project: projects.find((project) => project.id === id)?.slug || undefined, field: undefined })
+      setQuery({ project: projects.find((project) => project.id === id)?.slug || undefined, area: undefined })
     },
     [projects, setQuery]
   )
@@ -78,7 +75,7 @@ export const ProjectsMap = ({
             id: id,
             title: String(title),
             slug: String(slug),
-            fields:
+            areas:
               areas?.filter(notEmpty).map((d) => ({
                 color: String(d.color),
                 name: String(d.name),
@@ -95,11 +92,11 @@ export const ProjectsMap = ({
         {width && height && chartData ? (
           <VoronoiChart
             data={chartData}
-            highlightPatternData={fields}
+            highlightPatternData={areas}
             width={width}
             height={height - NAVBAR_HEIGHT}
             imageSize={Math.max(width / numCols, height / numRows) * 1}
-            highlightedFieldId={highlightedFieldId}
+            highlightedAreaId={highlightedAreaId}
             exposedProjectId={exposedProjectId}
             onClickCell={onClickCell}
           />

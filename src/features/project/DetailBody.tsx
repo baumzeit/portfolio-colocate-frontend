@@ -1,6 +1,7 @@
 import { ExternalLinkIcon } from '@heroicons/react/solid'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
-import React, { useEffect, useState } from 'react'
+import React, { useCallback, useEffect, useState } from 'react'
+import { NumberParam, useQueryParam } from 'use-query-params'
 
 import { ProjectDetailFragment } from '../../../graphql-types'
 import { Tags } from '../../common/components/Tags'
@@ -15,14 +16,22 @@ type DetailContentProps = {
 }
 
 export const DetailBody = ({ project }: DetailContentProps) => {
-  const { id, title, tags, links, images } = project
+  const { id, title, images } = project
   const breakpoint = useBreakpoint()
 
-  const [selectedImageIdx, setSelectedImageIdx] = useState<number | null>(null)
+  const [selectedImageNo, setSelectedImageNo] = useQueryParam('image', NumberParam)
+
+  const setSelectedImageIdx = useCallback(
+    (idx?: number | null) => {
+      setSelectedImageNo(typeof idx === 'number' ? idx + 1 : undefined)
+    },
+    [setSelectedImageNo]
+  )
+  const selectedImageIdx = typeof selectedImageNo === 'number' ? selectedImageNo - 1 : null
 
   useEffect(() => {
     setSelectedImageIdx(null)
-  }, [id])
+  }, [id, setSelectedImageIdx])
 
   return (
     <>

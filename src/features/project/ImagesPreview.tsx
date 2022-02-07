@@ -5,7 +5,7 @@ import { ProjectDetailFragment } from '../../../graphql-types'
 
 export type ImagesPreviewProps = {
   images: ProjectDetailFragment['images']
-  onClick: (idx: number | null) => void
+  onClick: (idx?: number) => void
 }
 export const ImagesPreview = ({ images, onClick }: ImagesPreviewProps) => {
   return images ? (

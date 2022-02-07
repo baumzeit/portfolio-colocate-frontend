@@ -23,7 +23,7 @@ export type VoronoiChartProps = {
   height: number
   imageSize: number
   onClickCell: (id: string) => void
-  highlightedFieldId?: string | null
+  highlightedAreaId?: string | null
   exposedProjectId?: string | null
 }
 
@@ -34,7 +34,7 @@ export const VoronoiChart = memo(
     width,
     height,
     imageSize,
-    highlightedFieldId = null,
+    highlightedAreaId = null,
     exposedProjectId = null,
     onClickCell
   }: VoronoiChartProps) => {
@@ -97,10 +97,10 @@ export const VoronoiChart = memo(
 
     useEffect(() => {
       if (voronoiActions && initialized) {
-        console.log('voronoi | action highlight', highlightedFieldId)
-        voronoiActions.highlightCellsByFieldId(highlightedFieldId)
+        console.log('voronoi | action highlight', highlightedAreaId)
+        voronoiActions.highlightCellsByAreaId(highlightedAreaId)
       }
-    }, [highlightedFieldId, initialized, voronoiActions])
+    }, [highlightedAreaId, initialized, voronoiActions])
 
     return (
       <>

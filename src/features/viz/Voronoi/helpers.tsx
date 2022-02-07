@@ -7,7 +7,7 @@ export type VoronoiDatum = {
   id: string
   title: string
   slug: string
-  fields: {
+  areas: {
     color: string
     name: string
     id: string
@@ -67,17 +67,17 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
     d3.selectAll<SVGPathElement, EnrichedDatum>(`.cell`).classed('hover-selected', (d) => d.id === selectedId)
   }
 
-  const highlightCellsByFieldId = (highlightId: string | null) => {
+  const highlightCellsByAreaId = (highlightId: string | null) => {
     d3.selectAll<SVGGElement, EnrichedDatum>('g.cell').each(function (d) {
       const cellG = d3.select(this)
       const highlightPath = cellG.select('.highlight-pattern')
-      const shouldHighlight = Boolean(d.fields.find((field) => highlightId && field.id === highlightId))
+      const shouldHighlight = Boolean(d.areas.find((area) => highlightId && area.id === highlightId))
 
       if (highlightId) {
         highlightPath.style('fill', `url(#diagonalHatchHighlight-${highlightId})`)
       }
 
-      cellG.classed('field-highlight', shouldHighlight)
+      cellG.classed('area-highlight', shouldHighlight)
     })
     d3.select(svg).classed('highlight-view', !!highlightId)
   }
@@ -121,7 +121,7 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
   return {
     selectCell,
     exposeCell,
-    highlightCellsByFieldId,
+    highlightCellsByAreaId,
     restore,
     data,
     options: opts,

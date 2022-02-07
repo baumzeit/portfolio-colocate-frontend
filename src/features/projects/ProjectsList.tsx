@@ -1,11 +1,12 @@
 import { sort } from 'd3-array'
-import React, { useCallback, useMemo } from 'react'
+import React, { useCallback, useContext, useMemo } from 'react'
 import { StringParam, useQueryParams } from 'use-query-params'
 
-import { AreaBaseFragment, ProjectDetailFragment } from '../../../graphql-types'
+import { ProjectDetailFragment } from '../../../graphql-types'
 import { NAVBAR_HEIGHT } from '../../common/components/Layout'
 import { Modal } from '../../common/components/Modal'
 import { useBodyScrollLock } from '../../common/hooks/useBodyScrollLock'
+import { ProjectsAreasContext } from '../../pages/projects'
 import { ProjectDetail } from '../project/Detail'
 import { ProjectBanner } from '../project/ProjectBanner'
 import { useProjectModalData } from './../../common/hooks/useProjectModalData'
@@ -17,31 +18,39 @@ export type SetModalProps = {
   onPrev: () => void
 }
 
+export type DisplayProject = ProjectDetailFragment & { highlightColor?: string | null }
+
 export type SetModalFn = ({ onClose, onNext, onPrev, data }: SetModalProps) => void
 
-export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; projects: ProjectDetailFragment[] }) => {
-  const [{ field: highlightedFieldSlug, project: selectedProject }, setQuery] = useQueryParams({
+export const ProjectsList = () => {
+  const { areas, projects } = useContext(ProjectsAreasContext)
+
+  const [{ area: highlightedAreaSlug, project: selectedProject }, setQuery] = useQueryParams({
     project: StringParam,
-    field: StringParam
+    area: StringParam
   })
+
+  const highlightColor = areas.find(({ slug }) => slug === highlightedAreaSlug)?.color
 
   useBodyScrollLock({ enable: !!selectedProject })
 
-  const fieldMatch = useCallback(
+  const areaMatch = useCallback(
     (project: ProjectDetailFragment) =>
-      !highlightedFieldSlug || project.areas?.map((area) => area?.slug).includes(highlightedFieldSlug) || false,
-    [highlightedFieldSlug]
+      !highlightedAreaSlug || project.areas?.map((area) => area?.slug).includes(highlightedAreaSlug) || null,
+    [highlightedAreaSlug]
   )
 
-  const displayProjects = useMemo(() => {
-    return highlightedFieldSlug
-      ? sort(projects, (a, b) => {
-          const matchA = fieldMatch(a)
-          const matchB = fieldMatch(b)
-          return matchA === matchB ? 0 : matchA ? -1 : 1
-        })
-      : projects
-  }, [fieldMatch, highlightedFieldSlug, projects])
+  const displayProjects: DisplayProject[] = useMemo(() => {
+    const enrichedProjects = projects.map((project) => ({
+      ...project,
+      highlightColor: areaMatch(project) ? highlightColor : null
+    }))
+    return enrichedProjects
+      ? sort(enrichedProjects, ({ highlightColor: a }, { highlightColor: b }) =>
+          Boolean(a) === Boolean(b) ? 0 : a ? -1 : 1
+        )
+      : enrichedProjects
+  }, [areaMatch, highlightColor, projects])
 
   const modalData = useProjectModalData(displayProjects)
 
@@ -50,10 +59,7 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
       <ul>
         {displayProjects.map((project, idx) => {
           return (
-            <li
-              key={project.id}
-              className={`-mb-[20px] last:mb-0 first:mt-2 ${!fieldMatch(project) ? 'opacity-40' : ''}`}
-            >
+            <li key={project.id} className={`-mb-[20px] last:mb-0 first:mt-2`}>
               <button
                 className={`block w-full`}
                 onClick={(e) => {
@@ -66,7 +72,6 @@ export const ProjectsList = ({ projects }: { fields: AreaBaseFragment[]; project
                   index={idx}
                   shift="25px"
                   className="h-[200px] max-h-[200px] xs:h-[240px] xs:max-h-[240px]"
-                  hideOverlay
                 />
               </button>
             </li>
