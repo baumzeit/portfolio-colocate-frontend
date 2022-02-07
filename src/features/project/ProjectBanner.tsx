@@ -26,9 +26,9 @@ export const ProjectBanner = ({
   const clipPolyOdd = `polygon(0 ${shift}, 0 calc(100% - ${shift}), 100% 100%, 100% 0)`
 
   const layerStyle = {
-    clipPath: isEven ? clipPolyEven : clipPolyOdd,
-    gridArea: 'banner',
-    maxHeight: 'inherit'
+    // clipPath: isEven ? clipPolyEven : clipPolyOdd,
+    // gridArea: 'banner',
+    // maxHeight: 'inherit'
   }
 
   return (
