@@ -1,3 +1,4 @@
+import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import { GatsbyImage, IGatsbyImageData } from 'gatsby-plugin-image'
 import React from 'react'
 
@@ -8,6 +9,7 @@ type ImageContainerProps = {
   onClose?: () => void
 }
 export const ImageContainer = ({ image, caption, alternativeText, onClose }: ImageContainerProps) => {
+  const breakpoint = useBreakpoint()
   return image ? (
     <div className="relative">
       <GatsbyImage
@@ -18,9 +20,11 @@ export const ImageContainer = ({ image, caption, alternativeText, onClose }: Ima
       />
       <div className="flex justify-between gap-2 mt-3">
         <div className="break-all">{caption && caption}</div>
-        <button onClick={onClose} className="tracking-wide text-highlight">
-          show description
-        </button>
+        {!breakpoint.lg && (
+          <button onClick={onClose} className="tracking-wide text-highlight">
+            show description
+          </button>
+        )}
       </div>
     </div>
   ) : null

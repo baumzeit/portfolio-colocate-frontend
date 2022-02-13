@@ -108,7 +108,7 @@ export const VoronoiChart = memo(
           <defs>
             <HatchPattern id="diagonalHatch" className="stroke-bg-secondary" />
             {highlightPatternData.map(({ color, id }) => (
-              <HatchPattern key={id} stroke={color || 'black'} id={'diagonalHatchHighlight-' + id} opacity={0.4} />
+              <HatchPattern key={id} stroke={color || 'black'} id={'diagonalHatchHighlight-' + id} />
             ))}
           </defs>
           <g className="base-layer"></g>

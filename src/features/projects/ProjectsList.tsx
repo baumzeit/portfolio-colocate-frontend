@@ -81,7 +81,7 @@ export const ProjectsList = () => {
       >
         {modalData?.data && (
           <ProjectDetail {...modalData}>
-            <div className="mx-10 animate-fadeInFast">
+            <div className="mx-10 overflow-hidden rounded shadow animate-fadeInFast">
               <ProjectBanner
                 project={modalData.data}
                 index={projects.findIndex((d) => d.slug === modalData.data?.slug)}

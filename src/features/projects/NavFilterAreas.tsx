@@ -56,7 +56,9 @@ export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
           style={{
             backgroundColor: selectedArea?.color || 'transparent'
           }}
-          className={`px-1.5 py-0.5 rounded text-center ${selectedArea ? 'text-bg-secondary' : 'text-primary'}`}
+          className={`px-2 py-0.5 rounded text-center tracking-wide ${
+            selectedArea ? 'text-bg-secondary' : 'text-primary'
+          }`}
         >
           {selectedArea ? selectedArea.name : 'Filter by Area'}
         </Listbox.Button>
@@ -71,7 +73,7 @@ export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
                     color: isActive ? 'inherit' : color || 'inherit',
                     backgroundColor: isActive ? color || 'transparent' : ''
                   }}
-                  className={`inline-block px-1.5 py-0.5 rounded mt-1.5 animate-fadeInFast bg-primary animate-delay-${
+                  className={`inline-block px-2 py-0.5 rounded mt-1.5 animate-fadeInFast bg-primary tracking-wide animate-delay-${
                     50 * idx
                   } cursor-pointer`}
                 >

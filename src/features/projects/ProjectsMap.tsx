@@ -95,7 +95,7 @@ export const ProjectsMap = () => {
             highlightPatternData={areas}
             width={width}
             height={height - NAVBAR_HEIGHT}
-            imageSize={Math.max(width / numCols, height / numRows) * 1}
+            imageSize={Math.max(width / numCols, height / numRows) * 1.2}
             highlightedAreaId={highlightedAreaId}
             exposedProjectId={exposedProjectId}
             onClickCell={onClickCell}

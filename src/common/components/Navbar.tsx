@@ -18,9 +18,10 @@ export const Navbar: FC<{ className?: string }> = ({ children, className = '' })
               <StaticImage
                 src="../../images/logo.png"
                 alt="Canopies Logo"
-                imgClassName={`filter rounded-full ${theme === 'dark' ? 'invert' : ''}`}
+                imgClassName={`rounded-full`}
                 loading="eager"
-                height={30}
+                height={25}
+                className="flex-shrink-0"
               />
               <div className="hidden ml-4 md:block text-secondary">{site?.siteMetadata?.title || ''}</div>
             </div>

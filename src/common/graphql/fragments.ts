@@ -90,4 +90,10 @@ export const query = graphql`
       text
     }
   }
+  fragment Contact on StrapiComponentSharedContact {
+    text
+    button {
+      ...ExternalLink
+    }
+  }
 `

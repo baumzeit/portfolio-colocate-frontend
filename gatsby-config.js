@@ -10,7 +10,7 @@ const mediaQueries = Object.fromEntries(Object.entries(config.theme.screens).map
 module.exports = {
   siteMetadata: {
     siteURL: process.env.GATSBY_ROOT_URL,
-    title: 'Portfolio Canopies'
+    title: 'Philip Hradecsni'
   },
   plugins: [
     'gatsby-plugin-image',

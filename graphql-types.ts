@@ -714,6 +714,7 @@ export type StrapiHome = Node & {
   profile: StrapiComponentSharedProfile;
   seo?: Maybe<StrapiComponentSharedSeo>;
   areas?: Maybe<Array<Maybe<StrapiArea>>>;
+  contact?: Maybe<StrapiComponentSharedContact>;
   createdAt?: Maybe<Scalars['Date']>;
   updatedAt?: Maybe<Scalars['Date']>;
   publishedAt?: Maybe<Scalars['Date']>;
@@ -746,6 +747,14 @@ export type StrapiComponentSharedSeo = {
   metaTitle: Scalars['String'];
   metaDescription: Scalars['String'];
   shareImage?: Maybe<StrapiUploadFile>;
+};
+
+export type StrapiComponentSharedContact = {
+  strapiId?: Maybe<Scalars['Int']>;
+  id: Scalars['ID'];
+  text?: Maybe<Scalars['String']>;
+  button: StrapiComponentSharedLinks;
+  _xtypename?: Maybe<Scalars['String']>;
 };
 
 export type StrapiComponentSharedTextItem = {
@@ -1276,6 +1285,7 @@ export type QueryStrapiHomeArgs = {
   profile?: InputMaybe<StrapiComponentSharedProfileFilterInput>;
   seo?: InputMaybe<StrapiComponentSharedSeoFilterInput>;
   areas?: InputMaybe<StrapiAreaFilterListInput>;
+  contact?: InputMaybe<StrapiComponentSharedContactFilterInput>;
   createdAt?: InputMaybe<DateQueryOperatorInput>;
   updatedAt?: InputMaybe<DateQueryOperatorInput>;
   publishedAt?: InputMaybe<DateQueryOperatorInput>;
@@ -6936,6 +6946,14 @@ export type StrapiComponentSharedSeoFilterInput = {
   shareImage?: InputMaybe<StrapiUploadFileFilterInput>;
 };
 
+export type StrapiComponentSharedContactFilterInput = {
+  strapiId?: InputMaybe<IntQueryOperatorInput>;
+  id?: InputMaybe<IdQueryOperatorInput>;
+  text?: InputMaybe<StringQueryOperatorInput>;
+  button?: InputMaybe<StrapiComponentSharedLinksFilterInput>;
+  _xtypename?: InputMaybe<StringQueryOperatorInput>;
+};
+
 export type StrapiHomeConnection = {
   totalCount: Scalars['Int'];
   edges: Array<StrapiHomeEdge>;
@@ -7351,6 +7369,15 @@ export type StrapiHomeFieldsEnum =
   | 'areas___internal___mediaType'
   | 'areas___internal___owner'
   | 'areas___internal___type'
+  | 'contact___strapiId'
+  | 'contact___id'
+  | 'contact___text'
+  | 'contact___button___strapiId'
+  | 'contact___button___id'
+  | 'contact___button___link'
+  | 'contact___button___label'
+  | 'contact___button____xtypename'
+  | 'contact____xtypename'
   | 'createdAt'
   | 'updatedAt'
   | 'publishedAt'
@@ -7490,6 +7517,7 @@ export type StrapiHomeFilterInput = {
   profile?: InputMaybe<StrapiComponentSharedProfileFilterInput>;
   seo?: InputMaybe<StrapiComponentSharedSeoFilterInput>;
   areas?: InputMaybe<StrapiAreaFilterListInput>;
+  contact?: InputMaybe<StrapiComponentSharedContactFilterInput>;
   createdAt?: InputMaybe<DateQueryOperatorInput>;
   updatedAt?: InputMaybe<DateQueryOperatorInput>;
   publishedAt?: InputMaybe<DateQueryOperatorInput>;
@@ -7774,10 +7802,12 @@ export type ProjectDetailFragment = { id: string, title: string, name: string, s
 
 export type ProfileFragment = { picture?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, qualities: Array<{ text: string } | null | undefined> };
 
+export type ContactFragment = { text?: string | null | undefined, button: { id: string, link: string, label?: string | null | undefined } };
+
 export type HomeDataQueryVariables = Exact<{ [key: string]: never; }>;
 
 
-export type HomeDataQuery = { strapiHome?: { title: string, introText: string, profile: { picture?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, qualities: Array<{ text: string } | null | undefined> }, seo?: { metaTitle: string } | null | undefined, areas?: Array<{ id: string, name: string, description: string } | null | undefined> | null | undefined } | null | undefined, allStrapiArea: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined, projects?: Array<{ id: string, title: string, slug: string, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined } }> } };
+export type HomeDataQuery = { strapiHome?: { title: string, introText: string, profile: { picture?: { id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined, qualities: Array<{ text: string } | null | undefined> }, contact?: { text?: string | null | undefined, button: { id: string, link: string, label?: string | null | undefined } } | null | undefined, seo?: { metaTitle: string } | null | undefined, areas?: Array<{ id: string, name: string, description: string } | null | undefined> | null | undefined } | null | undefined, allStrapiArea: { edges: Array<{ node: { id: string, slug?: string | null | undefined, name: string, description: string, color?: string | null | undefined, projects?: Array<{ id: string, title: string, slug: string, images?: Array<{ id: string, alternativeText?: string | null | undefined, caption?: string | null | undefined, file?: { childImageSharp?: { gatsbyImageData: any } | null | undefined } | null | undefined } | null | undefined> | null | undefined } | null | undefined> | null | undefined, tags?: Array<{ id: string, name: string } | null | undefined> | null | undefined } }> } };
 
 export type ProjectsPageDataQueryVariables = Exact<{ [key: string]: never; }>;
 

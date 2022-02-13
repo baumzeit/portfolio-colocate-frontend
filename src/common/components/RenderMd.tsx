@@ -8,7 +8,7 @@ const ul: FC = (props) => <ul {...props} className="pb-6 ml-6 list-disc" />
 const ol: FC = (props) => <ol {...props} className="ml-6 list-decimal" />
 const li: FC = (props) => <li {...props} />
 const a: FC = (props) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-sky-600" />
-const img: FC = (props) => <img {...props} className="rounded shadow" />
+const img: FC = (props) => <img {...props} className="object-contain object-left rounded shadow max-h-[400px]" />
 
 const remarkOptions: UseRemarkOptions = {
   rehypeReactOptions: {

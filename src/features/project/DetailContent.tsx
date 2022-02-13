@@ -26,7 +26,7 @@ export const DetailContent = ({
       <div className="relative grid">
         <article
           className={`transition-opacity duration-300 col-start-1 ${
-            selectedImage ? 'opacity-0 absolute overflow-hidden h-full w-full top-0 left-0' : 'opacity-100'
+            selectedImage ? 'opacity-0 ease-in absolute overflow-hidden h-full w-full top-0 left-0' : 'opacity-100'
           }`}
         >
           <RenderMd className={`text-justify`} content={description} />

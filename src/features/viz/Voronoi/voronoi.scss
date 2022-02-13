@@ -62,7 +62,7 @@
     }
     .label-box {
       @apply fill-text-primary;
-      fill-opacity: 0.75;
+      fill-opacity: 0.85;
       transition: transform 200ms ease-out, opacity 200ms ease-out, fill-opacity 200ms ease-out;
     }
 
@@ -78,7 +78,7 @@
         transform: scale(1.01);
       }
       .label-box {
-        fill-opacity: 0.85;
+        fill-opacity: 0.9;
       }
     }
   }
@@ -131,7 +131,7 @@
         opacity: 1;
 
         .highlight-pattern {
-          fill-opacity: 1;
+          fill-opacity: 0.9;
         }
         .label,
         .label-box,

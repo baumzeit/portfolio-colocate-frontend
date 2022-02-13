@@ -38,7 +38,7 @@ export const DetailBody = ({ project }: DetailContentProps) => {
       <div className="flex flex-wrap items-center justify-between py-1 pl-2 pr-4 rounded-sm bg-text-secondary text-bg-primary">
         <h1 className="w-full text-xl md:text-3xl md:w-auto">{title}</h1>
       </div>
-      <div className="flex flex-col mt-6 mb-6 md:mt-8 gap-x-12 gap-y-4 md:flex-row">
+      <div className="flex flex-col mt-6 mb-6 md:mt-8 gap-x-12 lg:gap-x-16 gap-y-4 md:flex-row">
         {!breakpoint.md && <MainInfo project={project} />}
         <div className="flex-1 mb-4">
           <DetailContent
@@ -52,7 +52,12 @@ export const DetailBody = ({ project }: DetailContentProps) => {
             {breakpoint.md && <MainInfo project={project} />}
             {images && (
               <div className="row-start-1 mb-1 md:row-start-auto">
-                <ImagesPreview images={images} onClick={setSelectedImageIdx} />
+                <ImagesPreview
+                  images={images}
+                  onClick={setSelectedImageIdx}
+                  selectedImageIdx={selectedImageIdx}
+                  onClosePreview={() => setSelectedImageIdx(null)}
+                />
               </div>
             )}
 

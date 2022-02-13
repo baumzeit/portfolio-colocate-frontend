@@ -39,11 +39,15 @@ export const useJitterGrid = ({ minItems, width, height, relMargin, jitter = () 
 
         // const rows = safeRows
         const rows = safeRows - Math.floor((safeRows * columns - minItems) / columns)
+        const minMarginY = height / (rows + 2)
+        const minMarginX = width / (columns + 2)
 
-        const marginTop = height * relMargin.top
-        const marginBottom = height * relMargin.bottom
-        const marginRight = width * relMargin.right
-        const marginLeft = width * relMargin.left
+        const marginTop = Math.max(height * relMargin.top, minMarginY)
+        const marginBottom = Math.max(height * relMargin.bottom, minMarginY)
+        const marginRight = Math.max(height * relMargin.right, minMarginX)
+        const marginLeft = Math.max(height * relMargin.left, minMarginX)
+
+        const fixedVerticalOffset = height * 0.03
 
         const colWidth = (width - (marginLeft + marginRight)) / Math.max(columns - 1, 1)
         const rowHeight = (height - (marginTop + marginBottom)) / Math.max(rows - 1, 1)
@@ -58,7 +62,7 @@ export const useJitterGrid = ({ minItems, width, height, relMargin, jitter = () 
             return Array.from({ length: columns }).map((_, colIndex) => {
               return [
                 colPositions[colIndex] + colWidth * jitter(),
-                rowPositions[rowIdx] + rowHeight * jitter() + (colIndex % 2) * rowHeight * 0.2
+                rowPositions[rowIdx] + rowHeight * jitter() + fixedVerticalOffset * (colIndex % 2 ? 1 : -1)
               ]
             })
           }
@@ -70,7 +74,7 @@ export const useJitterGrid = ({ minItems, width, height, relMargin, jitter = () 
           return Array.from({ length: columns }).map((_, colIndex) => {
             return [
               adjustedColPositions[colIndex] + adjustedColPositions[colIndex] * jitter(),
-              rowPositions[rowIdx] + rowHeight * jitter() + (colIndex % 2) * rowHeight * 0.15
+              rowPositions[rowIdx] + rowHeight * jitter() + fixedVerticalOffset * (colIndex % 2 ? 1 : -1)
             ]
           })
         })
