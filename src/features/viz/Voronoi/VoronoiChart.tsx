@@ -228,14 +228,8 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
     )
     .style('transform-origin', (d) => `${d.x}px ${d.y}px`)
 
-  // svg
-  //   .selectAll('path.bounds')
-  //   .data([voronoi.renderBounds()])
-  //   .join('path')
-  //   .attr('d', (d) => d)
-  //   .classed('bounds', true)
-
-  const textOffsetY = -32
+  const textOffsetY = -25
+  const textOffsetX = 0
 
   function adjustLabelBox(d: EnrichedDatum, cell: SVGGElement) {
     const box = d3.select(cell).select<SVGTextElement>('.label')?.node()?.getBBox()
@@ -261,7 +255,7 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
 
         const min = titleSpace
         const max = opts.width - titleSpace
-        return Math.min(Math.max(d.x, min), max)
+        return Math.min(Math.max(d.x + textOffsetX, min), max)
       })
       .attr('y', (d) => d.y)
   }
@@ -275,18 +269,13 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
           .append('circle')
           .attr('cx', (d) => d.x)
           .attr('cy', (d) => d.y)
-          .attr('r', 7)
-          .attr('tabindex', (d) => 10 + d.index)
+          .attr('r', 3)
           .classed('focus-dot', true)
 
-        svg
-          .selectAll('path.bounds')
-          .data([voronoi.renderBounds()])
-          .join('path')
-          .attr('d', (d) => d)
-          .classed('bounds', true)
-
-        cell.append('rect').classed('label-box', true)
+        cell
+          .append('rect')
+          .classed('label-box', true)
+          .attr('tabindex', (d) => 10 + d.index)
 
         cell
           .append('text')
@@ -310,6 +299,13 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
       adjustLabels(d, this)
       adjustLabelBox(d, this)
     })
+
+  svg
+    .selectAll('path.bounds')
+    .data([voronoi.renderBounds()])
+    .join('path')
+    .attr('d', (d) => d)
+    .classed('bounds', true)
 
   hoverLayer
     .selectAll<SVGGElement, EnrichedDatum>('.hover-cell')
@@ -336,13 +332,6 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
     }
   })
 
-  // d3.selectAll<SVGPathElement, EnrichedDatum>(`.base-layer .cell`).style('transform-origin', function (d) {
-  //   const cellRect = this.getBoundingClientRect()
-  //   const originX = (100 * (d.x - cellRect.x)) / cellRect.width
-  //   const originY = (100 * (d.y - cellRect.y)) / cellRect.height
-  //   return `${originX}% ${originY}%`
-  // })
-
   svg.on('keyup', (e: KeyboardEvent) => {
     if (e.code === 'Space') {
       const activeElement = d3.select<d3.BaseType, EnrichedDatum | null>(document.activeElement)
@@ -354,7 +343,7 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
   })
   svg.on('mouseleave', onMouseLeave)
 
-  d3.selectAll('.cell circle').on('focus', function (e: FocusEvent<SVGElement>) {
+  d3.selectAll('.cell .label-box').on('focus', function (e: FocusEvent<SVGElement>) {
     const datum = d3.select<SVGElement, EnrichedDatum>(e.target).datum()
     if (!baseLayer.selectAll('.exposed').empty()) {
       onClick(datum.id)

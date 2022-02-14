@@ -5,7 +5,6 @@
   }
 
   .cell {
-    // transform-box: fill-box;
     opacity: 1;
     transition: transform 200ms ease-out, opacity 200ms ease-out;
 
@@ -48,10 +47,6 @@
       }
     }
 
-    .focus-dot {
-      @apply fill-brand;
-      transition: transform 200ms ease-out, opacity 200ms ease-out;
-    }
     .label {
       text-anchor: middle;
       dominant-baseline: central;
@@ -60,7 +55,8 @@
       @apply tracking-normal md:tracking-wide;
       transition: transform 200ms ease-out, opacity 200ms ease-out;
     }
-    .label-box {
+    .label-box,
+    .focus-dot {
       @apply fill-text-primary;
       fill-opacity: 0.85;
       transition: transform 200ms ease-out, opacity 200ms ease-out, fill-opacity 200ms ease-out;
@@ -76,9 +72,6 @@
       }
       .image-fo {
         transform: scale(1.01);
-      }
-      .label-box {
-        fill-opacity: 0.9;
       }
     }
   }
@@ -131,7 +124,7 @@
         opacity: 1;
 
         .highlight-pattern {
-          fill-opacity: 0.9;
+          fill-opacity: 1;
         }
         .label,
         .label-box,
