@@ -68,9 +68,9 @@ export const ProjectsMap = () => {
             x: getGridPosition(idx)[0],
             y: getGridPosition(idx)[1],
             imageSrcSet: coverImage
-              ? getSrcSet(coverImage?.file?.childImageSharp?.gatsbyImageData) || 'https://picsum.photos/600/300'
+              ? getSrcSet(coverImage?.localFile?.childImageSharp?.gatsbyImageData) || 'https://picsum.photos/600/300'
               : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
-            // ? images?.[0]?.file?.childImageSharp?.fixed?.srcSet || 'https://picsum.photos/600/300'
+            // ? images?.[0]?.localFile?.childImageSharp?.fixed?.srcSet || 'https://picsum.photos/600/300'
             // : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
             id: id,
             title: String(title),

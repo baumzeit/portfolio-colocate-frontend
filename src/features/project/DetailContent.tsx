@@ -34,7 +34,7 @@ export const DetailContent = ({
         {selectedImage && (
           <div className="z-10 col-start-1 min-h-[70vw] md:min-h-0 md:aspect-square">
             <ImageContainer
-              image={selectedImage.file?.childImageSharp?.gatsbyImageData}
+              image={selectedImage.localFile?.childImageSharp?.gatsbyImageData}
               caption={selectedImage.caption || ''}
               alternativeText={selectedImage.alternativeText || ''}
               onClose={onClosePreview}

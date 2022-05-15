@@ -6,6 +6,7 @@ type LayoutProps = {
   seo?: any
   fullWidth?: boolean
   navContent?: ReactNode
+  children: ReactNode
 }
 
 const Layout: FC<LayoutProps> = ({ children }) => {

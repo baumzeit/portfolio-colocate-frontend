@@ -16,7 +16,7 @@ export const ImagesPreview = ({ images, selectedImageIdx = null, onClick, onClos
     <>
       <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-2 lg:grid-cols-3">
         {images.map((imageData, idx) => {
-          const image = imageData?.file?.childImageSharp?.gatsbyImageData
+          const image = imageData?.localFile?.childImageSharp?.gatsbyImageData
           return image ? (
             <button
               key={imageData.id}

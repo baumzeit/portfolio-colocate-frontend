@@ -21,7 +21,6 @@ import { Profile } from '../features/home/Profile'
 const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQuery>) => {
   const displayAreas = useMemo(() => {
     if (allStrapiArea && strapiHome) {
-      console.log(allStrapiArea, strapiHome)
       const homeAreas = strapiHome.areas?.filter(notEmpty)
       if (homeAreas) {
         return assertAndExtractNodes(allStrapiArea).filter((area) =>

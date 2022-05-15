@@ -9,7 +9,7 @@ type ProjectDetailProps = SetModalProps & { scrollContainer?: RefObject<HTMLDivE
 
 export const ProjectDetail: FC<ProjectDetailProps> = ({ data, onClose, onNext, onPrev, children }) => {
   return data ? (
-    <Container className="pb-16 overflow-x-hidden pt-14">
+    <Container className="pb-16 pt-14">
       <div className={`${children ? '' : 'min-h-[200px] h-[30vh]'} mb-10 md:mb-16`}>
         <SliderControls onPrev={onPrev} onNext={onNext} onClose={onClose}>
           {children}

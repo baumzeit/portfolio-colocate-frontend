@@ -1,12 +1,12 @@
 import { Listbox } from '@headlessui/react'
 import { graphql, Link, useStaticQuery } from 'gatsby'
 import { StaticImage } from 'gatsby-plugin-image'
-import React, { FC, useContext } from 'react'
+import React, { FC, ReactNode, useContext } from 'react'
 
 import { NavDataQuery } from '../../../graphql-types'
 import { ThemeContext } from './ThemeContextProvider'
 
-export const Navbar: FC<{ className?: string }> = ({ children, className = '' }) => {
+export const Navbar: FC<{ className?: string; children: ReactNode }> = ({ children, className = '' }) => {
   const { site } = useStaticQuery<NavDataQuery>(query)
   const { theme } = useContext(ThemeContext)
   return (

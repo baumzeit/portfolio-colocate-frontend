@@ -1,30 +1,30 @@
 import { graphql } from 'gatsby'
 
 export const query = graphql`
-  fragment ExternalLink on StrapiComponentSharedLinks {
+  fragment ExternalLink on STRAPI__COMPONENT_SHARED_LINKS {
     id
     link
     label
   }
-  fragment ImageBase on StrapiUploadFile {
+  fragment ImageBase on STRAPI__MEDIA {
     id
     alternativeText
     caption
   }
-  fragment AreaBase on StrapiArea {
+  fragment AreaBase on STRAPI_AREA {
     id
     slug
     name
     description
     color
   }
-  fragment AreaDetail on StrapiArea {
+  fragment AreaDetail on STRAPI_AREA {
     ...AreaBase
     projects {
       id
       images {
         ...ImageBase
-        file {
+        localFile {
           childImageSharp {
             gatsbyImageData(height: 25, placeholder: BLURRED)
           }
@@ -36,23 +36,33 @@ export const query = graphql`
       name
     }
   }
-  fragment Organization on StrapiOrganization {
+  fragment Organization on STRAPI_ORGANIZATION {
     id
     name
     link
   }
-  fragment ProjectDetail on StrapiProject {
+  fragment ProjectDetail on STRAPI_PROJECT {
     id
     title
     name
     slug
-    description
+    description {
+      data {
+        description
+      }
+      # medias {
+      #   alternativeText
+      #   childImageSharp {
+      #     gatsbyImageData(width: 600, placeholder: BLURRED)
+      #   }
+      # }
+    }
     organization {
       ...Organization
     }
     coverImage {
       ...ImageBase
-      file {
+      localFile {
         childImageSharp {
           gatsbyImageData(width: 600, placeholder: BLURRED)
         }
@@ -60,7 +70,7 @@ export const query = graphql`
     }
     images {
       ...ImageBase
-      file {
+      localFile {
         childImageSharp {
           gatsbyImageData(width: 800, placeholder: BLURRED)
         }
@@ -77,10 +87,11 @@ export const query = graphql`
       ...ExternalLink
     }
   }
-  fragment Profile on StrapiComponentSharedProfile {
+  fragment Profile on STRAPI__COMPONENT_SHARED_PROFILE {
     picture {
       ...ImageBase
-      file {
+
+      localFile {
         childImageSharp {
           gatsbyImageData(height: 200, placeholder: DOMINANT_COLOR)
         }
@@ -90,7 +101,7 @@ export const query = graphql`
       text
     }
   }
-  fragment Contact on StrapiComponentSharedContact {
+  fragment Contact on STRAPI__COMPONENT_SHARED_CONTACT {
     text
     button {
       ...ExternalLink

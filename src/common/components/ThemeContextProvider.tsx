@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, Dispatch, SetStateAction, FC } from 'react'
+import React, { useState, useEffect, createContext, Dispatch, SetStateAction, FC, ReactNode } from 'react'
 
 export const ThemeContext = createContext<{
   theme: string
@@ -8,7 +8,7 @@ export const ThemeContext = createContext<{
   setTheme: () => {}
 })
 
-export const ThemeContextProvider: FC = ({ children }) => {
+export const ThemeContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
   const [theme, setTheme] = useState('')
 
   useEffect(() => {

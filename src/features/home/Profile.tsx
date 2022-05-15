@@ -8,9 +8,9 @@ type ProfileProps = { profile: ProfileFragment }
 export const Profile = ({ profile: { picture, qualities } }: ProfileProps) => (
   <div className="flex flex-row justify-center gap-4 md:flex-col lg:flex-row">
     <div className="px-1 shrink-0">
-      {picture?.file && (
+      {picture?.localFile && (
         <GatsbyImage
-          image={picture.file.childImageSharp?.gatsbyImageData}
+          image={picture.localFile.childImageSharp?.gatsbyImageData}
           alt={picture.alternativeText || ''}
           className="w-32 overflow-hidden rounded-md shadow-md sm:w-40"
         />
