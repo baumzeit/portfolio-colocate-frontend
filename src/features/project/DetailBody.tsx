@@ -94,7 +94,7 @@ const SecondaryInfo = ({ project: { links, tags } }: SecondaryInfoProps) => {
       {links && links?.length > 0 && (
         <div className="leading-snug">
           {links.filter(notEmpty).map((link) => (
-            <ExternalLink {...link} />
+            <ExternalLink key={link.id} {...link} />
           ))}
         </div>
       )}

@@ -29,7 +29,7 @@ export const DetailContent = ({
             selectedImage ? 'opacity-0 ease-in absolute overflow-hidden h-full w-full top-0 left-0' : 'opacity-100'
           }`}
         >
-          <RenderMd className={`text-justify`} content={description} />
+          <RenderMd className={`text-justify`} content={description?.data?.description} />
         </article>
         {selectedImage && (
           <div className="z-10 col-start-1 min-h-[70vw] md:min-h-0 md:aspect-square">
