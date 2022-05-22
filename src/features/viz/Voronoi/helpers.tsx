@@ -107,7 +107,7 @@ export const initializeVoronoiActions = (svg: SVGSVGElement, originalData: Voron
       const navbarAndHeightCenter = opts.exposeOffsetTop + opts.exposeCellHeight / 2
 
       const transform = isExposed(d)
-        ? ` translate(${opts.width / 2 - d.x - (relOffsetX * exposeCellWidth) / 2}px, ${
+        ? `translate(${opts.width / 2 - d.x - (relOffsetX * exposeCellWidth) / 2}px, ${
             navbarAndHeightCenter - d.y - (relOffsetY * opts.exposeCellHeight) / 2
           }px) scale(${scale})`
         : 'translate(0, 0) scale(1) '

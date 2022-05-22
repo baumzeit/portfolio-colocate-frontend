@@ -54,7 +54,7 @@ export const ProjectsMap = () => {
 
   const onClickCell = useCallback(
     (id) => {
-      setQuery({ project: projects.find((project) => project.id === id)?.slug || undefined, area: undefined })
+      setQuery({ project: projects.find((project) => project.id === id)?.slug || undefined })
     },
     [projects, setQuery]
   )
@@ -104,7 +104,7 @@ export const ProjectsMap = () => {
           'Loading ...'
         )}
       </div>
-      <Modal show={!!exposedSlug} enterClass="delay-150" containerClassName="absolute top-0 left-0 w-full h-full">
+      <Modal show={!!exposedSlug} containerClassName="absolute top-0 left-0 w-full h-full">
         {modalData && <ProjectDetail {...modalData} />}
       </Modal>
     </>

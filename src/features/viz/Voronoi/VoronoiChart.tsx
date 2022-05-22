@@ -41,7 +41,7 @@ export const VoronoiChart = memo(
     const [svgNode, setSvgNode] = useState<SVGSVGElement>()
     const [initialized, setInitialized] = useState(false)
 
-    const onRefChange = useCallback((node) => {
+    const onRefChange = useCallback((node: SVGSVGElement | undefined) => {
       setSvgNode(node)
     }, [])
 
@@ -56,7 +56,7 @@ export const VoronoiChart = memo(
           exposeOffsetTop: 56,
           exposeCellHeight: Math.max(window.innerHeight * 0.3, 250)
         }
-        console.log('voronoi | set options', options)
+        // console.log('voronoi | set options', options)
         return options
       }
     }, [height, imageSize, width])
@@ -64,14 +64,14 @@ export const VoronoiChart = memo(
     const voronoiActions = useMemo(() => {
       if (voronoiOptions && svgNode) {
         const initializedActions = initializeVoronoiActions(svgNode, data, voronoiOptions)
-        console.log('voronoi | set actions', initializedActions)
+        // console.log('voronoi | set actions', initializedActions)
         return initializedActions
       }
     }, [data, svgNode, voronoiOptions])
 
     useEffect(() => {
       if (svgNode && voronoiActions) {
-        console.log('voronoi | draw chart')
+        // console.log('voronoi | draw chart')
         const svg = d3
           .select(svgNode)
           .attr('fill', 'none')
@@ -90,14 +90,14 @@ export const VoronoiChart = memo(
 
     useEffect(() => {
       if (voronoiActions && initialized) {
-        console.log('voronoi | action expose', exposedProjectId)
+        // console.log('voronoi | action expose', exposedProjectId)
         voronoiActions.exposeCell(exposedProjectId)
       }
     }, [exposedProjectId, initialized, voronoiActions])
 
     useEffect(() => {
       if (voronoiActions && initialized) {
-        console.log('voronoi | action highlight', highlightedAreaId)
+        // console.log('voronoi | action highlight', highlightedAreaId)
         voronoiActions.highlightCellsByAreaId(highlightedAreaId)
       }
     }, [highlightedAreaId, initialized, voronoiActions])
@@ -326,7 +326,6 @@ const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMo
     )
 
   hoverLayer.selectAll<SVGPathElement, EnrichedDatum>('.hover-border').on('mouseenter', function (e: MouseEvent, d) {
-    // console.log('enter cell')
     if (d3.selectAll('.cell.exposed').empty() && !svg.node()!.contains(document.activeElement)) {
       onHover(d.id)
     }

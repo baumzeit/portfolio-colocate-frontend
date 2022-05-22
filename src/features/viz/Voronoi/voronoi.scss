@@ -6,20 +6,18 @@
 
   .cell {
     opacity: 1;
-    transition: transform 200ms ease-out, opacity 200ms ease-out;
-
     .pattern {
       fill-opacity: 0.9;
       transition: fill-opacity 200ms ease-out;
     }
     .highlight-pattern {
       fill-opacity: 0;
-      transition: fill-opacity 200ms ease-out;
+      transition: fill-opacity 100ms ease-out;
     }
     .cell-gap {
       stroke-width: 22;
       @apply stroke-bg-primary;
-      transition: transform 200ms ease-out, opacity 200ms ease-out, stroke-width 200ms ease-out;
+      transition: stroke-width 200ms ease-out;
     }
     .cell-border {
       stroke-width: 1;
@@ -27,7 +25,7 @@
       fill: transparent;
       @apply stroke-brand;
       transform-origin: center;
-      transition: transform 200ms ease-out, stroke-opacity 200ms ease-out, stroke-width 200ms ease-out;
+      transition: stroke-width 200ms ease-out;
     }
     .hover-border {
       stroke-width: 1;
@@ -35,6 +33,7 @@
       stroke: transparent;
     }
     .image-fo {
+      opacity: 0.9;
       transform: scale(1);
       transform-box: fill-box;
       transform-origin: center;
@@ -53,13 +52,13 @@
       @apply fill-bg-primary;
       @apply md:text-sm xl:text-lg;
       @apply tracking-normal md:tracking-wide;
-      transition: transform 200ms ease-out, opacity 200ms ease-out;
+      transition: opacity 50ms ease-out;
     }
     .label-box,
     .focus-dot {
       @apply fill-text-primary;
       fill-opacity: 0.85;
-      transition: transform 200ms ease-out, opacity 200ms ease-out, fill-opacity 200ms ease-out;
+      transition: opacity 50ms ease-out, fill-opacity 50ms ease-out;
     }
 
     &.hover-selected {
@@ -87,12 +86,11 @@
     pointer-events: none;
     .bounds,
     .cell {
-      opacity: 0.015;
-      transition: transform 250ms ease-in, opacity 150ms ease-out;
+      opacity: 0;
 
       &.exposed {
         opacity: 1;
-        transition: transform 200ms ease-out, opacity 100ms ease-out 150ms;
+        transition: opacity 50ms ease-out;
 
         .cell-border {
           stroke-opacity: 1;
@@ -110,7 +108,7 @@
     }
   }
 
-  &.highlight-view {
+  &:not(.expose-view).highlight-view {
     .cell {
       opacity: 0.35;
 

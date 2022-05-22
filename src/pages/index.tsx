@@ -65,10 +65,10 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQue
                       <div className="text-secondary">{contact.text}</div>
                     </div>
                     <div className="col-start-1 col-end-9 md:col-start-6 lg:mt-0">
-                      <a href={contact.button.link} target="_blank" rel="noreferrer">
+                      <a href={contact.button?.link || ''} target="_blank" rel="noreferrer">
                         <button className="px-5 py-3 tracking-wide transition-colors ease-out border rounded border-highlight hover:bg-highlight hover:text-bg-primary">
                           <div className="flex items-center gap-x-2">
-                            {contact.button.label || contact.button.link}
+                            {contact.button?.label || contact.button?.link}
                             <MailIcon className="w-4 h-4" />
                           </div>
                         </button>
