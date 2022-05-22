@@ -24,6 +24,10 @@ export const SvgBlob = forwardRef<SVGSVGElement, SvgBlobProps>(function SvgBlob(
 
   const pathProps: React.SVGProps<SVGPathElement> & Pick<React.SVGAttributes<SVGPathElement>, 'className' | 'style'> = {
     fill: color,
+    fillOpacity: 0.3,
+    strokeWidth: '1px',
+    stroke: color,
+    vectorEffect: 'non-scaling-stroke',
     style: { transformOrigin: 'center', transformBox: 'fill-box' },
     className: pathClassName
   }
@@ -33,10 +37,7 @@ export const SvgBlob = forwardRef<SVGSVGElement, SvgBlobProps>(function SvgBlob(
   }
 
   if (isOutline) {
-    pathProps.strokeWidth = '1px'
     pathProps.fill = 'none'
-    pathProps.stroke = color
-    pathProps.vectorEffect = 'non-scaling-stroke'
   }
 
   if (variant === 'gradient' && isOutline) {

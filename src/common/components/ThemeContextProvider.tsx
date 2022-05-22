@@ -1,20 +1,23 @@
-import React, { useState, useEffect, createContext, Dispatch, SetStateAction, FC, ReactNode } from 'react'
+import React, { useState, useEffect, createContext, Dispatch, SetStateAction, FC, ReactNode, useContext } from 'react'
 import { Helmet } from 'react-helmet'
 
+type Theme = 'dark' | 'light'
+export const DEFAULT_THEME = 'dark'
+
 export const ThemeContext = createContext<{
-  theme: string
-  setTheme: Dispatch<SetStateAction<string>>
+  theme: Theme
+  setTheme: Dispatch<SetStateAction<Theme>>
 }>({
-  theme: '',
+  theme: DEFAULT_THEME,
   setTheme: () => {}
 })
 
 export const ThemeContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
-  const [theme, setTheme] = useState('dark')
+  const [theme, setTheme] = useState<Theme>(DEFAULT_THEME)
 
   useEffect(() => {
-    const theme = localStorage.getItem('theme') || 'dark'
-    setTheme(theme)
+    const theme = localStorage.getItem('theme') || DEFAULT_THEME
+    setTheme(theme as Theme)
   }, [])
 
   useEffect(() => {
@@ -41,3 +44,5 @@ export const ThemeContextProvider: FC<{ children: ReactNode }> = ({ children }) 
     </>
   )
 }
+
+export const useTheme = () => useContext(ThemeContext)

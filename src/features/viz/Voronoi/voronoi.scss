@@ -12,7 +12,7 @@
     }
     .highlight-pattern {
       fill-opacity: 0;
-      transition: fill-opacity 100ms ease-out;
+      transition: fill-opacity 150ms ease-out;
     }
     .cell-gap {
       stroke-width: 22;
@@ -21,7 +21,7 @@
     }
     .cell-border {
       stroke-width: 1;
-      stroke-opacity: 0.1;
+      stroke-opacity: 0.15;
       fill: transparent;
       @apply stroke-brand;
       transform-origin: center;
@@ -33,11 +33,10 @@
       stroke: transparent;
     }
     .image-fo {
-      opacity: 0.9;
       transform: scale(1);
       transform-box: fill-box;
       transform-origin: center;
-      transition: transform 350ms ease-out;
+      transition: transform 350ms ease-out, opacity 150ms ease-out;
       .image {
         width: 100%;
         height: 100%;
@@ -52,13 +51,13 @@
       @apply fill-bg-primary;
       @apply md:text-sm xl:text-lg;
       @apply tracking-normal md:tracking-wide;
-      transition: opacity 50ms ease-out;
+      transition: opacity 60ms ease-out;
     }
     .label-box,
     .focus-dot {
       @apply fill-text-primary;
       fill-opacity: 0.85;
-      transition: opacity 50ms ease-out, fill-opacity 50ms ease-out;
+      transition: opacity 60ms ease-out, fill-opacity 60ms ease-out;
     }
 
     &.hover-selected {
@@ -70,6 +69,8 @@
         stroke-width: 20;
       }
       .image-fo {
+        opacity: 0.9;
+        @apply dark:opacity-100;
         transform: scale(1.01);
       }
     }
