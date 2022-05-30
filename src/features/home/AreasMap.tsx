@@ -37,7 +37,9 @@ export const AreasMap: FC<AreasMapProps> = ({ areas }) => {
               >
                 <Area
                   area={area}
-                  alignment={breakpoints.lg ? (one ? 'right' : two ? 'left' : three ? 'center' : 'left') : 'left'}
+                  alignment={
+                    breakpoints?.lg === false ? 'left' : one ? 'right' : two ? 'left' : three ? 'center' : 'left'
+                  }
                 />
               </div>
             )
