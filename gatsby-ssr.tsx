@@ -1,2 +1,2 @@
-// export { wrapRootElement } from './wrapRootElement'
-// export { wrapPageElement } from './wrapPageElement';
+export { wrapRootElement } from './wrapRootElement'
+export { wrapPageElement } from './wrapPageElement'
