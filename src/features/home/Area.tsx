@@ -50,15 +50,20 @@ export const Area = ({ area: { name, description, id, color: areaColor, tags, sl
         className={`absolute pointer-events-none w-full flex ${blobOffset[alignment]}`}
         style={{ justifyContent: flex[alignment] }}
       >
-        <div className="w-[340px] md:w-[430px] lg:w-[500px] opacity-20 dark:opacity-[0.15] group-hover:opacity-40 dark:group-hover:opacity-[0.25] group-hover:scale-95 transition-all duration-150 group-hover:duration-[400ms] -mx-14 -my-14">
-          <SvgBlob
-            variant="solid"
-            color={areaColor || ''}
-            isOutline={theme === 'light'}
-            shapeProps={{ growth: 6, edges: 6 }}
-            id={id}
-            pathClassName="animate-spinVerySlow"
-          />
+        <div
+          className="w-[340px] md:w-[430px] lg:w-[500px] opacity-20 dark:opacity-[0.15] group-hover:opacity-40 dark:group-hover:opacity-[0.25] 
+        group-hover:scale-95 transition-all duration-150 group-hover:duration-[400ms] -mx-14 -my-14"
+        >
+          <div className="animate-spinVerySlow">
+            <SvgBlob
+              variant="solid"
+              color={areaColor || ''}
+              isOutline={theme === 'light'}
+              shapeProps={{ growth: 6, edges: 6 }}
+              id={id}
+              // pathClassName="animate-spinVerySlow"
+            />
+          </div>
         </div>
       </div>
     </div>
