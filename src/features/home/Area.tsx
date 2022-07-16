@@ -2,7 +2,6 @@ import { ChevronRightIcon } from '@heroicons/react/outline'
 import { Link } from 'gatsby'
 import React from 'react'
 
-import { AreaDetailFragment } from '../../../graphql-types'
 import { Tags } from '../../common/components/Tags'
 import { useTheme } from '../../common/components/ThemeContextProvider'
 import { PATH } from '../../common/constants/paths'
@@ -20,7 +19,7 @@ const blobOffset = {
   right: 'lg:-right-[140px] lg:-top-[60px]'
 }
 
-type AreaProps = { area: AreaDetailFragment; alignment: 'left' | 'center' | 'right' }
+type AreaProps = { area: Queries.AreaDetailFragment; alignment: 'left' | 'center' | 'right' }
 export const Area = ({ area: { name, description, id, color: areaColor, tags, slug }, alignment }: AreaProps) => {
   const { theme } = useTheme()
   return (

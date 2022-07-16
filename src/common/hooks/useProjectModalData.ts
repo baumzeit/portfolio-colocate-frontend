@@ -1,9 +1,7 @@
 import { useMemo } from 'react'
 import { useQueryParam } from 'use-query-params'
 
-import { ProjectDetailFragment } from '../../../graphql-types'
-
-export const useProjectModalData = (projects: ProjectDetailFragment[]) => {
+export const useProjectModalData = (projects: Queries.ProjectDetailFragment[]) => {
   const [exposedSlug, setProject] = useQueryParam<string | undefined>('project')
   return useMemo(() => {
     if (projects) {

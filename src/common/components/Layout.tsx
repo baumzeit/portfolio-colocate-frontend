@@ -1,4 +1,4 @@
-import React, { FC, ReactNode } from 'react'
+import React, { ReactNode } from 'react'
 
 export const NAVBAR_HEIGHT = 56
 
@@ -9,7 +9,7 @@ type LayoutProps = {
   children: ReactNode
 }
 
-const Layout: FC<LayoutProps> = ({ children }) => {
+const Layout = ({ children }: LayoutProps) => {
   return (
     <div className="grid h-screen bg-primary" style={{ gridTemplateRows: `${NAVBAR_HEIGHT}px 1fr` }}>
       {/* <Seo seo={seo} /> */}

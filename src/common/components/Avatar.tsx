@@ -1,8 +1,10 @@
-import React, { FC, useMemo } from 'react'
+import React, { useMemo } from 'react'
 
 import { generateColorStopClasses } from '../utility/generateColorStopClasses'
 
-export const Avatar: FC<{ name: string; highlight?: boolean }> = ({ name, highlight }) => {
+type AvatarProps = { name: string; highlight?: boolean }
+
+export const Avatar = ({ name, highlight }: AvatarProps) => {
   const colorStopClasses = useMemo(() => generateColorStopClasses(name), [name])
 
   return (

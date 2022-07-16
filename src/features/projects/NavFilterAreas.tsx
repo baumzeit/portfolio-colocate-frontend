@@ -2,10 +2,8 @@ import { Listbox } from '@headlessui/react'
 import React, { useCallback, useState } from 'react'
 import { useQueryParam } from 'use-query-params'
 
-import { AreaBaseFragment } from '../../../graphql-types'
-
 type NavFilterAreasProps = {
-  areas: AreaBaseFragment[]
+  areas: Queries.AreaBaseFragment[]
 }
 
 export const NavFilterAreas = ({ areas }: NavFilterAreasProps) => {
@@ -41,7 +39,7 @@ export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
   const [selectedArea, setSelectedArea] = useState(areas.find((area) => area.slug === selectedAreaSlug))
 
   const handleChange = useCallback(
-    (area: AreaBaseFragment) => {
+    (area: Queries.AreaBaseFragment) => {
       const isActive = area.slug === selectedAreaSlug
       setSelectedAreaSlug(isActive || !area.slug ? undefined : area.slug)
       setSelectedArea(isActive || !area.slug ? undefined : area)

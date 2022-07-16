@@ -1,4 +1,4 @@
-import React, { useState, useEffect, createContext, Dispatch, SetStateAction, FC, ReactNode, useContext } from 'react'
+import React, { useState, useEffect, createContext, Dispatch, SetStateAction, ReactNode, useContext } from 'react'
 import { Helmet } from 'react-helmet'
 
 type Theme = 'dark' | 'light'
@@ -12,7 +12,9 @@ export const ThemeContext = createContext<{
   setTheme: () => {}
 })
 
-export const ThemeContextProvider: FC<{ children: ReactNode }> = ({ children }) => {
+type ThemeContextProviderProps = { children: ReactNode }
+
+export const ThemeContextProvider = ({ children }: ThemeContextProviderProps) => {
   const [theme, setTheme] = useState<Theme>(DEFAULT_THEME)
 
   useEffect(() => {

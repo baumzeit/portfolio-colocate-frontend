@@ -3,7 +3,8 @@ import { useState, useEffect, useCallback } from 'react'
 type UseJitterGridProps = {
   minItems: number
   width: number | null
-  height: number | null
+  minHeight: number | null
+  minTilePixels?: number
   relMargin: {
     top: number
     right: number
@@ -13,14 +14,26 @@ type UseJitterGridProps = {
   jitter?: () => number
 }
 
-export const useJitterGrid = ({ minItems, width, height, relMargin, jitter = () => 0 }: UseJitterGridProps) => {
+export const useJitterGrid = ({
+  minItems,
+  width,
+  minHeight,
+  relMargin,
+  minTilePixels,
+  jitter = () => 0
+}: UseJitterGridProps) => {
   const [grid, setGrid] = useState<number[][][]>()
   const [numCols, setNumCols] = useState(0)
   const [numRows, setNumRows] = useState(0)
+  const [height, setHeight] = useState(minHeight)
 
   useEffect(() => {
     try {
-      if (width && height) {
+      if (width && minHeight) {
+        const pixels = width * minHeight
+        const pixelsPerItem = pixels / minItems
+        const height = minTilePixels && pixelsPerItem < minTilePixels ? (minItems * minTilePixels) / width : minHeight
+
         const defaultSize = Math.sqrt(minItems)
         const aspect = width && height && Math.min(width / height, 1.5)
 
@@ -82,9 +95,20 @@ export const useJitterGrid = ({ minItems, width, height, relMargin, jitter = () 
         setGrid(gridPositions)
         setNumCols(columns)
         setNumRows(rows)
+        setHeight(height)
       }
     } catch (err) {}
-  }, [height, jitter, minItems, relMargin.right, relMargin.top, relMargin.bottom, relMargin.left, width])
+  }, [
+    jitter,
+    minItems,
+    relMargin.right,
+    relMargin.top,
+    relMargin.bottom,
+    relMargin.left,
+    width,
+    minHeight,
+    minTilePixels
+  ])
 
   const getGridPosition = useCallback(
     (grid: number[][][]) => (idx: number) => {
@@ -95,5 +119,5 @@ export const useJitterGrid = ({ minItems, width, height, relMargin, jitter = () 
     [numCols]
   )
 
-  return { getGridPosition: grid ? getGridPosition(grid) : undefined, grid, numCols, numRows }
+  return { getGridPosition: grid ? getGridPosition(grid) : undefined, grid, numCols, numRows, height }
 }

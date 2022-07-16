@@ -1,9 +1,7 @@
-import { ExternalLinkIcon } from '@heroicons/react/solid'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
-import React, { useCallback, useEffect, useState } from 'react'
+import React, { useCallback, useEffect } from 'react'
 import { NumberParam, useQueryParam } from 'use-query-params'
 
-import { ProjectDetailFragment } from '../../../graphql-types'
 import { Tags } from '../../common/components/Tags'
 import notEmpty from '../../common/utility/notEmpty'
 import { ExternalLink } from './../../common/components/ExternalLink'
@@ -12,7 +10,7 @@ import { ImagesPreview } from './ImagesPreview'
 import { InfoRow } from './InfoRow'
 
 type DetailContentProps = {
-  project: ProjectDetailFragment
+  project: Queries.ProjectDetailFragment
 }
 
 export const DetailBody = ({ project }: DetailContentProps) => {
@@ -69,7 +67,7 @@ export const DetailBody = ({ project }: DetailContentProps) => {
   )
 }
 
-type MainInfoProps = { project: ProjectDetailFragment }
+type MainInfoProps = { project: Queries.ProjectDetailFragment }
 const MainInfo = ({ project: { organization, areas } }: MainInfoProps) => {
   return (
     <div>
@@ -87,7 +85,7 @@ const MainInfo = ({ project: { organization, areas } }: MainInfoProps) => {
   )
 }
 
-type SecondaryInfoProps = { project: ProjectDetailFragment }
+type SecondaryInfoProps = { project: Queries.ProjectDetailFragment }
 const SecondaryInfo = ({ project: { links, tags } }: SecondaryInfoProps) => {
   return (
     <>

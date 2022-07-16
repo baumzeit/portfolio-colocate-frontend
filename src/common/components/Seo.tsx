@@ -1,5 +1,5 @@
 import { useStaticQuery, graphql } from 'gatsby'
-import React, { FC } from 'react'
+import React from 'react'
 import { Helmet } from 'react-helmet'
 
 // const SEO: FC<{ seo?: any }> = ({ seo = {} }) => {

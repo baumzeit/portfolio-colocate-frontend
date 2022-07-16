@@ -2,10 +2,8 @@ import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import { GatsbyImage } from 'gatsby-plugin-image'
 import React from 'react'
 
-import { ProjectDetailFragment } from '../../../graphql-types'
-
 export type ImagesPreviewProps = {
-  images: ProjectDetailFragment['images']
+  images: Queries.ProjectDetailFragment['images']
   selectedImageIdx?: number | null
   onClick: (idx?: number) => void
   onClosePreview: () => void

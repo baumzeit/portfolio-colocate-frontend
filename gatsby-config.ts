@@ -27,9 +27,7 @@ module.exports = {
     siteURL: process.env.GATSBY_ROOT_URL,
     title: 'Philip Hradecsni'
   },
-  // flags: {
-  //   GRAPHQL_TYPEGEN: true
-  // },
+  graphqlTypegen: true,
   plugins: [
     'gatsby-plugin-image',
     'gatsby-plugin-react-helmet',
@@ -38,7 +36,6 @@ module.exports = {
     'gatsby-plugin-postcss',
     'gatsby-plugin-sass',
     'gatsby-plugin-use-query-params',
-    'gatsby-plugin-graphql-codegen',
     {
       resolve: 'gatsby-plugin-breakpoints',
       options: {

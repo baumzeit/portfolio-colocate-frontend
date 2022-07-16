@@ -1,9 +1,12 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
-import React, { FC } from 'react'
+import React, { ReactNode } from 'react'
 
 import { SetModalProps } from '../projects/ProjectsMap'
 
-export const SliderControls: FC<Omit<SetModalProps, 'data'>> = ({ onPrev, onNext, children }) => {
+type SlicerControlProps = Omit<SetModalProps, 'data'> & {
+  children: ReactNode
+}
+export const SliderControls = ({ onPrev, onNext, children }: SlicerControlProps) => {
   return (
     <div className="flex items-center justify-between h-full">
       <button onClick={onPrev} className="hover:text-brand text-secondary bg-primary md:bg-transparent">

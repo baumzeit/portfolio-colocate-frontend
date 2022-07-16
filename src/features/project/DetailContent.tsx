@@ -1,12 +1,11 @@
 import React, { useMemo } from 'react'
 
-import { ProjectDetailFragment } from '../../../graphql-types'
 import { RenderMd } from '../../common/components/RenderMd'
 import notEmpty from '../../common/utility/notEmpty'
 import { ImageContainer } from './ImageContainer'
 
 type DetailContentProps = {
-  project: ProjectDetailFragment
+  project: Queries.ProjectDetailFragment
   selectedImageIdx: number | null
   onClosePreview: () => void
 }

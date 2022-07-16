@@ -3,7 +3,6 @@ import { graphql, PageProps } from 'gatsby'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { createContext, useMemo, useRef } from 'react'
 
-import { AreaBaseFragment, ProjectDetailFragment, ProjectsPageDataQuery } from '../../../graphql-types'
 import Layout from '../../common/components/Layout'
 import { Main } from '../../common/components/Main'
 import { Navbar } from '../../common/components/Navbar'
@@ -12,12 +11,15 @@ import { ProjectsNavContent } from '../../features/projects/NavContent'
 import { ProjectsList } from '../../features/projects/ProjectsList'
 import { ProjectsMap } from '../../features/projects/ProjectsMap'
 
-export const ProjectsAreasContext = createContext<{ areas: AreaBaseFragment[]; projects: ProjectDetailFragment[] }>({
+export const ProjectsAreasContext = createContext<{
+  areas: Queries.AreaBaseFragment[]
+  projects: Queries.ProjectDetailFragment[]
+}>({
   areas: [],
   projects: []
 })
 
-const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<ProjectsPageDataQuery>) => {
+const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Queries.ProjectsPageDataQuery>) => {
   const areas = useMemo(() => assertAndExtractNodes(allStrapiArea), [allStrapiArea])
   const projects = useMemo(() => assertAndExtractNodes(allStrapiProject), [allStrapiProject])
 

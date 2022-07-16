@@ -1,13 +1,14 @@
 import { Listbox } from '@headlessui/react'
 import { graphql, Link, useStaticQuery } from 'gatsby'
 import { StaticImage } from 'gatsby-plugin-image'
-import React, { FC, ReactNode, useContext } from 'react'
+import React, { ReactNode, useContext } from 'react'
 
-import { NavDataQuery } from '../../../graphql-types'
 import { ThemeContext } from './ThemeContextProvider'
 
-export const Navbar: FC<{ className?: string; children: ReactNode }> = ({ children, className = '' }) => {
-  const { site } = useStaticQuery<NavDataQuery>(query)
+type NavbarProps = { className?: string; children: ReactNode }
+
+export const Navbar = ({ children, className = '' }: NavbarProps) => {
+  const { site } = useStaticQuery<Queries.NavDataQuery>(query)
   const { theme } = useContext(ThemeContext)
   return (
     <nav className={`flex items-center justify-between shadow-sm px-4 sm:px-6 h-full bg-primary ${className} z-20`}>

@@ -2,7 +2,6 @@ import { sort } from 'd3-array'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { StringParam, useQueryParams } from 'use-query-params'
 
-import { ProjectDetailFragment } from '../../../graphql-types'
 import { NAVBAR_HEIGHT } from '../../common/components/Layout'
 import { Modal } from '../../common/components/Modal'
 import { useBodyScrollLock } from '../../common/hooks/useBodyScrollLock'
@@ -12,13 +11,13 @@ import { ProjectBanner } from '../project/ProjectBanner'
 import { useProjectModalData } from './../../common/hooks/useProjectModalData'
 
 export type SetModalProps = {
-  data: ProjectDetailFragment | null
+  data: Queries.ProjectDetailFragment | null
   onClose: () => void
   onNext: () => void
   onPrev: () => void
 }
 
-export type DisplayProject = ProjectDetailFragment & { highlightColor?: string | null }
+export type DisplayProject = Queries.ProjectDetailFragment & { highlightColor?: string | null }
 
 export type SetModalFn = ({ onClose, onNext, onPrev, data }: SetModalProps) => void
 
@@ -35,7 +34,7 @@ export const ProjectsList = () => {
   useBodyScrollLock({ enable: !!selectedProject })
 
   const areaMatch = useCallback(
-    (project: ProjectDetailFragment) =>
+    (project: Queries.ProjectDetailFragment) =>
       !highlightedAreaSlug || project.areas?.map((area) => area?.slug).includes(highlightedAreaSlug) || null,
     [highlightedAreaSlug]
   )

@@ -1,13 +1,12 @@
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import chunk from 'lodash.chunk'
-import React, { FC } from 'react'
+import React from 'react'
 
-import { AreaDetailFragment } from '../../../graphql-types'
 import { Area } from './Area'
 
-type AreasMapProps = { areas: AreaDetailFragment[] }
+type AreasMapProps = { areas: Queries.AreaDetailFragment[] }
 
-export const AreasMap: FC<AreasMapProps> = ({ areas }) => {
+export const AreasMap = ({ areas }: AreasMapProps) => {
   const breakpoints = useBreakpoint()
 
   return (
