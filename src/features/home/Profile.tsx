@@ -1,7 +1,7 @@
 import { GatsbyImage } from 'gatsby-plugin-image'
 import React from 'react'
 
-import notEmpty from '../../common/utility/notEmpty'
+import notEmpty from '../../common/utility/not-empty'
 
 type ProfileProps = { profile: Queries.ProfileFragment }
 export const Profile = ({ profile: { picture, qualities } }: ProfileProps) => {

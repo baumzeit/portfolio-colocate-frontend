@@ -5,9 +5,9 @@ import { StringParam, useQueryParams } from 'use-query-params'
 import { Modal } from '../../common/components/Modal'
 import { ModalNavbar } from '../../common/components/ModalNavbar'
 import { ProjectsAreasContext } from '../../pages/projects/[...]'
+import { DetailContainer } from '../project/DetailContainer'
 import { ProjectBanner } from '../project/ProjectBanner'
-import { ProjectDetail } from '../project/ProjectDetail'
-import { useProjectModalData } from './../../common/hooks/useProjectModalData'
+import { useProjectModalData } from '../project/use-project-modal-data'
 
 export type DisplayProject = Queries.ProjectDetailFragment & { highlightColor?: string | null }
 
@@ -62,7 +62,7 @@ const ProjectsList = () => {
       </ul>
       <Modal show={!!modalData?.project} navbar={<ModalNavbar closeQueryParam="project" />}>
         {modalData?.project && (
-          <ProjectDetail {...modalData}>
+          <DetailContainer {...modalData}>
             <div className="mx-10 overflow-hidden rounded shadow animate-fadeInFast">
               <ProjectBanner
                 project={modalData.project}
@@ -72,7 +72,7 @@ const ProjectsList = () => {
                 className="max-h-[160px]"
               />
             </div>
-          </ProjectDetail>
+          </DetailContainer>
         )}
       </Modal>
     </div>

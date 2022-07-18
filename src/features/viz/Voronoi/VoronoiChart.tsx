@@ -3,8 +3,8 @@ import * as d3 from 'd3-selection'
 import React, { SVGProps, useCallback, useEffect, useMemo, useState } from 'react'
 
 import './voronoi.scss'
-import { drawVoronoi } from './helpers/drawVoronoi'
-import { EnrichedDatum, initializeVoronoiActions, VoronoiOptions } from './helpers/voronoiActions'
+import { drawVoronoi } from './helpers/draw-voronoi'
+import { EnrichedDatum, initializeVoronoiActions, VoronoiOptions } from './helpers/voronoi-actions'
 
 type HighlightPatternDatum = { color?: string | null; id: string | number }
 

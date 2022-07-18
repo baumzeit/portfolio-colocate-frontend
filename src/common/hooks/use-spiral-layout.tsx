@@ -40,7 +40,7 @@ export const useSpiralLayout = ({ minItems, width, height, relMargin, jitter = (
       points.push([x, y])
     }
 
-    // const a = 15
+    const a = 15
     const r = Math.sqrt(height / 2)
     const x = a * r * Math.cos(r) + jitter() * a
     const y = a * r * Math.sin(r) + jitter() * a

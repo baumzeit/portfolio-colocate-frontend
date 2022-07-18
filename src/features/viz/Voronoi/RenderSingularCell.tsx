@@ -1,8 +1,8 @@
 import * as d3 from 'd3-selection'
 import React, { useRef, useEffect, useMemo } from 'react'
 
-import { drawContentLayer } from './helpers/drawVoronoi'
-import { EnrichedDatum } from './helpers/voronoiActions'
+import { drawContentLayer } from './helpers/draw-voronoi'
+import { EnrichedDatum } from './helpers/voronoi-actions'
 import { VoronoiChartProps } from './VoronoiChart'
 
 type RenderSingularCellProps = {

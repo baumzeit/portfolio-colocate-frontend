@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
 import { RenderMd } from '../../common/components/RenderMd'
-import notEmpty from '../../common/utility/notEmpty'
+import notEmpty from '../../common/utility/not-empty'
 import { ImageContainer } from './ImageContainer'
 
 type DetailContentProps = {

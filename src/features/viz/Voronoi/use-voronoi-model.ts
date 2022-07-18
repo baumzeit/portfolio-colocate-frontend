@@ -1,7 +1,7 @@
 import { Delaunay } from 'd3-delaunay'
 import { useMemo } from 'react'
 
-import { EnrichedDatum, VoronoiDatum } from './helpers/voronoiActions'
+import { EnrichedDatum, VoronoiDatum } from './helpers/voronoi-actions'
 
 const padding = { top: 0, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 * 16 }
 const cellGap = 22

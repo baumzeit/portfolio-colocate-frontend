@@ -2,7 +2,7 @@ import { useWindowSize } from '@react-hook/window-size'
 import React, { memo, useContext } from 'react'
 
 import { NAVBAR_HEIGHT } from '../../common/components/Navbar'
-import { useJitterGrid } from '../../common/hooks/useJitterGrid'
+import { useJitterGrid } from '../../common/hooks/use-jitter-grid'
 import { ProjectsAreasContext } from '../../pages/projects/[...]'
 import { VoronoiContainer } from '../viz/Voronoi/VoronoiContainer'
 

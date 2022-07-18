@@ -6,7 +6,7 @@ import React, { createContext, lazy, Suspense, useMemo } from 'react'
 import Layout from '../../common/components/Layout'
 import { Main } from '../../common/components/Main'
 import { Navbar } from '../../common/components/Navbar'
-import { assertAndExtractNodes } from '../../common/utility/assertAndExtractNodes'
+import { assertAndExtractNodes } from '../../common/utility/assert-and-extract-nodes'
 import { ProjectsNavContent } from '../../features/projects/NavContent'
 
 const ProjectsList = lazy(() => import('../../features/projects/ProjectsList'))

@@ -1,7 +1,7 @@
 import React from 'react'
 
 import { alignFlex, Alignment } from '../utility/alignment'
-import notEmpty from '../utility/notEmpty'
+import notEmpty from '../utility/not-empty'
 
 type TagsProps = {
   tags: Queries.AreaDetailFragment['tags']

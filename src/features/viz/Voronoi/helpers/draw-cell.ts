@@ -1,7 +1,7 @@
 import { EnterElement, select, Selection } from 'd3-selection'
 
-import { adjustLabel, adjustLabelBox } from './adjustAnnotation'
-import { EnrichedDatum } from './voronoiActions'
+import { adjustLabel, adjustLabelBox } from './adjust-annotation'
+import { EnrichedDatum } from './voronoi-actions'
 
 export function drawCell(selection: Selection<EnterElement, EnrichedDatum, SVGSVGElement, unknown>, imageSize: number) {
   const cell = selection

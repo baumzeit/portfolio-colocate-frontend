@@ -3,12 +3,12 @@ import { StringParam, useQueryParams } from 'use-query-params'
 
 import { Modal } from '../../../common/components/Modal'
 import { ModalNavbar } from '../../../common/components/ModalNavbar'
-import { UseJitterGridReturn } from '../../../common/hooks/useJitterGrid'
-import { useProjectModalData } from '../../../common/hooks/useProjectModalData'
-import { ProjectDetail } from '../../project/ProjectDetail'
-import { useProjectChartData } from '../../projects/useProjectChartData'
+import { UseJitterGridReturn } from '../../../common/hooks/use-jitter-grid'
+import { DetailContainer } from '../../project/DetailContainer'
+import { useProjectModalData } from '../../project/use-project-modal-data'
+import { useProjectsChartData } from '../../projects/use-projects-chart-data'
 import { RenderSingularCell } from './RenderSingularCell'
-import { useVoronoiModel } from './useVoronoiModel'
+import { useVoronoiModel } from './use-voronoi-model'
 import { VoronoiChart } from './VoronoiChart'
 
 type VoronoiContainerProps = {
@@ -42,7 +42,7 @@ export const VoronoiContainer = ({
   // useBodyScrollLock({ enable: !!exposedSlug })
 
   const modalData = useProjectModalData(projects)
-  const chartData = useProjectChartData({ projects, getGridCoordinates })
+  const chartData = useProjectsChartData({ projects, getGridCoordinates })
 
   const { voronoi, enrichedData } = useVoronoiModel({ data: chartData, width, height })
   const exposedEnrichedDatum = enrichedData.find((d) => d.id === exposedProjectId)
@@ -65,14 +65,14 @@ export const VoronoiContainer = ({
       </div>
       <Modal show={!!exposedSlug && voronoiInitialized} navbar={<ModalNavbar closeQueryParam="project" />}>
         {modalData && exposedEnrichedDatum && (
-          <ProjectDetail {...modalData}>
+          <DetailContainer {...modalData}>
             <RenderSingularCell
               width={width}
               height={height}
               imageSize={Math.max(width / numCols, height / numRows) * 1.2}
               enrichedDatum={exposedEnrichedDatum}
             />
-          </ProjectDetail>
+          </DetailContainer>
         )}
       </Modal>
     </>

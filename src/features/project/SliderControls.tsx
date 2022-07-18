@@ -1,7 +1,7 @@
 import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
 import React, { ReactNode } from 'react'
 
-import { SetModalProps } from '../../common/hooks/useProjectModalData'
+import { SetModalProps } from './use-project-modal-data'
 
 type SlicerControlProps = Pick<SetModalProps, 'onPrev' | 'onNext' | 'onClose'> & {
   children: ReactNode

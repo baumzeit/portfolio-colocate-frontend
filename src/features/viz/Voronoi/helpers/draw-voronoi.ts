@@ -2,8 +2,8 @@ import { Voronoi } from 'd3-delaunay'
 import { select, Selection, BaseType } from 'd3-selection'
 import { FocusEvent } from 'react'
 
-import { drawCell, updateCell } from './drawCell'
-import { EnrichedDatum, VoronoiOptions } from './voronoiActions'
+import { drawCell, updateCell } from './draw-cell'
+import { EnrichedDatum, VoronoiOptions } from './voronoi-actions'
 
 export type VoronoiDrawProps = {
   svg: Selection<SVGSVGElement, unknown, null, undefined>

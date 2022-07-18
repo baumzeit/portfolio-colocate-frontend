@@ -3,7 +3,7 @@ import React, { useCallback, useEffect } from 'react'
 import { NumberParam, useQueryParam } from 'use-query-params'
 
 import { Tags } from '../../common/components/Tags'
-import notEmpty from '../../common/utility/notEmpty'
+import notEmpty from '../../common/utility/not-empty'
 import { ExternalLink } from './../../common/components/ExternalLink'
 import { DetailContent } from './DetailContent'
 import { ImagesPreview } from './ImagesPreview'

@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react'
 
-import { generateColorStopClasses } from '../utility/generateColorStopClasses'
+import { generateColorStopClasses } from '../utility/generate-color-stop-classes'
 
 type AvatarProps = { name: string; highlight?: boolean }
 

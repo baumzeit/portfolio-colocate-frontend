@@ -1,14 +1,14 @@
 import { getSrcSet } from 'gatsby-plugin-image'
 import { useMemo } from 'react'
 
-import { GridCoordinate } from '../../common/hooks/useJitterGrid'
-import notEmpty from '../../common/utility/notEmpty'
+import { GridCoordinate } from '../../common/hooks/use-jitter-grid'
+import notEmpty from '../../common/utility/not-empty'
 
-type UseProjectChartDataProps = {
+type UseProjectsChartDataProps = {
   projects: Queries.ProjectDetailFragment[]
   getGridCoordinates: (idx: number) => GridCoordinate
 }
-export const useProjectChartData = ({ projects, getGridCoordinates }: UseProjectChartDataProps) =>
+export const useProjectsChartData = ({ projects, getGridCoordinates }: UseProjectsChartDataProps) =>
   useMemo(
     () =>
       getGridCoordinates
