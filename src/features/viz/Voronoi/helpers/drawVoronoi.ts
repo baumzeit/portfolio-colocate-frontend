@@ -15,7 +15,7 @@ export type VoronoiDrawProps = {
   onMouseLeave: () => void
 }
 
-export function drawVoronoi({ svg, data, options: opts, voronoi, onHover, onClick }: VoronoiDrawProps) {
+export function drawVoronoi({ svg, data, options: opts, voronoi, onHover, onClick, onMouseLeave }: VoronoiDrawProps) {
   svg
     .select('defs')
     .selectAll<d3.BaseType, EnrichedDatum>('clipPath')
@@ -100,6 +100,8 @@ export function drawVoronoi({ svg, data, options: opts, voronoi, onHover, onClic
       onClick(d.id)
     }
   })
+
+  svg.on('mouseleave', onMouseLeave)
 }
 
 export function drawContentLayer(

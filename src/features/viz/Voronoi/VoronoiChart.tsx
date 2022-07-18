@@ -56,15 +56,12 @@ export const VoronoiChart = ({
 
   const voronoiActions = useMemo(() => {
     if (voronoiOptions && svgNode) {
-      const initializedActions = initializeVoronoiActions(svgNode, voronoiOptions)
-      // console.log('voronoi | set actions', initializedActions)
-      return initializedActions
+      return initializeVoronoiActions(svgNode, voronoiOptions)
     }
   }, [svgNode, voronoiOptions])
 
   useEffect(() => {
     if (svgNode && voronoiActions) {
-      // console.log('voronoi | draw chart')
       const svg = d3
         .select(svgNode)
         .attr('id', 'voronoi-projects')
@@ -90,14 +87,12 @@ export const VoronoiChart = ({
 
   useEffect(() => {
     if (voronoiActions && initialized) {
-      // console.log('voronoi | action expose', exposedProjectId)
       voronoiActions.exposeCell(exposedProjectId)
     }
   }, [exposedProjectId, initialized, voronoiActions])
 
   useEffect(() => {
     if (voronoiActions && initialized) {
-      // console.log('voronoi | action highlight', highlightedAreaId)
       voronoiActions.highlightCellsByAreaId(highlightedAreaId)
     }
   }, [highlightedAreaId, initialized, voronoiActions])
