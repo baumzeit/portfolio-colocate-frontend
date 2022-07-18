@@ -24,7 +24,7 @@ export const DetailContent = ({
     <div className="flex-1 order-2 md:order-1">
       <div className="relative grid">
         <article
-          className={`transition-opacity duration-300 col-start-1 ${
+          className={`transition-opacity duration-100 col-start-1 ${
             selectedImage ? 'opacity-0 ease-in absolute overflow-hidden h-full w-full top-0 left-0' : 'opacity-100'
           }`}
         >

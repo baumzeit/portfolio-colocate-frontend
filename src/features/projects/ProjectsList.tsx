@@ -2,12 +2,11 @@ import { sort } from 'd3-array'
 import React, { useCallback, useContext, useMemo } from 'react'
 import { StringParam, useQueryParams } from 'use-query-params'
 
-import { NAVBAR_HEIGHT } from '../../common/components/Layout'
 import { Modal } from '../../common/components/Modal'
 import { useBodyScrollLock } from '../../common/hooks/useBodyScrollLock'
 import { ProjectsAreasContext } from '../../pages/projects/[...]'
-import { ProjectDetail } from '../project/Detail'
 import { ProjectBanner } from '../project/ProjectBanner'
+import { ProjectDetail } from '../project/ProjectDetail'
 import { useProjectModalData } from './../../common/hooks/useProjectModalData'
 
 export type SetModalProps = {
@@ -72,12 +71,7 @@ export const ProjectsList = () => {
           )
         })}
       </ul>
-      <Modal
-        show={!!modalData?.data}
-        containerClassName={`fixed left-0 right-0 bottom-0 overflow-y-auto`}
-        className="min-h-full bg-primary "
-        style={{ top: NAVBAR_HEIGHT + 'px' }}
-      >
+      <Modal show={!!modalData?.data}>
         {modalData?.data && (
           <ProjectDetail {...modalData}>
             <div className="mx-10 overflow-hidden rounded shadow animate-fadeInFast">

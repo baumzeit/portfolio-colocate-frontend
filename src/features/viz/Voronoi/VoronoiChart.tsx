@@ -1,23 +1,16 @@
-import * as d3 from 'd3'
-import React, {
-  FocusEvent,
-  KeyboardEvent,
-  memo,
-  MouseEvent,
-  SVGProps,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState
-} from 'react'
-import './voronoi.scss'
+import { Voronoi } from 'd3-delaunay'
+import * as d3 from 'd3-selection'
+import React, { SVGProps, useCallback, useEffect, useMemo, useState } from 'react'
 
-import { EnrichedDatum, initializeVoronoiActions, VoronoiDatum, VoronoiOptions } from './helpers'
+import './voronoi.scss'
+import { drawVoronoi } from './helpers/drawVoronoi'
+import { EnrichedDatum, initializeVoronoiActions, VoronoiOptions } from './helpers/voronoiActions'
 
 type HighlightPatternDatum = { color?: string | null; id: string | number }
 
 export type VoronoiChartProps = {
-  data: VoronoiDatum[]
+  enrichedData: EnrichedDatum[]
+  voronoi: Voronoi<EnrichedDatum>
   highlightPatternData: HighlightPatternDatum[]
   width: number
   height: number
@@ -25,100 +18,103 @@ export type VoronoiChartProps = {
   onClickCell: (id: string) => void
   highlightedAreaId?: string | null
   exposedProjectId?: string | null
+  onInitialized?: () => void
 }
 
-export const VoronoiChart = memo(
-  ({
-    data,
-    highlightPatternData,
-    width,
-    height,
-    imageSize,
-    highlightedAreaId = null,
-    exposedProjectId = null,
-    onClickCell
-  }: VoronoiChartProps) => {
-    const [svgNode, setSvgNode] = useState<SVGSVGElement>()
-    const [initialized, setInitialized] = useState(false)
+export const VoronoiChart = ({
+  enrichedData,
+  highlightPatternData,
+  width,
+  height,
+  voronoi,
+  imageSize,
+  highlightedAreaId = null,
+  exposedProjectId = null,
+  onClickCell,
+  onInitialized
+}: VoronoiChartProps) => {
+  const [svgNode, setSvgNode] = useState<SVGSVGElement | null>(null)
+  const [initialized, setInitialized] = useState(false)
 
-    const onRefChange = useCallback((node: SVGSVGElement | undefined) => {
-      setSvgNode(node)
-    }, [])
+  const onRefChange = useCallback((node: SVGSVGElement | null) => {
+    setSvgNode(node)
+  }, [])
 
-    const voronoiOptions = useMemo<VoronoiOptions | undefined>(() => {
-      if (width && height) {
-        const options = {
-          width,
-          height,
-          imageSize,
-          cellGap: 22,
-          padding: { top: 0, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 * 16 },
-          exposeOffsetTop: 56,
-          exposeCellHeight: Math.max(window.innerHeight * 0.3, 250)
-        }
-        // console.log('voronoi | set options', options)
-        return options
+  const voronoiOptions = useMemo<VoronoiOptions | undefined>(() => {
+    if (width && height) {
+      const options = {
+        width,
+        height,
+        imageSize,
+        exposeOffsetTop: 56,
+        exposeCellHeight: Math.max(window.innerHeight * 0.3, 250)
       }
-    }, [height, imageSize, width])
+      // console.log('voronoi | set options', options)
+      return options
+    }
+  }, [height, imageSize, width])
 
-    const voronoiActions = useMemo(() => {
-      if (voronoiOptions && svgNode) {
-        const initializedActions = initializeVoronoiActions(svgNode, data, voronoiOptions)
-        // console.log('voronoi | set actions', initializedActions)
-        return initializedActions
+  const voronoiActions = useMemo(() => {
+    if (voronoiOptions && svgNode) {
+      const initializedActions = initializeVoronoiActions(svgNode, voronoiOptions)
+      // console.log('voronoi | set actions', initializedActions)
+      return initializedActions
+    }
+  }, [svgNode, voronoiOptions])
+
+  useEffect(() => {
+    if (svgNode && voronoiActions) {
+      // console.log('voronoi | draw chart')
+      const svg = d3
+        .select(svgNode)
+        .attr('id', 'voronoi-projects')
+        .attr('fill', 'none')
+        .attr('stroke-linejoin', 'round')
+        .attr('stroke-linecap', 'round')
+
+      drawVoronoi({
+        svg,
+        ...voronoiActions,
+        data: enrichedData,
+        voronoi,
+        onClick: onClickCell,
+        onHover: voronoiActions.hoverCell,
+        onMouseLeave: voronoiActions.restore
+      })
+      setInitialized(true)
+      if (onInitialized) {
+        onInitialized()
       }
-    }, [data, svgNode, voronoiOptions])
+    }
+  }, [enrichedData, initialized, onClickCell, onInitialized, svgNode, voronoi, voronoiActions])
 
-    useEffect(() => {
-      if (svgNode && voronoiActions) {
-        // console.log('voronoi | draw chart')
-        const svg = d3
-          .select(svgNode)
-          .attr('fill', 'none')
-          .attr('stroke-linejoin', 'round')
-          .attr('stroke-linecap', 'round')
-        drawVoronoi({
-          svg,
-          ...voronoiActions,
-          onClick: onClickCell,
-          onHover: voronoiActions.selectCell,
-          onMouseLeave: voronoiActions.restore
-        })
-        setInitialized(true)
-      }
-    }, [initialized, onClickCell, svgNode, voronoiActions])
+  useEffect(() => {
+    if (voronoiActions && initialized) {
+      // console.log('voronoi | action expose', exposedProjectId)
+      voronoiActions.exposeCell(exposedProjectId)
+    }
+  }, [exposedProjectId, initialized, voronoiActions])
 
-    useEffect(() => {
-      if (voronoiActions && initialized) {
-        // console.log('voronoi | action expose', exposedProjectId)
-        voronoiActions.exposeCell(exposedProjectId)
-      }
-    }, [exposedProjectId, initialized, voronoiActions])
+  useEffect(() => {
+    if (voronoiActions && initialized) {
+      // console.log('voronoi | action highlight', highlightedAreaId)
+      voronoiActions.highlightCellsByAreaId(highlightedAreaId)
+    }
+  }, [highlightedAreaId, initialized, voronoiActions])
 
-    useEffect(() => {
-      if (voronoiActions && initialized) {
-        // console.log('voronoi | action highlight', highlightedAreaId)
-        voronoiActions.highlightCellsByAreaId(highlightedAreaId)
-      }
-    }, [highlightedAreaId, initialized, voronoiActions])
-
-    return (
-      <>
-        <svg id="voronoiSvg" ref={onRefChange} width={width} height={height} className="cursor-pointer animate-fadeIn">
-          <defs>
-            <HatchPattern id="diagonalHatch" className="stroke-bg-secondary" />
-            {highlightPatternData.map(({ color, id }) => (
-              <HatchPattern key={id} stroke={color || 'black'} id={'diagonalHatchHighlight-' + id} />
-            ))}
-          </defs>
-          <g className="base-layer"></g>
-          <g className="content-layer"></g>
-          <g className="hover-layer"></g>
-        </svg>
-      </>
-    )
-  }
-)
+  return (
+    <>
+      <svg ref={onRefChange} width={width} height={height} className="voronoi cursor-pointer animate-fadeIn">
+        <defs>
+          <HatchPattern id="diagonalHatch" className="stroke-bg-secondary" />
+          {highlightPatternData.map(({ color, id }) => (
+            <HatchPattern key={id} stroke={color || 'black'} id={'diagonalHatchHighlight-' + id} />
+          ))}
+        </defs>
+      </svg>
+    </>
+  )
+}
 
 const HatchPattern = ({ id, ...rest }: Pick<HighlightPatternDatum, 'id'> & SVGProps<SVGPathElement>) => {
   return (
@@ -133,229 +129,4 @@ const HatchPattern = ({ id, ...rest }: Pick<HighlightPatternDatum, 'id'> & SVGPr
       />
     </pattern>
   )
-}
-
-type VoronoiDrawProps = {
-  svg: d3.Selection<SVGSVGElement, unknown, null, undefined>
-  data: EnrichedDatum[]
-  options: VoronoiOptions
-  voronoi: d3.Voronoi<VoronoiDatum>
-  delaunay: d3.Delaunay<VoronoiDatum>
-  onHover: (id: string) => void
-  onClick: (id: string) => void
-  onMouseLeave: () => void
-}
-
-const drawVoronoi = ({ svg, data, options: opts, voronoi, onHover, onClick, onMouseLeave }: VoronoiDrawProps) => {
-  svg
-    .select('defs')
-    .selectAll<d3.BaseType, EnrichedDatum>('mask')
-    .data(data, (d) => String(d.id))
-    .join(
-      (enter) => {
-        const defG = enter.append('g').classed('cell defs-cell', true)
-        defG
-          .append('mask')
-          .attr('id', (d) => `clip-${d.id}`)
-          .attr('fill', 'white')
-          .append('path')
-          .classed('defs-path', true)
-          .attr('d', (d) => d.path)
-        return defG
-      },
-      (update) => update.select('mask path').attr('d', (d) => d.path)
-    )
-
-  const baseLayer = svg.select('g.base-layer')
-  const contentLayer = svg.select('g.content-layer')
-  const hoverLayer = svg.select('g.hover-layer')
-
-  baseLayer
-    .selectAll<SVGGElement, EnrichedDatum>('.cell')
-    .data(data, (d) => String(d.id))
-    .join(
-      (enter) => {
-        const cell = enter
-          .append('g')
-          .classed('cell', true)
-          .attr('mask', (d) => `url(#clip-${d.id})`)
-
-        cell
-          .append('foreignObject')
-          .classed('image-fo', true)
-          .attr('x', (d) => d.x - opts.imageSize / 2)
-          .attr('y', (d) => d.y - opts.imageSize / 2)
-          .attr('width', opts.imageSize)
-          .attr('height', opts.imageSize)
-          .append('xhtml:img')
-          .classed('image', true)
-          .attr('xmlns', 'http://www.w3.org/1999/xhtml')
-          .attr('srcSet', (d) => d.imageSrcSet)
-
-        cell
-          .append('path')
-          .attr('d', (d) => d.path)
-          .classed('pattern', true)
-          .attr('fill', 'url(#diagonalHatch)')
-        cell
-          .append('path')
-          .attr('d', (d) => d.path)
-          .classed('highlight-pattern', true)
-        cell
-          .append('path')
-          .attr('d', (d) => d.path)
-          .classed('cell-gap', true)
-        cell
-          .append('path')
-          .attr('d', (d) => d.path)
-          .classed('cell-border', true)
-
-        return cell
-      },
-      (update) => {
-        update
-          .select('.image-fo')
-          .attr('x', (d) => d.x - opts.imageSize / 2)
-          .attr('y', (d) => d.y - opts.imageSize / 2)
-          .attr('width', opts.imageSize)
-          .attr('height', opts.imageSize)
-        update.select('path.cell-gap').attr('d', (d) => d.path)
-        update.select('path.pattern').attr('d', (d) => d.path)
-        update.select('path.highlight-pattern').attr('d', (d) => d.path)
-        update.select('path.cell-border').attr('d', (d) => d.path)
-        return update
-      }
-    )
-    .style('transform-origin', (d) => `${d.x}px ${d.y}px`)
-
-  const textOffsetY = -25
-  const textOffsetX = 0
-
-  function adjustLabelBox(d: EnrichedDatum, cell: SVGGElement) {
-    const box = d3.select(cell).select<SVGTextElement>('.label')?.node()?.getBBox()
-    if (box) {
-      const boxStart = box.x - 8
-      const boxWidth = box.width + 16
-      const boxHeight = box.height + 10
-      d3.select(cell)
-        .select('.label-box')
-        .attr('rx', 2)
-        .attr('x', boxStart)
-        .attr('y', d.y + textOffsetY - boxHeight / 2)
-        .attr('width', boxWidth)
-        .attr('height', boxHeight)
-    }
-  }
-
-  function adjustLabels(d: EnrichedDatum, cell: SVGGElement) {
-    const label = d3.select<SVGGElement, EnrichedDatum>(cell).select('.label')
-    label
-      .attr('x', (d) => {
-        const titleSpace = (d.title.length / 2) * 7 + 22
-
-        const min = titleSpace
-        const max = opts.width - titleSpace
-        return Math.min(Math.max(d.x + textOffsetX, min), max)
-      })
-      .attr('y', (d) => d.y)
-  }
-  contentLayer
-    .selectAll<SVGGElement, EnrichedDatum>('.cell')
-    .data(data, (d) => String(d.id))
-    .join(
-      (enter) => {
-        const cell = enter.append('g').classed('cell', true)
-        cell
-          .append('circle')
-          .attr('cx', (d) => d.x)
-          .attr('cy', (d) => d.y)
-          .attr('r', 3)
-          .classed('focus-dot', true)
-
-        cell
-          .append('rect')
-          .classed('label-box', true)
-          .attr('tabindex', (d) => 10 + d.index)
-
-        cell
-          .append('text')
-          .attr('dy', textOffsetY)
-          .text((d) => d.title || '')
-          .classed('label', true)
-
-        return cell
-      },
-      (update) => {
-        update
-          .select('circle')
-          .attr('cx', (d) => d.x)
-          .attr('cy', (d) => d.y)
-          .attr('y', (d) => d.y)
-
-        return update
-      }
-    )
-    .each(function (d) {
-      adjustLabels(d, this)
-      adjustLabelBox(d, this)
-    })
-
-  svg
-    .selectAll('path.bounds')
-    .data([voronoi.renderBounds()])
-    .join('path')
-    .attr('d', (d) => d)
-    .classed('bounds', true)
-
-  hoverLayer
-    .selectAll<SVGGElement, EnrichedDatum>('.hover-cell')
-    .data(data, (d) => String(d.id))
-    .join(
-      (enter) => {
-        const cell = enter.append('g').classed('cell hover-cell', true)
-        cell
-          .append('path')
-          .attr('d', (d) => d.path)
-          .classed('hover-border', true)
-        return cell
-      },
-      (update) => {
-        update.select('path.hover-border').attr('d', (d) => d.path)
-        return update
-      }
-    )
-
-  hoverLayer.selectAll<SVGPathElement, EnrichedDatum>('.hover-border').on('mouseenter', function (e: MouseEvent, d) {
-    if (d3.selectAll('.cell.exposed').empty() && !svg.node()!.contains(document.activeElement)) {
-      onHover(d.id)
-    }
-  })
-
-  svg.on('keyup', (e: KeyboardEvent) => {
-    if (e.code === 'Space') {
-      const activeElement = d3.select<d3.BaseType, EnrichedDatum | null>(document.activeElement)
-      const activeElementId = activeElement?.datum()?.id
-      if (activeElementId) {
-        onClick(activeElementId)
-      }
-    }
-  })
-  svg.on('mouseleave', onMouseLeave)
-
-  d3.selectAll('.cell .label-box').on('focus', function (e: FocusEvent<SVGElement>) {
-    const datum = d3.select<SVGElement, EnrichedDatum>(e.target).datum()
-    if (!baseLayer.selectAll('.exposed').empty()) {
-      onClick(datum.id)
-    } else {
-      onHover(datum.id)
-    }
-  })
-
-  d3.selectAll<SVGGElement, EnrichedDatum>('.cell').on('click', function (e: MouseEvent, d) {
-    e.stopPropagation()
-    const isExposed = d3.select(this).classed('exposed')
-    if (d.id && !isExposed) {
-      onClick(d.id)
-    }
-  })
 }

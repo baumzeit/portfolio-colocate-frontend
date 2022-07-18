@@ -1,9 +1,10 @@
-import { useState, useEffect, useCallback } from 'react'
+import { randomNormal } from 'd3-random'
+import { useCallback, useMemo } from 'react'
 
 type UseJitterGridProps = {
   minItems: number
-  width: number | null
-  minHeight: number | null
+  width: number
+  minHeight: number
   minTilePixels?: number
   relMargin: {
     top: number
@@ -11,7 +12,28 @@ type UseJitterGridProps = {
     bottom: number
     left: number
   }
-  jitter?: () => number
+  jitter?: number
+}
+
+export type GridCoordinate = [x: number, y: number]
+export type GridPositions = GridCoordinate[][]
+type GridData = {
+  grid: GridPositions
+  numCols: number
+  numRows: number
+  height: number
+  width: number
+}
+
+export type UseJitterGridReturn = {
+  gridSpecs?: {
+    grid: GridPositions
+    numCols: number
+    numRows: number
+    height: number
+    width: number
+  }
+  getGridCoordinates?: (idx: number) => GridCoordinate
 }
 
 export const useJitterGrid = ({
@@ -20,14 +42,9 @@ export const useJitterGrid = ({
   minHeight,
   relMargin,
   minTilePixels,
-  jitter = () => 0
-}: UseJitterGridProps) => {
-  const [grid, setGrid] = useState<number[][][]>()
-  const [numCols, setNumCols] = useState(0)
-  const [numRows, setNumRows] = useState(0)
-  const [height, setHeight] = useState(minHeight)
-
-  useEffect(() => {
+  jitter = 0.05
+}: UseJitterGridProps): UseJitterGridReturn => {
+  const gridData = useMemo(() => {
     try {
       if (width && minHeight) {
         const pixels = width * minHeight
@@ -37,7 +54,6 @@ export const useJitterGrid = ({
         const defaultSize = Math.sqrt(minItems)
         const aspect = width && height && Math.min(width / height, 1.5)
 
-        // if (width) debugger
         const aspectFactor = {
           x: aspect > 1 ? aspect : 1,
           y: aspect < 1 ? 1 / aspect : 1
@@ -57,8 +73,8 @@ export const useJitterGrid = ({
 
         const marginTop = Math.max(height * relMargin.top, minMarginY)
         const marginBottom = Math.max(height * relMargin.bottom, minMarginY)
-        const marginRight = Math.max(height * relMargin.right, minMarginX)
-        const marginLeft = Math.max(height * relMargin.left, minMarginX)
+        const marginRight = Math.max(width * relMargin.right, minMarginX)
+        const marginLeft = Math.max(width * relMargin.left, minMarginX)
 
         const fixedVerticalOffset = height * 0.03
 
@@ -70,12 +86,14 @@ export const useJitterGrid = ({
 
         const orphanItems = minItems % columns
 
-        const gridPositions = Array.from({ length: rows }).map((_, rowIdx) => {
+        const jitterFn = randomNormal(0, jitter)
+
+        const gridPositions: GridPositions = Array.from({ length: rows }).map((_, rowIdx) => {
           if (rowIdx + 1 < rows || !orphanItems) {
             return Array.from({ length: columns }).map((_, colIndex) => {
               return [
-                colPositions[colIndex] + colWidth * jitter(),
-                rowPositions[rowIdx] + rowHeight * jitter() + fixedVerticalOffset * (colIndex % 2 ? 1 : -1)
+                colPositions[colIndex] + colWidth * jitterFn(),
+                rowPositions[rowIdx] + rowHeight * jitterFn() + fixedVerticalOffset * (colIndex % 2 ? 1 : -1)
               ]
             })
           }
@@ -86,38 +104,39 @@ export const useJitterGrid = ({
 
           return Array.from({ length: columns }).map((_, colIndex) => {
             return [
-              adjustedColPositions[colIndex] + adjustedColPositions[colIndex] * jitter(),
-              rowPositions[rowIdx] + rowHeight * jitter() + fixedVerticalOffset * (colIndex % 2 ? 1 : -1)
+              adjustedColPositions[colIndex] + adjustedColPositions[colIndex] * jitterFn(),
+              rowPositions[rowIdx] + rowHeight * jitterFn() + fixedVerticalOffset * (colIndex % 2 ? 1 : -1)
             ]
           })
         })
 
-        setGrid(gridPositions)
-        setNumCols(columns)
-        setNumRows(rows)
-        setHeight(height)
+        return { grid: gridPositions, numCols: columns, numRows: rows, height: height, width: width }
       }
-    } catch (err) {}
+    } catch (err) {
+      console.error(err)
+      return undefined
+    }
   }, [
-    jitter,
-    minItems,
-    relMargin.right,
-    relMargin.top,
-    relMargin.bottom,
-    relMargin.left,
     width,
     minHeight,
-    minTilePixels
+    minItems,
+    minTilePixels,
+    relMargin.top,
+    relMargin.bottom,
+    relMargin.right,
+    relMargin.left,
+    jitter
   ])
 
-  const getGridPosition = useCallback(
-    (grid: number[][][]) => (idx: number) => {
-      const colIdx = idx % numCols
-      const rowIdx = Math.floor(idx / numCols)
-      return grid[rowIdx][colIdx]
-    },
-    [numCols]
+  const getGridCoordinates = useCallback(
+    (gridData: GridData) =>
+      (idx: number): GridCoordinate => {
+        const colIdx = idx % gridData.numCols
+        const rowIdx = Math.floor(idx / gridData?.numCols)
+        return gridData.grid[rowIdx][colIdx]
+      },
+    []
   )
 
-  return { getGridPosition: grid ? getGridPosition(grid) : undefined, grid, numCols, numRows, height }
+  return { getGridCoordinates: gridData ? getGridCoordinates(gridData) : undefined, gridSpecs: gridData }
 }

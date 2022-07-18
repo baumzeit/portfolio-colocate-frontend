@@ -24,15 +24,14 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
   const projects = useMemo(() => assertAndExtractNodes(allStrapiProject), [allStrapiProject])
 
   const breakpoints = useBreakpoint()
-  const scrollContainer = useRef(null)
 
   return (
     <ProjectsAreasContext.Provider value={{ areas, projects }}>
       <Layout>
-        <Navbar className="z-30">
+        <Navbar>
           <ProjectsNavContent />
         </Navbar>
-        <Main className="overflow-y-auto" ref={scrollContainer}>
+        <Main className="overflow-x-hidden">
           <Transition
             appear={true}
             show={true}

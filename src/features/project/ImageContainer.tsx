@@ -15,13 +15,13 @@ export const ImageContainer = ({ image, caption, alternativeText, onClose }: Ima
       <GatsbyImage
         image={image}
         alt={alternativeText || ''}
-        className="w-full rounded-sm shadow animate-fadeIn"
+        className="w-full rounded-sm shadow animate-fadeInFast"
         loading="lazy"
       />
-      <div className="flex justify-between gap-2 mt-3">
+      <div className="flex justify-between mt-3">
         <div className="break-all">{caption && caption}</div>
         {!breakpoint.lg && (
-          <button onClick={onClose} className="tracking-wide text-highlight">
+          <button onClick={onClose} className="tracking-wide text-highlight py-2">
             show description
           </button>
         )}

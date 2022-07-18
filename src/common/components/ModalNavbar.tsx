@@ -9,8 +9,6 @@ type ModalNavbarProps = {
 export const ModalNavbar = ({ closeQueryParam }: ModalNavbarProps) => {
   const [_, setParam] = useQueryParam<string | undefined>(closeQueryParam)
 
-  console.log('Modal Navbar')
-
   return (
     <Navbar>
       <button

@@ -5,13 +5,18 @@ import React, { ReactNode, useContext } from 'react'
 
 import { ThemeContext } from './ThemeContextProvider'
 
+export const NAVBAR_HEIGHT = 56
+
 type NavbarProps = { className?: string; children: ReactNode }
 
 export const Navbar = ({ children, className = '' }: NavbarProps) => {
   const { site } = useStaticQuery<Queries.NavDataQuery>(query)
   const { theme } = useContext(ThemeContext)
   return (
-    <nav className={`flex items-center justify-between shadow-sm px-4 sm:px-6 h-full bg-primary ${className} z-20`}>
+    <nav
+      style={{ height: NAVBAR_HEIGHT }}
+      className={`flex items-center justify-between shadow-sm px-4 sm:px-6 bg-primary ${className}`}
+    >
       <div className="flex-1">
         <div className="flex items-center">
           <Link to="/" className="font-bold">
@@ -41,7 +46,7 @@ const ThemeSelect = () => {
   const { theme, setTheme } = useContext(ThemeContext)
 
   return (
-    <div>
+    <div className="z-10 relative">
       <Listbox value={theme} onChange={(theme) => setTheme(theme)}>
         <Listbox.Button className={`px-1.5 py-0.5 rounded text-brand`}>{theme}</Listbox.Button>
         <Listbox.Options>

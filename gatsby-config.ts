@@ -27,7 +27,7 @@ module.exports = {
     siteURL: process.env.GATSBY_ROOT_URL,
     title: 'Philip Hradecsni'
   },
-  graphqlTypegen: true,
+  graphqlTypegen: { typesOutputPath: 'gatsby-types.d.ts' },
   plugins: [
     'gatsby-plugin-image',
     'gatsby-plugin-react-helmet',

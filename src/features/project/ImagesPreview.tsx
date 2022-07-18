@@ -34,7 +34,7 @@ export const ImagesPreview = ({ images, selectedImageIdx = null, onClick, onClos
         })}
       </div>
       {breakpoint.lg && selectedImageIdx !== null && (
-        <button onClick={onClosePreview} className="mt-3 tracking-wide text-highlight">
+        <button onClick={onClosePreview} className="tracking-wide text-highlight py-2">
           show description
         </button>
       )}

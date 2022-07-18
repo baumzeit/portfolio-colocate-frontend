@@ -22,6 +22,7 @@ module.exports = {
       colors: {
         highlight: 'var(--color-highlight)',
         brand: 'var(--color-brand)',
+        brandLight: 'var(--color-brand-light)',
         'text-primary': 'var(--text-primary)',
         'text-secondary': 'var(--text-secondary)',
         'text-tertiary': 'var(--text-tertiary)',
@@ -47,8 +48,8 @@ module.exports = {
         body: 'Karla, sans-serif'
       },
       animation: {
-        fadeIn: 'fade-in 800ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
-        fadeInFast: 'fade-in 250ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
+        fadeIn: 'fade-in 500ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
+        fadeInFast: 'fade-in 180ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
         fadeOut: 'fade-out 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards',
         spinVerySlow: 'spin 240s linear infinite',
       },

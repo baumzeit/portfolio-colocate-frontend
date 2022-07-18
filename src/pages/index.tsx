@@ -4,7 +4,6 @@ import { graphql, PageProps } from 'gatsby'
 import React, { useMemo } from 'react'
 import { Helmet } from 'react-helmet'
 
-import { HomeDataQuery } from '../../graphql-types'
 import { Container } from '../common/components/Container'
 import Layout from '../common/components/Layout'
 import { Main } from '../common/components/Main'
@@ -12,13 +11,12 @@ import { Navbar } from '../common/components/Navbar'
 import { assertAndExtractNodes } from '../common/utility/assertAndExtractNodes'
 import notEmpty from '../common/utility/notEmpty'
 import { AreasMap } from '../features/home/AreasMap'
-import { Contact } from '../features/home/Contact'
 import { Intro } from '../features/home/Intro'
 import { HomeNavContent } from '../features/home/NavContent'
 import { Profile } from '../features/home/Profile'
 
 // markup
-const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<HomeDataQuery>) => {
+const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<Queries.HomeDataQuery>) => {
   const displayAreas = useMemo(() => {
     if (allStrapiArea && strapiHome) {
       const homeAreas = strapiHome.areas?.filter(notEmpty)

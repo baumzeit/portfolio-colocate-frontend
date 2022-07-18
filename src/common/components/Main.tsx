@@ -6,7 +6,7 @@ type MainProps = {
 
 export const Main = forwardRef<HTMLDivElement, PropsWithChildren<MainProps>>(({ children, className = '' }, ref) => {
   return (
-    <main className={`relative ${className} z-0`} ref={ref}>
+    <main className={`relative ${className}`} ref={ref}>
       {children}
     </main>
   )
