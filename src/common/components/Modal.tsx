@@ -14,15 +14,9 @@ export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
   ({ show, enterClass = '', navbar, children }, ref) => {
     if (!show) return null
     return (
-      <Dialog
-        open={show}
-        onClose={() => {}}
-        className={`fixed inset-0 min-h-full bg-primary overflow-y-scroll z-20`}
-        style={{ top: navbar ? 0 : NAVBAR_HEIGHT }}
-        ref={ref}
-      >
-        <div>
-          {navbar && navbar}
+      <Dialog open={show} onClose={() => {}} className={`fixed inset-0 bg-primary z-40`} ref={ref}>
+        {navbar && <div className="relative z-50">{navbar}</div>}
+        <div className="overflow-y-auto" style={{ maxHeight: `calc(100vh - ${NAVBAR_HEIGHT}px)` }}>
           <Transition
             className="h-full"
             appear={true}

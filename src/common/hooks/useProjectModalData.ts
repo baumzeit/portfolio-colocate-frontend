@@ -1,6 +1,13 @@
 import { useMemo } from 'react'
 import { useQueryParam } from 'use-query-params'
 
+export type SetModalProps = {
+  project: Queries.ProjectDetailFragment | null
+  onClose: () => void
+  onNext: () => void
+  onPrev: () => void
+}
+
 export const useProjectModalData = (projects: Queries.ProjectDetailFragment[]) => {
   const [exposedSlug, setProject] = useQueryParam<string | undefined>('project')
 

@@ -3,24 +3,15 @@ import React, { useCallback, useContext, useMemo } from 'react'
 import { StringParam, useQueryParams } from 'use-query-params'
 
 import { Modal } from '../../common/components/Modal'
-import { useBodyScrollLock } from '../../common/hooks/useBodyScrollLock'
+import { ModalNavbar } from '../../common/components/ModalNavbar'
 import { ProjectsAreasContext } from '../../pages/projects/[...]'
 import { ProjectBanner } from '../project/ProjectBanner'
 import { ProjectDetail } from '../project/ProjectDetail'
 import { useProjectModalData } from './../../common/hooks/useProjectModalData'
 
-export type SetModalProps = {
-  data: Queries.ProjectDetailFragment | null
-  onClose: () => void
-  onNext: () => void
-  onPrev: () => void
-}
-
 export type DisplayProject = Queries.ProjectDetailFragment & { highlightColor?: string | null }
 
-export type SetModalFn = ({ onClose, onNext, onPrev, data }: SetModalProps) => void
-
-export const ProjectsList = () => {
+const ProjectsList = () => {
   const { areas, projects } = useContext(ProjectsAreasContext)
 
   const [{ area: highlightedAreaSlug, project: selectedProject }, setQuery] = useQueryParams({
@@ -29,8 +20,6 @@ export const ProjectsList = () => {
   })
 
   const highlightColor = areas.find(({ slug }) => slug === highlightedAreaSlug)?.color
-
-  useBodyScrollLock({ enable: !!selectedProject })
 
   const areaMatch = useCallback(
     (project: Queries.ProjectDetailFragment) =>
@@ -71,13 +60,13 @@ export const ProjectsList = () => {
           )
         })}
       </ul>
-      <Modal show={!!modalData?.data}>
-        {modalData?.data && (
+      <Modal show={!!modalData?.project} navbar={<ModalNavbar closeQueryParam="project" />}>
+        {modalData?.project && (
           <ProjectDetail {...modalData}>
             <div className="mx-10 overflow-hidden rounded shadow animate-fadeInFast">
               <ProjectBanner
-                project={modalData.data}
-                index={projects.findIndex((d) => d.slug === modalData.data?.slug)}
+                project={modalData.project}
+                index={projects.findIndex((d) => d.slug === modalData.project?.slug)}
                 hideTitle
                 hideOverlay
                 className="max-h-[160px]"
@@ -89,3 +78,5 @@ export const ProjectsList = () => {
     </div>
   )
 }
+
+export default ProjectsList

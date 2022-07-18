@@ -9,7 +9,7 @@ type NavFilterAreasProps = {
 export const NavFilterAreas = ({ areas }: NavFilterAreasProps) => {
   const [selectedAreaSlug, setSelectedAreaSlug] = useQueryParam<string | undefined>('area')
   return (
-    <div className="flex items-center justify-center gap-4 text-bg-secondary z-10">
+    <div className="flex items-center justify-center gap-4 text-bg-secondary">
       {areas.map(({ id = null, color, name, slug }, idx) => {
         const isActive = slug === selectedAreaSlug
         return (
@@ -48,7 +48,7 @@ export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
   )
 
   return (
-    <div className="flex flex-col items-center z-10 relative">
+    <div className="flex flex-col items-center">
       <Listbox value={selectedArea} onChange={handleChange}>
         <Listbox.Button
           style={{

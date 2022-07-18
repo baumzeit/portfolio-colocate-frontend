@@ -10,6 +10,7 @@ export function drawCell(selection: Selection<EnterElement, EnrichedDatum, SVGSV
     .each(function (d) {
       select(this).classed(`cell id-${d.id}`, true)
     })
+    .style('transform-origin', (d) => `${d.x}px ${d.y}px`)
 
   const base = cell.append('g').classed('base', true)
 
@@ -51,6 +52,7 @@ export function drawCell(selection: Selection<EnterElement, EnrichedDatum, SVGSV
     .attr('cx', (d) => d.x)
     .attr('cy', (d) => d.y)
     .attr('r', 3)
+    .attr('tabindex', -1)
     .classed('focus-dot', true)
 
   annotation
@@ -74,6 +76,8 @@ export function updateCell(
   imageSize: number,
   width: number
 ) {
+  selection.style('transform-origin', (d) => `${d.x}px ${d.y}px`)
+
   const base = selection.select<SVGGElement>('.base')
   base
     .select('.image-fo')
@@ -85,7 +89,6 @@ export function updateCell(
   base.select('.pattern').attr('d', (d) => d.path)
   base.select('.highlight-pattern').attr('d', (d) => d.path)
   base.select('.cell-border').attr('d', (d) => d.path)
-  base.style('transform-origin', (d) => `${d.x}px ${d.y}px`)
 
   const annotation = selection.select<SVGGElement>('.annotation')
   annotation

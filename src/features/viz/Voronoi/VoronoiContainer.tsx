@@ -11,15 +11,6 @@ import { RenderSingularCell } from './RenderSingularCell'
 import { useVoronoiModel } from './useVoronoiModel'
 import { VoronoiChart } from './VoronoiChart'
 
-export type SetModalProps = {
-  project: Queries.ProjectDetailFragment | null
-  onClose: () => void
-  onNext: () => void
-  onPrev: () => void
-}
-
-export type SetModalFn = ({ onClose, onNext, onPrev, project }: SetModalProps) => void
-
 type VoronoiContainerProps = {
   projects: Queries.ProjectDetailFragment[]
   areas: Queries.AreaBaseFragment[]

@@ -1,7 +1,7 @@
 import React, { ReactNode, RefObject } from 'react'
 
 import { Container } from '../../common/components/Container'
-import { SetModalProps } from '../viz/Voronoi/VoronoiContainer'
+import { SetModalProps } from '../../common/hooks/useProjectModalData'
 import { DetailBody } from './DetailBody'
 import { SliderControls } from './SliderControls'
 type ProjectDetailProps = SetModalProps & {

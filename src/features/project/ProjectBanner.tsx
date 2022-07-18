@@ -1,7 +1,6 @@
 import { GatsbyImage } from 'gatsby-plugin-image'
 import React, { useState } from 'react'
 
-import { theme } from '../../../tailwind.config'
 import { DisplayProject } from '../projects/ProjectsList'
 
 type ProjectBannerProps = {
@@ -36,9 +35,9 @@ export const ProjectBanner = ({ project, hideTitle, hideOverlay, index, classNam
       {!hideOverlay && (
         <div className="col-start-1 row-start-1">
           <div
-            style={{ color: project.highlightColor || theme.extend.colors['bg-secondary'] }}
+            style={{ color: project.highlightColor || '' }}
             className={`z-10 h-full stripe-pattern  ${
-              project.highlightColor ? 'opacity-80' : 'opacity-20'
+              project.highlightColor ? 'opacity-80' : 'opacity-10 bg-secondary'
             } transition-all ease-out duration-200 ${!hideOverlay && isTouched ? 'scale-[1.01] opacity-5' : ''}`}
           />
         </div>

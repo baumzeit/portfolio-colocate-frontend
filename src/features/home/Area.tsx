@@ -51,7 +51,7 @@ export const Area = ({ area: { name, description, id, color: areaColor, tags, sl
       >
         <div
           className="w-[340px] md:w-[430px] lg:w-[500px] opacity-20 dark:opacity-[0.15] group-hover:opacity-40 dark:group-hover:opacity-[0.25] 
-        group-hover:scale-95 transition-all duration-150 group-hover:duration-[400ms] -mx-14 -my-14"
+        group-hover:scale-95 transition-all duration-150 group-hover:duration-[300ms] -mx-14 -my-14"
         >
           <div className="animate-spinVerySlow">
             <SvgBlob

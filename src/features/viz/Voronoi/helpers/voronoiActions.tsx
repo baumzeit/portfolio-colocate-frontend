@@ -71,7 +71,7 @@ export const initializeVoronoiActions = (svgNode: SVGSVGElement, opts: VoronoiOp
     const isClear = exposedId === null
     // const isExposed = (d: EnrichedDatum) => exposedId !== null && d.id === exposedId
 
-    svg.selectAll<SVGCircleElement, EnrichedDatum>(`.focus-dot`).attr('tabindex', (d) => (isClear ? 10 + d.index : -1))
+    // svg.selectAll<SVGCircleElement, EnrichedDatum>(`.focus-dot`).attr('tabindex', (d) => (isClear ? 10 + d.index : -1))
 
     // const cells = svg.selectAll<SVGPathElement, EnrichedDatum>(`.cell`)
 

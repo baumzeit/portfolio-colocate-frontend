@@ -8,7 +8,7 @@ import { VoronoiContainer } from '../viz/Voronoi/VoronoiContainer'
 
 const relMargin = { top: 0.18, right: 0.14, bottom: 0.15, left: 0.14 }
 
-export const ProjectsMap = memo(() => {
+const ProjectsMap = memo(() => {
   const { projects, areas } = useContext(ProjectsAreasContext)
 
   const [width, windowHeight] = useWindowSize({ wait: 300 })
@@ -25,3 +25,5 @@ export const ProjectsMap = memo(() => {
     <VoronoiContainer projects={projects} areas={areas} gridSpecs={gridSpecs} getGridCoordinates={getGridCoordinates} />
   ) : null
 })
+
+export default ProjectsMap
