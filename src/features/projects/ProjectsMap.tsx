@@ -1,16 +1,14 @@
 import { useWindowSize } from '@react-hook/window-size'
-import React, { memo, useContext } from 'react'
+import React from 'react'
 
 import { NAVBAR_HEIGHT } from '../../common/components/Navbar'
 import { useJitterGrid } from '../../common/hooks/use-jitter-grid'
-import { ProjectsAreasContext } from '../../pages/projects/[...]'
+import { ProjectsAndAreas } from '../../pages/projects/[...]'
 import { VoronoiContainer } from '../viz/Voronoi/VoronoiContainer'
 
 const relMargin = { top: 0.18, right: 0.14, bottom: 0.15, left: 0.14 }
 
-const ProjectsMap = memo(() => {
-  const { projects, areas } = useContext(ProjectsAreasContext)
-
+const ProjectsMap = ({ projects, areas }: ProjectsAndAreas) => {
   const [width, windowHeight] = useWindowSize({ wait: 300 })
 
   const { getGridCoordinates, gridSpecs } = useJitterGrid({
@@ -24,6 +22,6 @@ const ProjectsMap = memo(() => {
   return gridSpecs && getGridCoordinates ? (
     <VoronoiContainer projects={projects} areas={areas} gridSpecs={gridSpecs} getGridCoordinates={getGridCoordinates} />
   ) : null
-})
+}
 
 export default ProjectsMap

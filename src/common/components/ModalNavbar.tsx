@@ -1,22 +1,14 @@
 import React from 'react'
-import { useQueryParam } from 'use-query-params'
 
 import { Navbar } from './Navbar'
 
 type ModalNavbarProps = {
-  closeQueryParam: string
+  onClose: () => void
 }
-export const ModalNavbar = ({ closeQueryParam }: ModalNavbarProps) => {
-  const [_, setParam] = useQueryParam<string | undefined>(closeQueryParam)
-
+export const ModalNavbar = ({ onClose }: ModalNavbarProps) => {
   return (
     <Navbar>
-      <button
-        onClick={(e) => {
-          setParam(undefined)
-        }}
-        className={`animate-fadeIn p-3 hover:text-brand tracking-wide`}
-      >
+      <button onClick={onClose} className={`animate-fadeIn p-3 hover:text-brand tracking-wide`}>
         Close
       </button>
     </Navbar>

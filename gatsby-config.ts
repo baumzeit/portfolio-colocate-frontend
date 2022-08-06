@@ -24,18 +24,19 @@ const strapiConfig = {
 
 module.exports = {
   siteMetadata: {
-    siteURL: process.env.GATSBY_ROOT_URL,
-    title: 'Philip Hradecsni'
+    title: 'Portfolio Philip Hradecsni',
+    description: `Portfolio Page of Philip Hradecsni`,
+    // twitterUsername: `@gatsbyjs`,
+    // image: `/gatsby-icon.png`,
+    siteUrl: `https://philip.colocate.dev`
   },
   graphqlTypegen: { typesOutputPath: 'gatsby-types.d.ts' },
   plugins: [
     'gatsby-plugin-image',
-    'gatsby-plugin-react-helmet',
     'gatsby-plugin-sharp',
     'gatsby-transformer-sharp',
     'gatsby-plugin-postcss',
     'gatsby-plugin-sass',
-    'gatsby-plugin-use-query-params',
     {
       resolve: 'gatsby-plugin-breakpoints',
       options: {

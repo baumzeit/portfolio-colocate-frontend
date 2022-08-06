@@ -1,11 +1,11 @@
-import React, { useCallback, useState } from 'react'
-import { StringParam, useQueryParams } from 'use-query-params'
+import React from 'react'
 
 import { Modal } from '../../../common/components/Modal'
 import { ModalNavbar } from '../../../common/components/ModalNavbar'
 import { UseJitterGridReturn } from '../../../common/hooks/use-jitter-grid'
 import { DetailContainer } from '../../project/DetailContainer'
-import { useProjectModalData } from '../../project/use-project-modal-data'
+import { useActiveProject } from '../../project/use-active-project'
+import { useHighlightArea } from '../../project/use-highlight-area'
 import { useProjectsChartData } from '../../projects/use-projects-chart-data'
 import { RenderSingularCell } from './RenderSingularCell'
 import { useVoronoiModel } from './use-voronoi-model'
@@ -22,30 +22,12 @@ export const VoronoiContainer = ({
   areas,
   getGridCoordinates
 }: VoronoiContainerProps) => {
-  const [{ area: highlightedAreaSlug, project: exposedSlug }, setQuery] = useQueryParams({
-    project: StringParam,
-    area: StringParam
-  })
+  const { highlightArea } = useHighlightArea()
 
-  const [voronoiInitialized, setVoronoiInitialized] = useState(false)
-
-  const exposedProjectId = findIdBySlug(exposedSlug, projects)
-  const highlightedAreaId = findIdBySlug(highlightedAreaSlug, areas)
-
-  const onClickCell = useCallback(
-    (id: string) => {
-      setQuery({ project: findSlugById(id, projects) })
-    },
-    [projects, setQuery]
-  )
-
-  // useBodyScrollLock({ enable: !!exposedSlug })
-
-  const modalData = useProjectModalData(projects)
+  const modalData = useActiveProject()
   const chartData = useProjectsChartData({ projects, getGridCoordinates })
-
   const { voronoi, enrichedData } = useVoronoiModel({ data: chartData, width, height })
-  const exposedEnrichedDatum = enrichedData.find((d) => d.id === exposedProjectId)
+  const exposedEnrichedDatum = enrichedData.find((d) => d.id === modalData.project?.id)
 
   return (
     <>
@@ -57,13 +39,11 @@ export const VoronoiContainer = ({
           width={width}
           height={height}
           imageSize={Math.max(width / numCols, height / numRows) * 1.2}
-          highlightedAreaId={highlightedAreaId}
-          exposedProjectId={exposedProjectId}
-          onClickCell={onClickCell}
-          onInitialized={() => setVoronoiInitialized(true)}
+          highlightedAreaId={highlightArea?.id}
+          onClickCell={modalData.setProject}
         />
       </div>
-      <Modal show={!!exposedSlug && voronoiInitialized} navbar={<ModalNavbar closeQueryParam="project" />}>
+      <Modal show={!!modalData.project?.id} navbar={<ModalNavbar onClose={modalData.close} />}>
         {modalData && exposedEnrichedDatum && (
           <DetailContainer {...modalData}>
             <RenderSingularCell
@@ -78,13 +58,3 @@ export const VoronoiContainer = ({
     </>
   )
 }
-
-const findIdBySlug = (
-  searchSlug: string | undefined | null,
-  data: { slug?: string | null; id?: string | number | null }[]
-) => (searchSlug ? data.find((entity) => entity.slug === searchSlug)?.id?.toString() || null : null)
-
-const findSlugById = (
-  searchId: string | undefined | null,
-  data: { slug?: string | null; id?: string | number | null }[]
-) => (searchId ? data.find((entity) => entity.id === searchId)?.slug || null : null)

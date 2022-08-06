@@ -1,22 +1,23 @@
 import { Listbox } from '@headlessui/react'
 import React, { useCallback, useState } from 'react'
-import { useQueryParam } from 'use-query-params'
+
+import { useHighlightArea } from '../project/use-highlight-area'
 
 type NavFilterAreasProps = {
   areas: Queries.AreaBaseFragment[]
 }
 
 export const NavFilterAreas = ({ areas }: NavFilterAreasProps) => {
-  const [selectedAreaSlug, setSelectedAreaSlug] = useQueryParam<string | undefined>('area')
+  const { highlightArea, setHighlightArea } = useHighlightArea()
   return (
     <div className="flex items-center justify-center gap-4 text-bg-secondary">
-      {areas.map(({ id = null, color, name, slug }, idx) => {
-        const isActive = slug === selectedAreaSlug
+      {areas.map(({ id, color, name, slug }, idx) => {
+        const isActive = id === highlightArea?.id
         return (
           <button
             key={id}
             onClick={(e) => {
-              setSelectedAreaSlug(isActive ? undefined : slug || undefined)
+              setHighlightArea(isActive ? null : slug ?? null)
             }}
             style={{
               color: isActive ? 'inherit' : color || 'inherit',
@@ -35,16 +36,16 @@ export const NavFilterAreas = ({ areas }: NavFilterAreasProps) => {
 }
 
 export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
-  const [selectedAreaSlug, setSelectedAreaSlug] = useQueryParam<string | undefined>('area')
-  const [selectedArea, setSelectedArea] = useState(areas.find((area) => area.slug === selectedAreaSlug))
+  const { highlightArea, setHighlightArea } = useHighlightArea()
+  const [selectedArea, setSelectedArea] = useState(areas.find((area) => area.slug === highlightArea))
 
   const handleChange = useCallback(
     (area: Queries.AreaBaseFragment) => {
-      const isActive = area.slug === selectedAreaSlug
-      setSelectedAreaSlug(isActive || !area.slug ? undefined : area.slug)
+      const isActive = area.slug === highlightArea
+      setHighlightArea(isActive || !area.slug ? null : area.slug)
       setSelectedArea(isActive || !area.slug ? undefined : area)
     },
-    [selectedAreaSlug, setSelectedAreaSlug]
+    [highlightArea, setHighlightArea]
   )
 
   return (
@@ -63,7 +64,7 @@ export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
         <Listbox.Options className="flex flex-col items-center">
           {areas.map((area, idx) => {
             const { id = null, color, name, slug } = area
-            const isActive = slug === selectedAreaSlug
+            const isActive = slug === highlightArea
             return (
               <Listbox.Option key={id} value={area} className="text-bg-secondary">
                 <div

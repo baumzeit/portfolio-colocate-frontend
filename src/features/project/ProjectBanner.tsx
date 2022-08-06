@@ -5,14 +5,14 @@ import { DisplayProject } from '../projects/ProjectsList'
 
 type ProjectBannerProps = {
   project: DisplayProject
-  index: number
+  index?: number
   hideTitle?: boolean
   hideOverlay?: boolean
   className?: string
 }
-export const ProjectBanner = ({ project, hideTitle, hideOverlay, index, className = '' }: ProjectBannerProps) => {
-  const firstImage = project.images?.[0]
-  const gatsbyImage = firstImage?.localFile?.childImageSharp?.gatsbyImageData
+export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, className = '' }: ProjectBannerProps) => {
+  const coverImage = project.coverImage
+  const gatsbyImage = coverImage?.localFile?.childImageSharp?.gatsbyImageData
 
   const isEven = index % 2 === 0
 
@@ -24,7 +24,7 @@ export const ProjectBanner = ({ project, hideTitle, hideOverlay, index, classNam
         {gatsbyImage && (
           <GatsbyImage
             image={gatsbyImage}
-            alt={firstImage?.alternativeText || ''}
+            alt={coverImage?.alternativeText || ''}
             className={`object-cover aspect-video max-h-64 sm:aspect-square md:max-h-full object-center w-full h-full transition-all ease-out duration-700 ${
               !hideOverlay ? (isTouched ? 'scale-[1.01]  opacity-100' : 'opacity-90') : ''
             }`}

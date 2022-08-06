@@ -1,10 +1,10 @@
 import { Voronoi } from 'd3-delaunay'
 import * as d3 from 'd3-selection'
-import React, { SVGProps, useCallback, useEffect, useMemo, useState } from 'react'
+import React, { memo, SVGProps, useCallback, useEffect, useMemo, useState } from 'react'
 
 import './voronoi.scss'
 import { drawVoronoi } from './helpers/draw-voronoi'
-import { EnrichedDatum, initializeVoronoiActions, VoronoiOptions } from './helpers/voronoi-actions'
+import { EnrichedDatum, highlightCellsByAreaId, hoverCell, restore, VoronoiOptions } from './helpers/voronoi-actions'
 
 type HighlightPatternDatum = { color?: string | null; id: string | number }
 
@@ -17,99 +17,78 @@ export type VoronoiChartProps = {
   imageSize: number
   onClickCell: (id: string) => void
   highlightedAreaId?: string | null
-  exposedProjectId?: string | null
-  onInitialized?: () => void
 }
 
-export const VoronoiChart = ({
-  enrichedData,
-  highlightPatternData,
-  width,
-  height,
-  voronoi,
-  imageSize,
-  highlightedAreaId = null,
-  exposedProjectId = null,
-  onClickCell,
-  onInitialized
-}: VoronoiChartProps) => {
-  const [svgNode, setSvgNode] = useState<SVGSVGElement | null>(null)
-  const [initialized, setInitialized] = useState(false)
+export const VoronoiChart = memo(
+  ({
+    enrichedData,
+    highlightPatternData,
+    width,
+    height,
+    voronoi,
+    imageSize,
+    highlightedAreaId = null,
+    onClickCell
+  }: VoronoiChartProps) => {
+    const [svgNode, setSvgNode] = useState<SVGSVGElement | null>(null)
+    const [initialized, setInitialized] = useState(false)
 
-  const onRefChange = useCallback((node: SVGSVGElement | null) => {
-    setSvgNode(node)
-  }, [])
+    const onRefChange = useCallback((node: SVGSVGElement | null) => {
+      setSvgNode(node)
+    }, [])
 
-  const voronoiOptions = useMemo<VoronoiOptions | undefined>(() => {
-    if (width && height) {
-      const options = {
-        width,
-        height,
-        imageSize,
-        exposeOffsetTop: 56,
-        exposeCellHeight: Math.max(window.innerHeight * 0.3, 250)
+    const voronoiOptions = useMemo<VoronoiOptions | undefined>(() => {
+      if (width && height) {
+        return {
+          width,
+          height,
+          imageSize
+        }
       }
-      // console.log('voronoi | set options', options)
-      return options
-    }
-  }, [height, imageSize, width])
+    }, [height, imageSize, width])
 
-  const voronoiActions = useMemo(() => {
-    if (voronoiOptions && svgNode) {
-      return initializeVoronoiActions(svgNode, voronoiOptions)
-    }
-  }, [svgNode, voronoiOptions])
+    useEffect(() => {
+      if (svgNode && voronoiOptions) {
+        const svg = d3
+          .select(svgNode)
+          .attr('id', 'voronoi-projects')
+          .attr('fill', 'none')
+          .attr('stroke-linejoin', 'round')
+          .attr('stroke-linecap', 'round')
 
-  useEffect(() => {
-    if (svgNode && voronoiActions) {
-      const svg = d3
-        .select(svgNode)
-        .attr('id', 'voronoi-projects')
-        .attr('fill', 'none')
-        .attr('stroke-linejoin', 'round')
-        .attr('stroke-linecap', 'round')
-
-      drawVoronoi({
-        svg,
-        ...voronoiActions,
-        data: enrichedData,
-        voronoi,
-        onClick: onClickCell,
-        onHover: voronoiActions.hoverCell,
-        onMouseLeave: voronoiActions.restore
-      })
-      setInitialized(true)
-      if (onInitialized) {
-        onInitialized()
+        drawVoronoi({
+          svg,
+          voronoi,
+          data: enrichedData,
+          options: voronoiOptions,
+          onClick: onClickCell,
+          onHover: hoverCell(svgNode),
+          onMouseLeave: restore(svgNode)
+        })
+        setInitialized(true)
       }
-    }
-  }, [enrichedData, initialized, onClickCell, onInitialized, svgNode, voronoi, voronoiActions])
+    }, [enrichedData, initialized, onClickCell, svgNode, voronoi, voronoiOptions])
 
-  useEffect(() => {
-    if (voronoiActions && initialized) {
-      voronoiActions.exposeCell(exposedProjectId)
-    }
-  }, [exposedProjectId, initialized, voronoiActions])
+    useEffect(() => {
+      if (initialized && svgNode) {
+        highlightCellsByAreaId(svgNode)(highlightedAreaId)
+      }
+    }, [highlightedAreaId, initialized, svgNode])
 
-  useEffect(() => {
-    if (voronoiActions && initialized) {
-      voronoiActions.highlightCellsByAreaId(highlightedAreaId)
-    }
-  }, [highlightedAreaId, initialized, voronoiActions])
-
-  return (
-    <>
-      <svg ref={onRefChange} width={width} height={height} className="voronoi cursor-pointer animate-fadeIn">
-        <defs>
-          <HatchPattern id="diagonalHatch" className="stroke-bg-secondary" />
-          {highlightPatternData.map(({ color, id }) => (
-            <HatchPattern key={id} stroke={color || 'black'} id={'diagonalHatchHighlight-' + id} />
-          ))}
-        </defs>
-      </svg>
-    </>
-  )
-}
+    return (
+      <>
+        <svg ref={onRefChange} width={width} height={height} className="voronoi cursor-pointer animate-fadeIn">
+          <defs>
+            <HatchPattern id="diagonalHatch" className="stroke-bg-secondary" />
+            {highlightPatternData.map(({ color, id }) => (
+              <HatchPattern key={id} stroke={color || 'black'} id={'diagonalHatchHighlight-' + id} />
+            ))}
+          </defs>
+        </svg>
+      </>
+    )
+  }
+)
 
 const HatchPattern = ({ id, ...rest }: Pick<HighlightPatternDatum, 'id'> & SVGProps<SVGPathElement>) => {
   return (

@@ -1,4 +1,4 @@
-import { WrapPageElementNodeArgs, WrapPageElementBrowserArgs } from 'gatsby'
+import { WrapRootElementNodeArgs, WrapRootElementBrowserArgs } from 'gatsby'
 import React from 'react'
 
 import { ThemeContextProvider } from './src/common/components/ThemeContextProvider'
@@ -12,6 +12,6 @@ import '@fontsource/rubik/300.css'
 import '@fontsource/rubik/400.css'
 import '@fontsource/rubik/600.css'
 
-export const wrapRootElement = ({ element }: WrapPageElementNodeArgs | WrapPageElementBrowserArgs) => {
+export const wrapRootElement = ({ element }: WrapRootElementNodeArgs | WrapRootElementBrowserArgs) => {
   return <ThemeContextProvider>{element}</ThemeContextProvider>
 }

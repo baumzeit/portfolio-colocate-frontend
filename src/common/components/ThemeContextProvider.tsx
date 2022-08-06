@@ -1,5 +1,4 @@
 import React, { useState, useEffect, createContext, Dispatch, SetStateAction, ReactNode, useContext } from 'react'
-import { Helmet } from 'react-helmet'
 
 type Theme = 'dark' | 'light'
 export const DEFAULT_THEME = 'dark'
@@ -32,16 +31,6 @@ export const ThemeContextProvider = ({ children }: ThemeContextProviderProps) =>
 
   return (
     <>
-      <Helmet>
-        <script>
-          {`if ( localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches) ) {
-              document.documentElement.classList.add('dark')
-            } else {
-                document.documentElement.classList.remove('dark')
-            }
-          `}
-        </script>
-      </Helmet>
       <ThemeContext.Provider value={{ theme, setTheme }}>{children}</ThemeContext.Provider>
     </>
   )

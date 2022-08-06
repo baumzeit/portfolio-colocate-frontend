@@ -1,31 +1,26 @@
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
-import React, { useContext } from 'react'
-import { useQueryParam } from 'use-query-params'
+import React from 'react'
 
-import { ProjectsAreasContext } from '../../pages/projects/[...]'
+import { useActiveProject } from '../project/use-active-project'
 import { NavFilterAreas, NavFilterAreasSelect } from './NavFilterAreas'
-
-export const ProjectsNavContent = () => {
-  const { areas } = useContext(ProjectsAreasContext)
-
-  const [exposedSlug, setExposedSlug] = useQueryParam<string | undefined>('project')
+type ProjectsNavContentProps = { areas: Queries.AreaBaseFragment[] }
+export const ProjectsNavContent = ({ areas }: ProjectsNavContentProps) => {
+  const { close, project } = useActiveProject()
   const breakpoints = useBreakpoint()
 
   return (
     <>
-      {exposedSlug ? (
+      {project ? (
         <button
           onClick={(e) => {
-            setExposedSlug(undefined)
+            close()
           }}
           className={`animate-fadeIn p-3 hover:text-brand tracking-wide`}
         >
           Close
         </button>
       ) : breakpoints.lg ? (
-        <div>
-          <NavFilterAreas areas={areas} />
-        </div>
+        <NavFilterAreas areas={areas} />
       ) : (
         <div className="self-start block mt-3.5 min-w-[180px] lg:hidden">
           <NavFilterAreasSelect areas={areas} />

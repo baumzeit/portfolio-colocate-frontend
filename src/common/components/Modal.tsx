@@ -12,7 +12,6 @@ type ModalProps = {
 
 export const Modal = forwardRef<HTMLDivElement, PropsWithChildren<ModalProps>>(
   ({ show, enterClass = '', navbar, children }, ref) => {
-    if (!show) return null
     return (
       <Dialog open={show} onClose={() => {}} className={`fixed inset-0 bg-primary z-40`} ref={ref}>
         {navbar && <div className="relative z-50">{navbar}</div>}

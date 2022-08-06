@@ -101,7 +101,6 @@ export const useJitterGrid = ({
             { length: orphanItems },
             (_, idx) => (width / (orphanItems + 1)) * (idx + 1)
           )
-
           return Array.from({ length: columns }).map((_, colIndex) => {
             return [
               adjustedColPositions[colIndex] + adjustedColPositions[colIndex] * jitterFn(),

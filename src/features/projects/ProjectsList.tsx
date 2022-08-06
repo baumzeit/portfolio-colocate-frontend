@@ -1,58 +1,51 @@
 import { sort } from 'd3-array'
-import React, { useCallback, useContext, useMemo } from 'react'
-import { StringParam, useQueryParams } from 'use-query-params'
+import React, { useCallback, useMemo } from 'react'
 
 import { Modal } from '../../common/components/Modal'
 import { ModalNavbar } from '../../common/components/ModalNavbar'
-import { ProjectsAreasContext } from '../../pages/projects/[...]'
+import { ProjectsAndAreas } from '../../pages/projects/[...]'
 import { DetailContainer } from '../project/DetailContainer'
 import { ProjectBanner } from '../project/ProjectBanner'
-import { useProjectModalData } from '../project/use-project-modal-data'
+import { useActiveProject } from '../project/use-active-project'
+import { useHighlightArea } from '../project/use-highlight-area'
 
 export type DisplayProject = Queries.ProjectDetailFragment & { highlightColor?: string | null }
 
-const ProjectsList = () => {
-  const { areas, projects } = useContext(ProjectsAreasContext)
+const ProjectsList = ({ projects }: ProjectsAndAreas) => {
+  const { highlightArea } = useHighlightArea()
+  const { setProject } = useActiveProject()
 
-  const [{ area: highlightedAreaSlug, project: selectedProject }, setQuery] = useQueryParams({
-    project: StringParam,
-    area: StringParam
-  })
-
-  const highlightColor = areas.find(({ slug }) => slug === highlightedAreaSlug)?.color
+  const highlightAreaSlug = highlightArea?.slug
 
   const areaMatch = useCallback(
     (project: Queries.ProjectDetailFragment) =>
-      !highlightedAreaSlug || project.areas?.map((area) => area?.slug).includes(highlightedAreaSlug) || null,
-    [highlightedAreaSlug]
+      Boolean(!highlightAreaSlug || project.areas?.map((area) => area?.slug).includes(highlightAreaSlug)),
+    [highlightAreaSlug]
   )
 
   const displayProjects: DisplayProject[] = useMemo(() => {
     const enrichedProjects = projects.map((project) => ({
       ...project,
-      highlightColor: areaMatch(project) ? highlightColor : null
+      highlightColor: areaMatch(project) ? highlightArea?.color : null
     }))
     return enrichedProjects
       ? sort(enrichedProjects, ({ highlightColor: a }, { highlightColor: b }) =>
           Boolean(a) === Boolean(b) ? 0 : a ? -1 : 1
         )
       : enrichedProjects
-  }, [areaMatch, highlightColor, projects])
-
-  const modalData = useProjectModalData(displayProjects)
+  }, [areaMatch, highlightArea?.color, projects])
 
   return (
-    <div>
+    <>
       <ul className="grid grid-cols-1 gap-3 mx-3 sm:grid-cols-2">
         {displayProjects.map((project, idx) => {
           return (
-            <li key={project.id} className="overflow-hidden rounded-md">
+            <li key={project.id} className="overflow-hidden rounded-sm">
               <button
                 className={`block w-full h-full`}
-                onClick={(e) => {
-                  setQuery({ project: project.slug })
+                onClick={() => {
+                  setProject(project.slug)
                 }}
-                tabIndex={selectedProject ? -1 : 0}
               >
                 <ProjectBanner project={project} index={idx} />
               </button>
@@ -60,23 +53,25 @@ const ProjectsList = () => {
           )
         })}
       </ul>
-      <Modal show={!!modalData?.project} navbar={<ModalNavbar closeQueryParam="project" />}>
-        {modalData?.project && (
-          <DetailContainer {...modalData}>
-            <div className="mx-10 overflow-hidden rounded shadow animate-fadeInFast">
-              <ProjectBanner
-                project={modalData.project}
-                index={projects.findIndex((d) => d.slug === modalData.project?.slug)}
-                hideTitle
-                hideOverlay
-                className="max-h-[160px]"
-              />
-            </div>
-          </DetailContainer>
-        )}
-      </Modal>
-    </div>
+      <ProjectDetailModal />
+    </>
   )
 }
 
 export default ProjectsList
+
+export const ProjectDetailModal = () => {
+  const modalData = useActiveProject()
+
+  return (
+    <Modal show={!!modalData.project} navbar={<ModalNavbar onClose={modalData.close} />}>
+      {modalData?.project && (
+        <DetailContainer {...modalData}>
+          <div className="mx-10 overflow-hidden rounded shadow animate-fadeInFast">
+            <ProjectBanner project={modalData.project} hideTitle hideOverlay className="max-h-[160px]" />
+          </div>
+        </DetailContainer>
+      )}
+    </Modal>
+  )
+}

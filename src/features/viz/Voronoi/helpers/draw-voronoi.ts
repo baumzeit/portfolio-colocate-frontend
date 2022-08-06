@@ -11,7 +11,7 @@ export type VoronoiDrawProps = {
   options: VoronoiOptions
   voronoi: Voronoi<EnrichedDatum>
   onHover: (id: string) => void
-  onClick: (id: string) => void
+  onClick: (slug: string) => void
   onMouseLeave: () => void
 }
 
@@ -71,9 +71,9 @@ export function drawVoronoi({ svg, data, options: opts, voronoi, onHover, onClic
   svg.on('keyup', (e: KeyboardEvent) => {
     if (e.code === 'Space') {
       const activeElement = select<BaseType, EnrichedDatum | null>(document.activeElement)
-      const activeElementId = activeElement?.datum()?.id
-      if (activeElementId) {
-        onClick(activeElementId)
+      const activeElementSlug = activeElement?.datum()?.slug
+      if (activeElementSlug) {
+        onClick(activeElementSlug)
       }
     }
   })
@@ -87,7 +87,7 @@ export function drawVoronoi({ svg, data, options: opts, voronoi, onHover, onClic
   svg.selectAll('.label-box').on('focus', function (e: FocusEvent<SVGElement>) {
     const datum = select<SVGElement, EnrichedDatum>(e.target).datum()
     if (!svg.selectAll('.exposed').empty()) {
-      onClick(datum.id)
+      onClick(datum.slug)
     } else {
       onHover(datum.id)
     }
@@ -96,8 +96,8 @@ export function drawVoronoi({ svg, data, options: opts, voronoi, onHover, onClic
   svg.selectAll<SVGGElement, EnrichedDatum>('.hover-cell').on('click', function (e: MouseEvent, d) {
     e.stopPropagation()
     const isExposed = select(this).classed('exposed')
-    if (d.id && !isExposed) {
-      onClick(d.id)
+    if (d.slug && !isExposed) {
+      onClick(d.slug)
     }
   })
 

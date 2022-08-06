@@ -1,8 +1,6 @@
-import { SparklesIcon } from '@heroicons/react/outline'
 import { MailIcon } from '@heroicons/react/solid'
 import { graphql, PageProps } from 'gatsby'
 import React, { useMemo } from 'react'
-import { Helmet } from 'react-helmet'
 
 import { Container } from '../common/components/Container'
 import Layout from '../common/components/Layout'
@@ -38,9 +36,6 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<Queries.Hom
     introText &&
     profile && (
       <>
-        <Helmet>
-          <title>{seo?.metaTitle}</title>
-        </Helmet>
         <Layout>
           <Navbar>
             <HomeNavContent />
@@ -119,3 +114,7 @@ export const query = graphql`
 `
 
 export default HomePage
+
+// export function Head() {
+//   return <SEO/>
+// }

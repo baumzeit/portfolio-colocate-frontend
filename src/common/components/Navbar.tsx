@@ -75,7 +75,7 @@ const query = graphql`
   query NavData {
     site {
       siteMetadata {
-        siteURL
+        siteUrl
         title
       }
     }

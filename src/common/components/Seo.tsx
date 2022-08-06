@@ -1,115 +1,39 @@
-import { useStaticQuery, graphql } from 'gatsby'
-import React from 'react'
-import { Helmet } from 'react-helmet'
+import React, { ReactNode } from 'react'
 
-// const SEO: FC<{ seo?: any }> = ({ seo = {} }) => {
-//   const { strapiGlobal } = useStaticQuery(query)
-//   const { defaultSeo, siteName, favicon } = strapiGlobal
+import { Seo, useSiteMetadata } from '../hooks/use-site-metadata'
 
-//   // Merge default and page-specific SEO values
-//   const fullSeo = { ...defaultSeo, ...seo }
+type SeoProps = Seo & {
+  pathname?: string
+  children?: ReactNode
+}
 
-//   const getMetaTags = () => {
-//     const tags = []
+export const SEO = ({ title, description, pathname, children }: SeoProps) => {
+  const { title: defaultTitle, description: defaultDescription, image, siteUrl } = useSiteMetadata()
 
-//     if (fullSeo.metaTitle) {
-//       tags.push(
-//         {
-//           property: 'og:title',
-//           content: fullSeo.metaTitle
-//         },
-//         {
-//           name: 'twitter:title',
-//           content: fullSeo.metaTitle
-//         }
-//       )
-//     }
-//     if (fullSeo.metaDescription) {
-//       tags.push(
-//         {
-//           name: 'description',
-//           content: fullSeo.metaDescription
-//         },
-//         {
-//           property: 'og:description',
-//           content: fullSeo.metaDescription
-//         },
-//         {
-//           name: 'twitter:description',
-//           content: fullSeo.metaDescription
-//         }
-//       )
-//     }
-//     if (fullSeo.shareImage) {
-//       const imageUrl = (process.env.GATSBY_ROOT_URL || 'http://localhost:8001') + fullSeo.shareImage.localFile.publicURL
-//       tags.push(
-//         {
-//           name: 'image',
-//           content: imageUrl
-//         },
-//         {
-//           property: 'og:image',
-//           content: imageUrl
-//         },
-//         {
-//           name: 'twitter:image',
-//           content: imageUrl
-//         }
-//       )
-//     }
-//     if (fullSeo.article) {
-//       tags.push({
-//         property: 'og:type',
-//         content: 'article'
-//       })
-//     }
-//     tags.push({ name: 'twitter:card', content: 'summary_large_image' })
+  const seo = {
+    title: title || defaultTitle,
+    description: description || defaultDescription,
+    // image: `${siteUrl}${image}`,
+    url: `${siteUrl}${pathname || ``}`
+    // twitterUsername
+  }
 
-//     return tags
-//   }
-
-//   const metaTags = getMetaTags()
-
-//   return (
-//     <Helmet
-//       title={fullSeo.metaTitle}
-//       titleTemplate={`%s | ${siteName}`}
-//       link={[
-//         {
-//           rel: 'icon',
-//           href: favicon.publicURL
-//         },
-//         {
-//           rel: 'stylesheet',
-//           href: 'https://fonts.googleapis.com/css?family=Staatliches'
-//         }
-//       ]}
-//       script={[]}
-//       meta={metaTags}
-//     />
-//   )
-// }
-
-// const query = graphql`
-//   query SeoData {
-//     strapiGlobal {
-//       siteName
-//       favIcon {
-//         file {
-//           publicURL
-//         }
-//       }
-//       defaultSeo {
-//         metaTitle
-//         metaDescription
-//         shareImage {
-//           file {
-//             publicURL
-//           }
-//         }
-//       }
-//     }
-//   }
-// `
-
-export default SEO
+  return (
+    <>
+      <title>{seo.title}</title>
+      <meta name="description" content={seo.description} />
+      {/* <meta name="image" content={seo.image} /> */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={seo.title} />
+      <meta name="twitter:url" content={seo.url} />
+      <meta name="twitter:description" content={seo.description} />
+      {/* <meta name="twitter:image" content={seo.image} /> */}
+      {/* <meta name="twitter:creator" content={seo.twitterUsername} /> */}
+      <link
+        rel="icon"
+        href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='0.9em' font-size='90'>👤</text></svg>"
+      />
+      {children}
+    </>
+  )
+}

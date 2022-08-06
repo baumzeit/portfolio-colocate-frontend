@@ -31,7 +31,7 @@ export const DetailContent = ({
           <RenderMd className={`text-justify`} content={description?.data?.description} />
         </article>
         {selectedImage && (
-          <div className="z-10 col-start-1 min-h-[70vw] md:min-h-0 md:aspect-square">
+          <div className="z-10 col-start-1 min-h-[70vw] md:min-h-0">
             <ImageContainer
               image={selectedImage.localFile?.childImageSharp?.gatsbyImageData}
               caption={selectedImage.caption || ''}

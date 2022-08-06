@@ -1,4 +1,3 @@
-import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import chunk from 'lodash.chunk'
 import React from 'react'
 
@@ -7,8 +6,6 @@ import { Area } from './Area'
 type AreasMapProps = { areas: Queries.AreaDetailFragment[] }
 
 export const AreasMap = ({ areas }: AreasMapProps) => {
-  const breakpoints = useBreakpoint()
-
   return (
     <div>
       {chunk(areas, 3).map((areas, idx) => (
@@ -34,12 +31,12 @@ export const AreasMap = ({ areas }: AreasMapProps) => {
                 : ''
             } col-end-5 lg:col-span-2`}
               >
-                <Area
-                  area={area}
-                  alignment={
-                    breakpoints?.lg === false ? 'left' : one ? 'right' : two ? 'left' : three ? 'center' : 'left'
-                  }
-                />
+                <div className="hidden lg:block">
+                  <Area area={area} alignment={one ? 'right' : two ? 'left' : three ? 'center' : 'left'} />
+                </div>
+                <div className="block lg:hidden">
+                  <Area area={area} alignment="left" />
+                </div>
               </div>
             )
           })}

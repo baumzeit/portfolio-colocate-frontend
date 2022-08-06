@@ -1,5 +1,4 @@
-import { useBreakpoint } from 'gatsby-plugin-breakpoints'
-import React, { useCallback, useEffect } from 'react'
+import React, { useCallback } from 'react'
 import { NumberParam, useQueryParam } from 'use-query-params'
 
 import { Tags } from '../../common/components/Tags'
@@ -14,8 +13,7 @@ type DetailContentProps = {
 }
 
 export const DetailBody = ({ project }: DetailContentProps) => {
-  const { id, title, images } = project
-  const breakpoint = useBreakpoint()
+  const { title, images } = project
 
   const [selectedImageNo, setSelectedImageNo] = useQueryParam('image', NumberParam)
 
@@ -25,11 +23,8 @@ export const DetailBody = ({ project }: DetailContentProps) => {
     },
     [setSelectedImageNo]
   )
-  const selectedImageIdx = typeof selectedImageNo === 'number' ? selectedImageNo - 1 : null
 
-  useEffect(() => {
-    setSelectedImageIdx(null)
-  }, [id, setSelectedImageIdx])
+  const selectedImageIdx = typeof selectedImageNo === 'number' ? selectedImageNo - 1 : null
 
   return (
     <>
@@ -37,7 +32,9 @@ export const DetailBody = ({ project }: DetailContentProps) => {
         <h1 className="w-full text-xl md:text-3xl md:w-auto">{title}</h1>
       </div>
       <div className="flex flex-col mt-6 mb-6 md:mt-8 gap-x-12 lg:gap-x-16 gap-y-4 md:flex-row">
-        {!breakpoint.md && <MainInfo project={project} />}
+        <div className="block md:hidden">
+          <MainInfo project={project} />
+        </div>
         <div className="flex-1 mb-4">
           <DetailContent
             project={project}
@@ -47,7 +44,9 @@ export const DetailBody = ({ project }: DetailContentProps) => {
         </div>
         <div className="md:w-1/3">
           <div className={`grid gap-y-4 mb-4`}>
-            {breakpoint.md && <MainInfo project={project} />}
+            <div className="hidden md:block">
+              <MainInfo project={project} />
+            </div>
             {images && (
               <div className="row-start-1 mb-1 md:row-start-auto">
                 <ImagesPreview
