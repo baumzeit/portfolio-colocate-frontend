@@ -1,5 +1,7 @@
 import { WrapRootElementNodeArgs, WrapRootElementBrowserArgs } from 'gatsby'
 import React from 'react'
+import { QueryParamProvider } from 'use-query-params'
+import { ReachAdapter } from 'use-query-params/adapters/reach'
 
 import { ThemeContextProvider } from './src/common/components/ThemeContextProvider'
 
@@ -13,5 +15,14 @@ import '@fontsource/rubik/400.css'
 import '@fontsource/rubik/600.css'
 
 export const wrapRootElement = ({ element }: WrapRootElementNodeArgs | WrapRootElementBrowserArgs) => {
-  return <ThemeContextProvider>{element}</ThemeContextProvider>
+  return (
+    <QueryParamProvider
+      adapter={ReachAdapter}
+      options={{
+        enableBatching: true
+      }}
+    >
+      <ThemeContextProvider>{element}</ThemeContextProvider>
+    </QueryParamProvider>
+  )
 }
