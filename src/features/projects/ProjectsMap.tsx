@@ -6,7 +6,7 @@ import { useJitterGrid } from '../../common/hooks/use-jitter-grid'
 import { ProjectsAndAreas } from '../../pages/projects/[...]'
 import { VoronoiContainer } from '../viz/Voronoi/VoronoiContainer'
 
-const relMargin = { top: 0.18, right: 0.14, bottom: 0.15, left: 0.14 }
+const relMargin = { top: 0.18, right: 0.14, bottom: 0.16, left: 0.14 }
 
 const ProjectsMap = ({ projects, areas }: ProjectsAndAreas) => {
   const [width, windowHeight] = useWindowSize({ wait: 300 })
@@ -16,7 +16,8 @@ const ProjectsMap = ({ projects, areas }: ProjectsAndAreas) => {
     width,
     minHeight: windowHeight - NAVBAR_HEIGHT,
     relMargin,
-    minTilePixels: 50000
+    minTilePixels: 50000,
+    colJitter: 0.05
   })
 
   return gridSpecs && getGridCoordinates ? (

@@ -8,11 +8,11 @@
     opacity: 1;
     .pattern {
       fill-opacity: 0.9;
-      transition: fill-opacity 160ms ease-out;
+      transition: fill-opacity 80ms ease-out;
     }
     .highlight-pattern {
       fill-opacity: 0;
-      transition: fill-opacity 80ms ease-out;
+      transition: fill-opacity 90ms ease-out;
     }
     .cell-gap {
       stroke-width: 22;
@@ -40,7 +40,7 @@
     }
 
     .annotation {
-      transition: opacity 80ms ease-out;
+      transition: opacity 60ms ease-out;
 
       .label {
         text-anchor: middle;
@@ -56,7 +56,10 @@
     }
 
     &.hover-selected {
-      .pattern,
+      .pattern {
+        transition: fill-opacity 300ms ease-out;
+        fill-opacity: 0.15;
+      }
       .highlight-pattern {
         fill-opacity: 0;
       }
@@ -69,11 +72,34 @@
     }
   }
 
-  .bounds {
-    opacity: 1;
-    transition: opacity 260ms ease-out;
+  &.highlight-view {
+    .cell {
+      .pattern {
+        fill-opacity: 0.9;
+      }
+      .image-fo {
+        @apply opacity-30 dark:opacity-20;
+      }
+
+      .annotation {
+        opacity: 0;
+      }
+
+      &.area-highlight {
+        .image-fo {
+          opacity: 1;
+        }
+        .highlight-pattern {
+          fill-opacity: 0.95;
+        }
+        .annotation {
+          opacity: 1;
+        }
+      }
+    }
   }
 
+  // class is used in Detail Modal
   &.expose-view {
     pointer-events: none;
     .bounds,
@@ -94,33 +120,6 @@
         .annotation {
           transition-duration: 0ms;
           opacity: 0;
-        }
-      }
-    }
-  }
-
-  &:not(.expose-view).highlight-view {
-    .cell {
-      .pattern {
-        fill-opacity: 0.9;
-      }
-      .image-fo {
-        opacity: 0.4;
-      }
-
-      .annotation {
-        opacity: 0;
-      }
-
-      &.area-highlight {
-        .image-fo {
-          opacity: 1;
-        }
-        .highlight-pattern {
-          fill-opacity: 0.95;
-        }
-        .annotation {
-          opacity: 1;
         }
       }
     }

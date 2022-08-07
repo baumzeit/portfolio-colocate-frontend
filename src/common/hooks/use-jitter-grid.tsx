@@ -12,12 +12,18 @@ type UseJitterGridProps = {
     bottom: number
     left: number
   }
-  jitter?: number
+  colJitter?: number
 }
 
 export type GridCoordinate = [x: number, y: number]
-export type GridPositions = GridCoordinate[][]
-type GridData = {
+type GridPositions = GridCoordinate[]
+
+type AxisSpecs = {
+  positions: number[]
+  interval: number
+}
+
+type GridSpecs = {
   grid: GridPositions
   numCols: number
   numRows: number
@@ -42,7 +48,7 @@ export const useJitterGrid = ({
   minHeight,
   relMargin,
   minTilePixels,
-  jitter = 0.05
+  colJitter = 0
 }: UseJitterGridProps): UseJitterGridReturn => {
   const gridData = useMemo(() => {
     try {
@@ -64,52 +70,82 @@ export const useJitterGrid = ({
         const safeRows = Math.ceil(virtualRows)
         const safeColumns = Math.ceil(virtualColumns)
 
-        const columns = safeColumns * safeColumns - minItems >= safeColumns ? safeColumns - 1 : safeColumns
+        const refCols = safeColumns * safeColumns - minItems >= safeColumns ? safeColumns - 1 : safeColumns
+        const refRows = safeRows - Math.floor((safeRows * refCols - minItems) / refCols)
 
-        // const rows = safeRows
-        const rows = safeRows - Math.floor((safeRows * columns - minItems) / columns)
-        const minMarginY = height / (rows + 2)
-        const minMarginX = width / (columns + 2)
+        const minMarginY = 30
+        const minMarginX = 60
 
         const marginTop = Math.max(height * relMargin.top, minMarginY)
         const marginBottom = Math.max(height * relMargin.bottom, minMarginY)
         const marginRight = Math.max(width * relMargin.right, minMarginX)
         const marginLeft = Math.max(width * relMargin.left, minMarginX)
 
-        const fixedVerticalOffset = height * 0.03
+        const getNoise = (unitSize: number, jitter: number) => unitSize * randomNormal(0, jitter)()
 
-        const colWidth = (width - (marginLeft + marginRight)) / Math.max(columns - 1, 1)
-        const rowHeight = (height - (marginTop + marginBottom)) / Math.max(rows - 1, 1)
-
-        const colPositions = Array.from({ length: columns }, (_, idx) => marginLeft + colWidth * idx)
-        const rowPositions = Array.from({ length: rows }, (_, idx) => marginTop + rowHeight * idx)
-
-        const orphanItems = minItems % columns
-
-        const jitterFn = randomNormal(0, jitter)
-
-        const gridPositions: GridPositions = Array.from({ length: rows }).map((_, rowIdx) => {
-          if (rowIdx + 1 < rows || !orphanItems) {
-            return Array.from({ length: columns }).map((_, colIndex) => {
-              return [
-                colPositions[colIndex] + colWidth * jitterFn(),
-                rowPositions[rowIdx] + rowHeight * jitterFn() + fixedVerticalOffset * (colIndex % 2 ? 1 : -1)
-              ]
-            })
+        const getColSpecs = (items: number): AxisSpecs => {
+          const colWidth = (width - (marginLeft + marginRight)) / Math.max(items - 1, 1)
+          const colDiff = Math.max(refCols - items, 0)
+          const offset = colDiff ? (0.5 * (colWidth * colDiff)) / refCols : 0
+          const adjustedColWidth = colDiff ? (colWidth * items) / refCols : colWidth
+          return {
+            positions: Array.from({ length: items }, (_, idx) => marginLeft + offset + adjustedColWidth * idx),
+            interval: colWidth
           }
-          const adjustedColPositions = Array.from(
-            { length: orphanItems },
-            (_, idx) => (width / (orphanItems + 1)) * (idx + 1)
-          )
-          return Array.from({ length: columns }).map((_, colIndex) => {
+        }
+        const getRowSpecs = (rows: number): AxisSpecs => {
+          const rowHeight = (height - (marginTop + marginBottom)) / Math.max(rows - 1, 1)
+          return {
+            positions: Array.from({ length: rows }, (_, idx) => marginTop + rowHeight * idx),
+            interval: rowHeight
+          }
+        }
+
+        const numOrphans = minItems % refCols
+        const adoptedOrphans = numOrphans === 1 ? 1 : 0
+        const getRowJitter = (idx: number) => (height * (idx % 2) ? height * 0.02 : height * -0.02)
+
+        const getCoordinates = (colSpecs: AxisSpecs, rowSpecs: AxisSpecs, rowIdx: number): GridCoordinate[] => {
+          const { positions: colPos, interval: colSize } = colSpecs
+          const { positions: rowPos } = rowSpecs
+
+          return Array.from({ length: colPos.length }).map((_, idx) => {
             return [
-              adjustedColPositions[colIndex] + adjustedColPositions[colIndex] * jitterFn(),
-              rowPositions[rowIdx] + rowHeight * jitterFn() + fixedVerticalOffset * (colIndex % 2 ? 1 : -1)
+              colPos[idx] + getNoise(colSize, colJitter),
+              rowPos[rowIdx] + getRowJitter(idx) //+ getNoise(rowSize, 0.01)
             ]
           })
-        })
+        }
 
-        return { grid: gridPositions, numCols: columns, numRows: rows, height: height, width: width }
+        const actualRows = adoptedOrphans === numOrphans ? refRows - 1 : refRows
+
+        const rowSpecs = getRowSpecs(actualRows)
+
+        const gridPositions: GridPositions = Array.from({ length: refRows })
+          .map((_, rowIdx) => {
+            const adoptionRowIdx = rowIdx === 1
+            const isLastRow = rowIdx === refRows - 1
+            const regularRow = !numOrphans || !(isLastRow || adoptionRowIdx)
+
+            const actualCols = regularRow
+              ? refCols
+              : adoptionRowIdx
+              ? adoptedOrphans //
+                ? refCols + adoptedOrphans
+                : refCols
+              : isLastRow
+              ? adoptedOrphans //
+                ? numOrphans - adoptedOrphans
+                : numOrphans
+              : refCols
+
+            const colSpecs = getColSpecs(actualCols)
+
+            return getCoordinates(colSpecs, rowSpecs, rowIdx)
+          })
+          .flat()
+
+        return { grid: gridPositions, numCols: refCols, numRows: refRows, height: height, width: width }
       }
     } catch (err) {
       console.error(err)
@@ -124,15 +160,13 @@ export const useJitterGrid = ({
     relMargin.bottom,
     relMargin.right,
     relMargin.left,
-    jitter
+    colJitter
   ])
 
   const getGridCoordinates = useCallback(
-    (gridData: GridData) =>
+    (gridData: GridSpecs) =>
       (idx: number): GridCoordinate => {
-        const colIdx = idx % gridData.numCols
-        const rowIdx = Math.floor(idx / gridData?.numCols)
-        return gridData.grid[rowIdx][colIdx]
+        return gridData.grid[idx]
       },
     []
   )

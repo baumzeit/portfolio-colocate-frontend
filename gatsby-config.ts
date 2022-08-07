@@ -24,7 +24,7 @@ const strapiConfig = {
 
 module.exports = {
   siteMetadata: {
-    title: 'Portfolio Philip Hradecsni',
+    title: 'Philip Hradecsni',
     description: `Portfolio Page of Philip Hradecsni`,
     // twitterUsername: `@gatsbyjs`,
     // image: `/gatsby-icon.png`,

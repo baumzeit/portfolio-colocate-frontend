@@ -1,6 +1,6 @@
 import { atom, useAtom } from 'jotai'
-import { useCallback, useEffect, useMemo } from 'react'
-import { NumberParam, StringParam, useQueryParam, useQueryParams } from 'use-query-params'
+import { useEffect } from 'react'
+import { StringParam, useQueryParam } from 'use-query-params'
 
 import { areasAtom } from '../../common/contexts/atoms'
 

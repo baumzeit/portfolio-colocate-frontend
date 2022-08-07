@@ -67,7 +67,7 @@ export const highlightCellsByAreaId = (svgNode: SVGSVGElement) => (highlightId: 
     const highlightPath = cellG.select('.highlight-pattern')
     const shouldHighlight = Boolean(d.areas.find((area) => highlightId && area.id === highlightId))
 
-    if (highlightId) {
+    if (highlightId && shouldHighlight) {
       highlightPath.style('fill', `url(#diagonalHatchHighlight-${highlightId})`)
     }
 
