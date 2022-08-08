@@ -77,7 +77,7 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
 
 export const query = graphql`
   query ProjectsPageData {
-    allStrapiProject {
+    allStrapiProject(sort: { fields: [createdAt], order: DESC }) {
       totalCount
       edges {
         node {
