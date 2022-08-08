@@ -4,6 +4,7 @@ import React from 'react'
 
 import Layout from '../../common/components/Layout'
 import { Navbar } from '../../common/components/Navbar'
+import { PATH } from '../../common/constants/paths'
 import { ProjectDetail } from '../../features/project/Detail'
 import { ProjectDetailNavContent } from '../../features/project/NavContent'
 
@@ -37,7 +38,7 @@ const ProjectsDetailPage = ({
     <Layout
       navbar={
         <Navbar className="shadow-lg">
-          <ProjectDetailNavContent onClose={() => navigate(`/projects${areaHash}`)} />
+          <ProjectDetailNavContent onClose={() => navigate(`${PATH.PROJECTS}${areaHash}`)} />
         </Navbar>
       }
     >

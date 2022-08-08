@@ -25,7 +25,7 @@ export const Area = ({ area: { name, description, id, color: areaColor, tags, sl
   return (
     <div className="relative group">
       <div className="relative z-10">
-        <Link to={`${PATH.PROJECTS}?area=${slug}`}>
+        <Link to={`${PATH.PROJECTS}#area=${slug}`}>
           <div style={{ justifyContent: flex[alignment] }} className="flex items-center gap-2 mb-2.5">
             <h2 className={`text-3xl font-light tracking-wider`}>{name}</h2>
             <div className="-mr-1 transition-transform group-hover:translate-x-0.5">
