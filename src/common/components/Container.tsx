@@ -1,4 +1,5 @@
 import React, { ReactNode } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 type ContainerProps = {
   className?: string
@@ -6,5 +7,5 @@ type ContainerProps = {
 }
 
 export const Container = ({ className = '', children }: ContainerProps) => {
-  return <div className={`md:container md:mx-auto px-6 ${className}`}>{children}</div>
+  return <div className={twMerge('container mx-auto px-6', className)}>{children}</div>
 }

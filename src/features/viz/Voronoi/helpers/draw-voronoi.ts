@@ -2,8 +2,12 @@ import { Voronoi } from 'd3-delaunay'
 import { select, Selection, BaseType } from 'd3-selection'
 import { FocusEvent } from 'react'
 
+import { VoronoiChartDatum } from '../../../projects/use-projects-chart-data'
+import { PointWithPath } from '../use-voronoi-model'
 import { drawCell, updateCell } from './draw-cell'
-import { EnrichedDatum, VoronoiOptions } from './voronoi-actions'
+import { VoronoiOptions } from './voronoi-actions'
+
+export type EnrichedDatum = VoronoiChartDatum & PointWithPath
 
 export type VoronoiDrawProps = {
   svg: Selection<SVGSVGElement, unknown, null, undefined>

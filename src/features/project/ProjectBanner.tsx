@@ -1,6 +1,7 @@
 import { GatsbyImage } from 'gatsby-plugin-image'
 import React, { useState } from 'react'
 
+import { getImageData } from '../../common/utility/get-image-data'
 import { DisplayProject } from '../projects/ProjectsList'
 
 type ProjectBannerProps = {
@@ -12,11 +13,9 @@ type ProjectBannerProps = {
 }
 export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, className = '' }: ProjectBannerProps) => {
   const coverImage = project.coverImage
-  const gatsbyImage = coverImage?.localFile?.childImageSharp?.gatsbyImageData
+  const gatsbyImage = getImageData(coverImage)
 
   const isEven = index % 2 === 0
-
-  const [isTouched, setIsTouched] = useState(false)
 
   return (
     <div className={`grid grid-rows-1 grid-cols-1 ${className} overflow-hidden`}>
@@ -26,7 +25,7 @@ export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, clas
             image={gatsbyImage}
             alt={coverImage?.alternativeText || ''}
             className={`object-cover aspect-video max-h-64 sm:aspect-square md:max-h-full object-center w-full h-full transition-all ease-out duration-700 ${
-              !hideOverlay ? (isTouched ? 'scale-[1.01]  opacity-100' : 'opacity-90') : ''
+              !hideOverlay ? 'opacity-90' : ''
             }`}
           />
         )}
@@ -38,7 +37,7 @@ export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, clas
             style={{ color: project.highlightColor || '' }}
             className={`z-10 h-full stripe-pattern  ${
               project.highlightColor ? 'opacity-80' : 'opacity-10 bg-secondary'
-            } transition-all ease-out duration-200 ${!hideOverlay && isTouched ? 'scale-[1.01] opacity-5' : ''}`}
+            } transition-all ease-out duration-200`}
           />
         </div>
       )}

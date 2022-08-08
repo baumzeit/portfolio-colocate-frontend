@@ -1,17 +1,23 @@
 import { Delaunay } from 'd3-delaunay'
 import { useMemo } from 'react'
 
-import { EnrichedDatum, VoronoiDatum } from './helpers/voronoi-actions'
-
 const padding = { top: 0, left: 1.5 * 16, right: 1.5 * 16, bottom: 1.5 * 16 }
 const cellGap = 22
 
-type UseVoronoiModelProps = {
+export type Point = {
+  x: number
+  y: number
+}
+export type PointWithPath = Point & {
+  path: string
+}
+
+type UseVoronoiModelProps<T> = {
   width: number
   height: number
-  data: VoronoiDatum[]
+  data: T[]
 }
-export const useVoronoiModel = ({ width, height, data }: UseVoronoiModelProps) => {
+export const useVoronoiModel = <T extends Point = Point>({ width, height, data }: UseVoronoiModelProps<T>) => {
   const delaunay = useMemo(() => {
     return Delaunay.from(
       data,
@@ -30,12 +36,11 @@ export const useVoronoiModel = ({ width, height, data }: UseVoronoiModelProps) =
     return delaunay.voronoi(bounds)
   }, [delaunay, height, width])
 
-  const enrichedData: EnrichedDatum[] = useMemo(
+  const enrichedData: (T & PointWithPath)[] = useMemo(
     () =>
       data.map((d, idx) => ({
         ...d,
         path: voronoi.renderCell(idx),
-        id: String(d.id),
         index: idx
       })),
     [data, voronoi]

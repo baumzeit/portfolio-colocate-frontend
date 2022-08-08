@@ -16,13 +16,13 @@ import '@fontsource/rubik/600.css'
 
 export const wrapRootElement = ({ element }: WrapRootElementNodeArgs | WrapRootElementBrowserArgs) => {
   return (
-    <QueryParamProvider
-      adapter={ReachAdapter}
-      options={{
-        enableBatching: true
-      }}
-    >
-      <ThemeContextProvider>{element}</ThemeContextProvider>
-    </QueryParamProvider>
+    // <QueryParamProvider
+    //   adapter={ReachAdapter}
+    //   options={{
+    //     enableBatching: true
+    //   }}
+    // >
+    <ThemeContextProvider>{element}</ThemeContextProvider>
+    // </QueryParamProvider>
   )
 }

@@ -9,11 +9,11 @@ type NavFilterAreasProps = {
 }
 
 export const NavFilterAreas = ({ areas }: NavFilterAreasProps) => {
-  const { highlightArea, setHighlightArea } = useHighlightArea()
+  const [highlightArea, setHighlightArea] = useHighlightArea()
   return (
     <div className="flex items-center justify-center gap-4 text-bg-secondary">
       {areas.map(({ id, color, name, slug }, idx) => {
-        const isActive = id === highlightArea?.id
+        const isActive = slug === highlightArea?.slug
         return (
           <button
             key={id}
@@ -37,14 +37,14 @@ export const NavFilterAreas = ({ areas }: NavFilterAreasProps) => {
 }
 
 export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
-  const { highlightArea, setHighlightArea } = useHighlightArea()
+  const [highlightArea, setHighlightArea] = useHighlightArea()
 
   const handleChange = useCallback(
     (area: Queries.AreaBaseFragment) => {
-      const isActive = area.slug === highlightArea
+      const isActive = area.slug === highlightArea?.slug
       setHighlightArea(isActive || !area.slug ? null : area.slug)
     },
-    [highlightArea, setHighlightArea]
+    [highlightArea?.slug, setHighlightArea]
   )
 
   return (
@@ -63,10 +63,10 @@ export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
           </Listbox.Button>
           {highlightArea && (
             <button
-              className="absolute flex items-center h-full -right-8 top-0 p-1"
+              className="absolute flex items-center h-full -right-9 top-0 p-1"
               onClick={() => setHighlightArea(null)}
             >
-              <XIcon color="black" className="w-5 h-5" />
+              <XIcon className="w-5 h-5" />
             </button>
           )}
         </div>
@@ -75,7 +75,7 @@ export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
             .filter((d) => !highlightArea || d.id !== highlightArea.id)
             .map((area, idx) => {
               const { id = null, color, name, slug } = area
-              const isActive = slug === highlightArea
+              const isActive = slug === highlightArea?.slug
               return (
                 <Listbox.Option key={id} value={area} className="text-bg-secondary">
                   <div

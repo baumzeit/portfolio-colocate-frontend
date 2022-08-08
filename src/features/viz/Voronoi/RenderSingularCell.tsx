@@ -3,21 +3,22 @@ import React, { useRef, useEffect, useMemo } from 'react'
 
 import { drawContentLayer } from './helpers/draw-voronoi'
 import { EnrichedDatum } from './helpers/voronoi-actions'
+import { Point } from './use-voronoi-model'
 import { VoronoiChartProps } from './VoronoiChart'
 
 type RenderSingularCellProps = {
-  enrichedDatum: EnrichedDatum
+  datum: Vorono
 } & Pick<VoronoiChartProps, 'width' | 'height' | 'imageSize'>
 
-export const RenderSingularCell = ({ width, enrichedDatum, imageSize }: RenderSingularCellProps) => {
+export const RenderSingularCell = ({ width, datum, imageSize }: RenderSingularCellProps) => {
   const container = useRef<HTMLDivElement>(null)
 
-  const isolated = useMemo(() => getIsolatedCellSvg(enrichedDatum.id), [enrichedDatum.id])
+  const isolated = useMemo(() => getIsolatedCellSvg(datum.id), [datum.id])
 
   useEffect(() => {
     if (isolated) {
       const { svg, cell } = isolated
-      drawContentLayer(svg as any, [enrichedDatum], { imageSize, width })
+      drawContentLayer(svg as any, [datum], { imageSize, width })
 
       d3.select(container.current).append(() => svg.node())
 
@@ -52,7 +53,7 @@ export const RenderSingularCell = ({ width, enrichedDatum, imageSize }: RenderSi
         isolated.svg.remove()
       }
     }
-  }, [enrichedDatum, imageSize, isolated, width])
+  }, [datum, imageSize, isolated, width])
 
   return <div ref={container} />
 }

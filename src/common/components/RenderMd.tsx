@@ -11,7 +11,7 @@ const ol: FCWithChildren = (props) => <ol {...props} className="ml-6 list-decima
 const li: FCWithChildren = (props) => <li {...props} />
 const a: FCWithChildren = (props) => <a {...props} target="_blank" rel="noopener noreferrer" className="text-sky-600" />
 const img: FCWithChildren = (props) => (
-  <img {...props} className="object-contain object-left rounded shadow max-h-[400px]" />
+  <img alt="" {...props} className="object-contain object-left rounded shadow max-h-[400px]" />
 )
 
 const remarkOptions: UseRemarkOptions = {
@@ -43,5 +43,5 @@ export const RenderMd = ({ content, className }: RenderMdProps) => {
       setMarkdownSource(content)
     }
   }, [content, setMarkdownSource])
-  return <div className={`gap-y-0 ${className}`}>{reactContent}</div>
+  return <div className={`gap-y-0 lg:text-lg  ${className}`}>{reactContent}</div>
 }

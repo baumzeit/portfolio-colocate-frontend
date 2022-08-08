@@ -1,31 +1,30 @@
-import { Voronoi } from 'd3-delaunay'
 import * as d3 from 'd3-selection'
 import React, { memo, SVGProps, useCallback, useEffect, useMemo, useState } from 'react'
 
 import './voronoi.scss'
+import { VoronoiChartDatum } from '../../projects/use-projects-chart-data'
 import { drawVoronoi } from './helpers/draw-voronoi'
-import { EnrichedDatum, highlightCellsByAreaId, hoverCell, restore, VoronoiOptions } from './helpers/voronoi-actions'
+import { highlightCellsByAreaId, hoverCell, restore, VoronoiOptions } from './helpers/voronoi-actions'
+import { useVoronoiModel } from './use-voronoi-model'
 
 type HighlightPatternDatum = { color?: string | null; id: string | number }
 
 export type VoronoiChartProps = {
-  enrichedData: EnrichedDatum[]
-  voronoi: Voronoi<EnrichedDatum>
+  data: VoronoiChartDatum[]
   highlightPatternData: HighlightPatternDatum[]
   width: number
   height: number
   imageSize: number
-  onClickCell: (id: string) => void
+  onClickCell: (slug: string) => void
   highlightedAreaId?: string | null
 }
 
 export const VoronoiChart = memo(
   ({
-    enrichedData,
+    data,
     highlightPatternData,
     width,
     height,
-    voronoi,
     imageSize,
     highlightedAreaId = null,
     onClickCell
@@ -37,13 +36,13 @@ export const VoronoiChart = memo(
       setSvgNode(node)
     }, [])
 
+    const { voronoi, enrichedData } = useVoronoiModel({ data, width, height })
+
     const voronoiOptions = useMemo<VoronoiOptions | undefined>(() => {
-      if (width && height) {
-        return {
-          width,
-          height,
-          imageSize
-        }
+      return {
+        width,
+        height,
+        imageSize
       }
     }, [height, imageSize, width])
 

@@ -1,46 +1,90 @@
-import React, { useMemo } from 'react'
+import React from 'react'
 
-import { RenderMd } from '../../common/components/RenderMd'
+import { ExternalLink } from '../../common/components/ExternalLink'
+import { Tags } from '../../common/components/Tags'
 import notEmpty from '../../common/utility/not-empty'
-import { ImageContainer } from './ImageContainer'
+import { DetailBody } from './DetailBody'
+import { ImagesPreview } from './ImagesPreview'
+import { InfoRow } from './InfoRow'
+import { useImageHash } from './use-image-hash'
 
 type DetailContentProps = {
   project: Queries.ProjectDetailFragment
-  selectedImageIdx: number | null
-  onClosePreview: () => void
 }
-export const DetailContent = ({
-  project: { description, images },
-  selectedImageIdx,
-  onClosePreview
-}: DetailContentProps) => {
-  const selectedImage = useMemo(() => {
-    if (images && typeof selectedImageIdx === 'number') {
-      return images.filter(notEmpty)[selectedImageIdx]
-    }
-  }, [images, selectedImageIdx])
 
+export const DetailContent = ({ project }: DetailContentProps) => {
+  const { title, images } = project
+  const [imageIdx, setImageIdx] = useImageHash()
   return (
-    <div className="flex-1 order-2 md:order-1">
-      <div className="relative grid">
-        <article
-          className={`transition-opacity duration-100 col-start-1 ${
-            selectedImage ? 'opacity-0 ease-in absolute overflow-hidden h-full w-full top-0 left-0' : 'opacity-100'
-          }`}
-        >
-          <RenderMd className={`text-justify`} content={description?.data?.description} />
-        </article>
-        {selectedImage && (
-          <div className="z-10 col-start-1 min-h-[70vw] md:min-h-0">
-            <ImageContainer
-              image={selectedImage.localFile?.childImageSharp?.gatsbyImageData}
-              caption={selectedImage.caption || ''}
-              alternativeText={selectedImage.alternativeText || ''}
-              onClose={onClosePreview}
-            />
-          </div>
-        )}
+    <>
+      <div className="flex flex-wrap items-center justify-between py-1 pl-3 pr-4 rounded-sm bg-gradient-to-r from-text-secondary via-text-secondary to-text-secondary md:dark:to-white/40 text-bg-primary">
+        <h1 className="w-full text-xl md:text-3xl md:w-auto">{title}</h1>
       </div>
+      <div className="flex flex-col mt-6 mb-6 md:mt-8 gap-x-12 lg:gap-x-16 gap-y-4 md:flex-row">
+        <div className="block md:hidden">
+          <MainInfo project={project} />
+        </div>
+        <div className="flex-1 mb-4">
+          <DetailBody project={project} selectedImageIdx={imageIdx} onClosePreview={() => setImageIdx(null)} />
+        </div>
+        <div className="md:w-1/3">
+          <div className={`grid gap-y-4 mb-4`}>
+            <div className="hidden md:block">
+              <MainInfo project={project} />
+            </div>
+            {images && (
+              <div className="row-start-1 mb-1 md:row-start-auto">
+                <ImagesPreview
+                  images={images}
+                  onClick={(idx) => setImageIdx(idx)}
+                  selectedImageIdx={imageIdx}
+                  onClosePreview={() => setImageIdx(null)}
+                />
+              </div>
+            )}
+
+            {imageIdx === null && <SecondaryInfo project={project} />}
+          </div>
+        </div>
+      </div>
+    </>
+  )
+}
+
+type MainInfoProps = { project: Queries.ProjectDetailFragment }
+const MainInfo = ({ project: { organization, areas } }: MainInfoProps) => {
+  return (
+    <div>
+      {organization?.link ? (
+        <InfoRow
+          rowTitle="Organization:"
+          data={organization}
+          render={(organization) => <ExternalLink link={organization.link || ''} label={organization.name} />}
+        />
+      ) : (
+        <InfoRow data="Hobby Project" />
+      )}
+      {areas && <InfoRow rowTitle="Areas:" data={areas.filter(notEmpty)} render={(area) => area.name} />}
     </div>
+  )
+}
+
+type SecondaryInfoProps = { project: Queries.ProjectDetailFragment }
+const SecondaryInfo = ({ project: { links, tags } }: SecondaryInfoProps) => {
+  return (
+    <>
+      {links && links?.length > 0 && (
+        <div className="leading-snug">
+          {links.filter(notEmpty).map((link) => (
+            <ExternalLink key={link.id} {...link} />
+          ))}
+        </div>
+      )}
+      {tags && (
+        <div className="mt-1">
+          <Tags tags={tags} />
+        </div>
+      )}
+    </>
   )
 }

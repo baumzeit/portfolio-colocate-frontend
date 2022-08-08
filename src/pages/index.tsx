@@ -36,10 +36,13 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<Queries.Hom
     introText &&
     profile && (
       <>
-        <Layout>
-          <Navbar>
-            <HomeNavContent />
-          </Navbar>
+        <Layout
+          navbar={
+            <Navbar>
+              <HomeNavContent />
+            </Navbar>
+          }
+        >
           <Main className="pt-6 pb-20 overflow-x-hidden md:pt-10">
             <Container>
               <div className="grid grid-cols-8 gap-y-8">

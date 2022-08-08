@@ -1,25 +1,6 @@
-import { Delaunay } from 'd3-delaunay'
 import * as d3 from 'd3-selection'
 
-export type VoronoiDatum = {
-  x: number
-  y: number
-  imageSrcSet: string
-  id: string
-  title: string
-  slug: string
-  areas: {
-    color: string
-    name: string
-    id: string
-  }[]
-}
-
-export type EnrichedDatum = VoronoiDatum & {
-  path: string
-  id: string
-  index: number
-}
+import { EnrichedDatum } from './draw-voronoi'
 
 export type Dimensions = { width: number; height: number }
 export type Padding = {
@@ -36,17 +17,6 @@ export type VoronoiOptions = {
 }
 
 export type SetExposedCellFn = (id: string | null) => void
-
-export function calculateModel<T extends { x: number; y: number }>(data: T[], bounds: Delaunay.Bounds) {
-  const delaunay = Delaunay.from(
-    data,
-    (d) => d.x,
-    (d) => d.y
-  )
-
-  const voronoi = delaunay.voronoi(bounds)
-  return { voronoi, delaunay }
-}
 
 export const restore = (svgNode: SVGSVGElement) => () => {
   const svg = d3.select(svgNode)

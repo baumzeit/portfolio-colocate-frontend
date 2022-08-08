@@ -1,21 +1,24 @@
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/outline'
-import React, { ReactNode } from 'react'
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid'
+import { Link } from 'gatsby'
+import React from 'react'
 
-import { UseActiveProjectReturn } from './use-active-project'
-
-type SlicerControlProps = Pick<UseActiveProjectReturn, 'prev' | 'next'> & {
-  children: ReactNode
+export type SliderControlProps = {
+  prevSlug: string
+  nextSlug: string
 }
-export const SliderControls = ({ prev, next, children }: SlicerControlProps) => {
+export const SliderControls = ({ prevSlug, nextSlug }: SliderControlProps) => {
   return (
-    <div className="flex items-center justify-between h-full">
-      <button onClick={prev} className="hover:text-brand text-secondary bg-primary md:bg-transparent">
-        <ChevronLeftIcon className="w-12 h-12 md:w-16 md:h-16" />
-      </button>
-      <div className="flex-1 -z-10 relative">{children}</div>
-      <button onClick={next} className="hover:text-brand text-secondary bg-primary md:bg-transparent">
-        <ChevronRightIcon className="w-12 h-12 md:w-16 md:h-16" />
-      </button>
+    <div className="relative z-10 flex items-center justify-between h-full">
+      <Link to={`../${prevSlug}`}>
+        <div className="flex items-center justify-center border rounded-tr-sm rounded-br-sm shadow-md hover:text-brand text-secondary bg-white/80 dark:bg-black/80 group">
+          <ChevronLeftIcon className="w-8 h-8 mx-2 my-1 transition-all md:ml-8 md:w-10 md:h-10 " />
+        </div>
+      </Link>
+      <Link to={`../${nextSlug}`}>
+        <div className="flex items-center justify-center border rounded-tl-sm rounded-bl-sm shadow-md hover:text-brand text-secondary bg-white/80 dark:bg-black/80 group">
+          <ChevronRightIcon className="w-8 h-8 mx-2 my-1 transition-all md:mr-8 md:w-10 md:h-10" />
+        </div>
+      </Link>
     </div>
   )
 }

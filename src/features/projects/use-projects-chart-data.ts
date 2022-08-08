@@ -2,18 +2,35 @@ import { getSrcSet } from 'gatsby-plugin-image'
 import { useMemo } from 'react'
 
 import { GridCoordinate } from '../../common/hooks/use-jitter-grid'
+import { getImageData } from '../../common/utility/get-image-data'
 import notEmpty from '../../common/utility/not-empty'
+import { Point } from '../viz/Voronoi/use-voronoi-model'
+
+export type VoronoiChartDatum = Point & {
+  imageSrcSet: string
+  id: string
+  title: string
+  slug: string
+  areas: {
+    color: string
+    name: string
+    id: string
+  }[]
+}
 
 type UseProjectsChartDataProps = {
   projects: Queries.ProjectDetailFragment[]
   getGridCoordinates: (idx: number) => GridCoordinate
 }
-export const useProjectsChartData = ({ projects, getGridCoordinates }: UseProjectsChartDataProps) =>
+export const useProjectsChartData = ({
+  projects,
+  getGridCoordinates
+}: UseProjectsChartDataProps): VoronoiChartDatum[] =>
   useMemo(
     () =>
       getGridCoordinates
         ? projects.map(({ coverImage, id, areas, title, slug }, idx) => {
-            const imageData = coverImage?.localFile?.childImageSharp?.gatsbyImageData
+            const imageData = getImageData(coverImage)
             return {
               x: getGridCoordinates(idx)[0],
               y: getGridCoordinates(idx)[1],

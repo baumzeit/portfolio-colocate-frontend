@@ -2,6 +2,7 @@ import { Listbox } from '@headlessui/react'
 import { graphql, Link, useStaticQuery } from 'gatsby'
 import { StaticImage } from 'gatsby-plugin-image'
 import React, { ReactNode, useContext } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 import { ThemeContext } from './ThemeContextProvider'
 
@@ -14,7 +15,10 @@ export const Navbar = ({ children, className = '' }: NavbarProps) => {
   return (
     <nav
       style={{ height: NAVBAR_HEIGHT }}
-      className={`flex items-center justify-between shadow-sm px-4 sm:px-6 bg-primary ${className} z-30 relative`}
+      className={twMerge(
+        'flex items-center justify-between shadow-sm px-4 sm:px-6 bg-primary z-30 relative',
+        className
+      )}
     >
       <div className="flex-1">
         <div className="flex items-center">

@@ -12709,6 +12709,11 @@ table@^6.0.9:
     string-width "^4.2.3"
     strip-ansi "^6.0.1"
 
+tailwind-merge@^1.5.1:
+  version "1.5.1"
+  resolved "https://registry.yarnpkg.com/tailwind-merge/-/tailwind-merge-1.5.1.tgz#fb7d6b724aef702b11fd01fddf1be1d8aeab3d7a"
+  integrity sha512-lqmJS6+3vsNQY77TMMRBVFbWyMcIAAD/09Vs+IXCt3cza58/O7X5DBbOu+7p6LPhw0efK45LL8kAJ7IORccMag==
+
 tailwind-safelist-generator@^0.1.3:
   version "0.1.3"
   resolved "https://registry.npmjs.org/tailwind-safelist-generator/-/tailwind-safelist-generator-0.1.3.tgz"

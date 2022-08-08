@@ -31,6 +31,7 @@ module.exports = {
     siteUrl: `https://philip.colocate.dev`
   },
   graphqlTypegen: { typesOutputPath: 'gatsby-types.d.ts' },
+  trailingSlash: 'never',
   plugins: [
     'gatsby-plugin-image',
     'gatsby-plugin-sharp',
