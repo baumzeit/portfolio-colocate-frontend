@@ -1,5 +1,5 @@
 import { PageProps } from 'gatsby'
-import { navigate, graphql } from 'gatsby'
+import { graphql } from 'gatsby'
 import React from 'react'
 
 import Layout from '../../common/components/Layout'
@@ -13,15 +13,7 @@ export type ProjectsAndAreas = {
   areas: Queries.AreaBaseFragment[]
 }
 
-type HighlightAreaState =
-  | {
-      highlightArea?: Queries.AreaBaseFragment | null
-    }
-  | undefined
-
-const ProjectsDetailPage = ({
-  data: { project, allProjects }
-}: PageProps<Queries.ProjectDetailPageQuery, object, HighlightAreaState>) => {
+const ProjectsDetailPage = ({ data: { project, allProjects } }: PageProps<Queries.ProjectDetailPageQuery>) => {
   const activePojectIdx = allProjects.nodes.findIndex(({ slug }) => slug === project?.slug)
   const prevIdx = activePojectIdx > 0 ? activePojectIdx - 1 : allProjects.nodes.length - 1
   const nextIdx = (activePojectIdx + 1) % allProjects.nodes.length
@@ -34,7 +26,7 @@ const ProjectsDetailPage = ({
   return (
     <Layout
       navbar={
-        <Navbar className="shadow-lg">
+        <Navbar className="shadow-md">
           <ProjectDetailNavContent closePath={PATH.PROJECTS} />
         </Navbar>
       }

@@ -17,11 +17,15 @@ export const ProjectDetail = ({ project, nextSlug, prevSlug }: ProjectDetailProp
     <div>
       <div className={`h-[40vh] lg:h-[40vh] relative`}>
         {image && (
-          <GatsbyImage
-            image={image}
-            alt={project.coverImage?.alternativeText || ''}
-            className="absolute inset-0 animate-fadeInFast"
-          />
+          <div className="absolute inset-0 animate-fadeInFast">
+            <GatsbyImage
+              image={image}
+              objectFit="cover"
+              objectPosition="50% 30%"
+              className="w-full h-full"
+              alt={project.coverImage?.alternativeText || ''}
+            />
+          </div>
         )}
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-bg-primary via-white/20 dark:from-transparent dark:to-bg-primary dark:via-black/30 " />
         <SliderControls prevSlug={prevSlug} nextSlug={nextSlug} />
