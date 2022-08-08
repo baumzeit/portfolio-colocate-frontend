@@ -1,12 +1,13 @@
+import { Link } from 'gatsby'
 import React from 'react'
 
 type ModalNavbarProps = {
-  onClose: () => void
+  closePath: string
 }
-export const ProjectDetailNavContent = ({ onClose }: ModalNavbarProps) => {
+export const ProjectDetailNavContent = ({ closePath }: ModalNavbarProps) => {
   return (
-    <button onClick={onClose} className={`p-3 hover:text-brand tracking-wide`}>
-      Close
-    </button>
+    <Link to={closePath}>
+      <div className={`p-3 hover:text-brand tracking-wide`}>Close</div>
+    </Link>
   )
 }

@@ -28,7 +28,7 @@ export const VoronoiContainer = ({
           data={chartData}
           width={width}
           height={height}
-          onClickCell={(slug) => navigate(slug)}
+          onClickCell={navigate}
           imageSize={Math.max(width / numCols, height / numRows) * 1.2}
           highlightPatternData={areas}
           highlightedAreaId={highlightArea?.id}

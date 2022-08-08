@@ -20,11 +20,8 @@ type HighlightAreaState =
   | undefined
 
 const ProjectsDetailPage = ({
-  data: { project, allProjects },
-  location: { state }
+  data: { project, allProjects }
 }: PageProps<Queries.ProjectDetailPageQuery, object, HighlightAreaState>) => {
-  const areaSlug = state?.highlightArea?.slug
-  const areaHash = areaSlug ? `#${areaSlug}` : ''
   const activePojectIdx = allProjects.nodes.findIndex(({ slug }) => slug === project?.slug)
   const prevIdx = activePojectIdx > 0 ? activePojectIdx - 1 : allProjects.nodes.length - 1
   const nextIdx = (activePojectIdx + 1) % allProjects.nodes.length
@@ -38,7 +35,7 @@ const ProjectsDetailPage = ({
     <Layout
       navbar={
         <Navbar className="shadow-lg">
-          <ProjectDetailNavContent onClose={() => navigate(`${PATH.PROJECTS}${areaHash}`)} />
+          <ProjectDetailNavContent closePath={PATH.PROJECTS} />
         </Navbar>
       }
     >

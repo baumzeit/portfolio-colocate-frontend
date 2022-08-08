@@ -38,9 +38,7 @@ const ProjectsList = ({ projects }: ProjectsAndAreas) => {
           return (
             <li key={project.id} className="overflow-hidden rounded-sm">
               <Link to={project.slug || ''}>
-                <button className={`block w-full h-full`}>
-                  <ProjectBanner project={project} index={idx} />
-                </button>
+                <ProjectBanner project={project} index={idx} />
               </Link>
             </li>
           )

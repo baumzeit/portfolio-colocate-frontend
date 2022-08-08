@@ -26,7 +26,7 @@ export const ProjectDetail = ({ project, nextSlug, prevSlug }: ProjectDetailProp
         <div className="absolute inset-0 bg-gradient-to-b from-transparent to-bg-primary via-white/20 dark:from-transparent dark:to-bg-primary dark:via-black/30 " />
         <SliderControls prevSlug={prevSlug} nextSlug={nextSlug} />
       </div>
-      <Container className="relative z-10 max-w-lg pb-16 md:max-w-5xl -mt-14">
+      <Container className="relative z-10 max-w-xl pb-16 md:max-w-5xl -mt-14">
         <DetailContent project={project} />
       </Container>
     </div>
