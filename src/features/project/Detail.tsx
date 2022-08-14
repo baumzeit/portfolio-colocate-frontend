@@ -25,7 +25,7 @@ export const ProjectDetail = ({ project, nextSlug, prevSlug }: ProjectDetailProp
     <div ref={container} className="relative min-h-full overflow-auto">
       <div className={`h-[40vh] md:h-[40vh] lg:h-[50vh] relative`}>
         {image && (
-          <div className="absolute inset-0 mx-auto animate-fadeInFast scroll ">
+          <div className="absolute inset-0 mx-auto scroll ">
             <GatsbyImage
               image={image}
               objectFit="cover"
