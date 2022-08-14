@@ -64,7 +64,7 @@ export const query = graphql`
       ...ImageBase
       localFile {
         childImageSharp {
-          gatsbyImageData(placeholder: DOMINANT_COLOR, layout: FULL_WIDTH)
+          gatsbyImageData(layout: FULL_WIDTH, placeholder: BLURRED)
         }
       }
     }
@@ -72,7 +72,7 @@ export const query = graphql`
       ...ImageBase
       localFile {
         childImageSharp {
-          gatsbyImageData(width: 800, placeholder: BLURRED)
+          gatsbyImageData(width: 800, placeholder: DOMINANT_COLOR)
         }
       }
     }
