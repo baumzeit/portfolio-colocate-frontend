@@ -15,7 +15,7 @@ const Layout = ({ children, navbar, providerData }: LayoutProps) => {
       <div className="grid h-screen bg-primary" style={{ gridTemplateRows: `auto 1fr` }}>
         {/* <Seo seo={seo} /> */}
         {navbar}
-        {children}
+        <div className="overflow-auto">{children}</div>
       </div>
     </Provider>
   )

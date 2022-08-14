@@ -18,7 +18,7 @@ export const DetailContent = ({ project }: DetailContentProps) => {
   return (
     <>
       <div
-        className="py-0.5 sm:py-1 md:py-[0.4rem] pl-3 -ml-2 pr-4 rounded-sm bg-text-primary
+        className="py-0.5 sm:py-1 md:py-1 pl-3 -ml-2 pr-4 rounded-sm bg-text-primary
         shadow-glow shadow-bg-primaryLayer
         bg-gradient-to-l from-white/10 dark:from-black/10 via-transparent"
       >

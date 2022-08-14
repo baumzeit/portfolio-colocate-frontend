@@ -2,8 +2,6 @@ import { Transition } from '@headlessui/react'
 import { graphql, PageProps } from 'gatsby'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { lazy, Suspense, useMemo } from 'react'
-import { QueryParamProvider } from 'use-query-params'
-import { ReachAdapter } from 'use-query-params/adapters/reach'
 
 import Layout from '../../common/components/Layout'
 import { Main } from '../../common/components/Main'
@@ -27,12 +25,6 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
   const breakpoint = useBreakpoint()
 
   return (
-    // <QueryParamProvider
-    //   adapter={ReachAdapter}
-    //   options={{
-    //     enableBatching: true
-    //   }}
-    // >
     <Layout
       navbar={
         <Navbar>
@@ -71,7 +63,6 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
         </Suspense>
       </Main>
     </Layout>
-    // </QueryParamProvider>
   )
 }
 

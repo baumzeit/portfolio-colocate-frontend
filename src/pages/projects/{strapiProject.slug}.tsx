@@ -26,7 +26,7 @@ const ProjectsDetailPage = ({ data: { project, allProjects } }: PageProps<Querie
   return (
     <Layout
       navbar={
-        <Navbar className="shadow-md">
+        <Navbar className="dark:shadow-md">
           <ProjectDetailNavContent closePath={PATH.PROJECTS} />
         </Navbar>
       }

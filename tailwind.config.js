@@ -53,6 +53,7 @@ module.exports = {
       animation: {
         fadeIn: 'fade-in 500ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
         fadeInFast: 'fade-in 180ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
+        fadeInVeryFast: 'fade-in 120ms cubic-bezier(0.250, 0.460, 0.450, 0.940) both',
         fadeOut: 'fade-out 1s cubic-bezier(0.250, 0.460, 0.450, 0.940) forwards',
         spinVerySlow: 'spin 240s linear infinite',
       },
