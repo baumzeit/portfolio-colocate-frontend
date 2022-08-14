@@ -8,7 +8,7 @@
     opacity: 1;
     .pattern {
       fill-opacity: 0.9;
-      transition: fill-opacity 80ms ease-out;
+      transition: fill-opacity 110ms ease-out;
     }
     .highlight-pattern {
       fill-opacity: 0;
@@ -17,7 +17,7 @@
     .cell-gap {
       stroke-width: 22;
       @apply stroke-bg-primary;
-      transition: stroke-width 160ms ease-out;
+      transition: stroke-width 180ms ease-out;
     }
     .cell-border {
       stroke-width: 1;
@@ -57,7 +57,6 @@
 
     &.hover-selected {
       .pattern {
-        transition: fill-opacity 300ms ease-out;
         fill-opacity: 0.15;
       }
       .highlight-pattern {

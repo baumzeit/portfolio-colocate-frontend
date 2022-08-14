@@ -12,17 +12,18 @@ import '@fontsource/karla/400.css'
 import '@fontsource/karla/600.css'
 import '@fontsource/rubik/300.css'
 import '@fontsource/rubik/400.css'
+import '@fontsource/rubik/500.css'
 import '@fontsource/rubik/600.css'
 
 export const wrapRootElement = ({ element }: WrapRootElementNodeArgs | WrapRootElementBrowserArgs) => {
   return (
-    // <QueryParamProvider
-    //   adapter={ReachAdapter}
-    //   options={{
-    //     enableBatching: true
-    //   }}
-    // >
-    <ThemeContextProvider>{element}</ThemeContextProvider>
-    // </QueryParamProvider>
+    <QueryParamProvider
+      adapter={ReachAdapter}
+      options={{
+        enableBatching: true
+      }}
+    >
+      <ThemeContextProvider>{element}</ThemeContextProvider>
+    </QueryParamProvider>
   )
 }

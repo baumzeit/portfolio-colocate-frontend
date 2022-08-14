@@ -2,7 +2,7 @@ import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import { GatsbyImage } from 'gatsby-plugin-image'
 import React from 'react'
 
-import { getImageData } from '../../common/utility/get-image-data'
+import { getStrapiImage } from '../../common/utility/get-image'
 
 export type ImagesPreviewProps = {
   images: Queries.ProjectDetailFragment['images']
@@ -16,7 +16,7 @@ export const ImagesPreview = ({ images, selectedImageIdx = null, onClick, onClos
     <>
       <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-2 lg:grid-cols-3">
         {images.map((image, idx) => {
-          const imageData = getImageData(image)
+          const imageData = getStrapiImage(image)
           return image ? (
             <button
               key={image.id}

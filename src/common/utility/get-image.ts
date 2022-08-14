@@ -8,5 +8,5 @@ type DeepMaybe<T> = T extends object
 
 type StrapiMedia = DeepMaybe<Queries.STRAPI__MEDIA> | null
 
-export const getImageData = <T extends StrapiMedia = StrapiMedia>(queryImage: T) =>
+export const getStrapiImage = <T extends StrapiMedia = StrapiMedia>(queryImage: T) =>
   queryImage?.localFile?.childImageSharp?.gatsbyImageData

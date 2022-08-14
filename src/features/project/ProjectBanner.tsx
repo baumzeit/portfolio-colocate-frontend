@@ -1,7 +1,7 @@
 import { GatsbyImage } from 'gatsby-plugin-image'
 import React, { useState } from 'react'
 
-import { getImageData } from '../../common/utility/get-image-data'
+import { getStrapiImage } from '../../common/utility/get-image'
 import { DisplayProject } from '../projects/ProjectsList'
 
 type ProjectBannerProps = {
@@ -13,7 +13,7 @@ type ProjectBannerProps = {
 }
 export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, className = '' }: ProjectBannerProps) => {
   const coverImage = project.coverImage
-  const gatsbyImage = getImageData(coverImage)
+  const gatsbyImage = getStrapiImage(coverImage)
 
   const isEven = index % 2 === 0
 

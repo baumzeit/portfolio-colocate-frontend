@@ -17,10 +17,14 @@ export const DetailContent = ({ project }: DetailContentProps) => {
   const [imageIdx, setImageIdx] = useImageHash()
   return (
     <>
-      <div className="flex flex-wrap items-center justify-between py-1 pl-3 pr-4 rounded-sm shadow-sm bg-gradient-to-r from-text-secondary via-text-secondary to-text-secondary md:dark:to-white/40 text-bg-primary">
-        <h1 className="w-full text-xl md:text-3xl md:w-auto">{title}</h1>
+      <div
+        className="py-[0.1rem] md:py-[0.4rem] sm:py-0.5 pl-3 -ml-2 pr-4 rounded-sm bg-text-primary
+        shadow-glow shadow-bg-primaryLayer
+        bg-gradient-to-l from-white/10 dark:from-black/10 via-transparent"
+      >
+        <h1 className="w-full text-xl text-bg-primary sm:text-2xl md:text-3xl md:w-auto">{title}</h1>
       </div>
-      <div className="flex flex-col mt-6 mb-6 md:mt-8 gap-x-12 lg:gap-x-16 gap-y-4 md:flex-row">
+      <div className="flex flex-col mt-6 mb-6 md:mt-8 gap-x-12 lg:gap-x-16 gap-y-4 md:flex-row ">
         <div className="block md:hidden">
           <MainInfo project={project} />
         </div>

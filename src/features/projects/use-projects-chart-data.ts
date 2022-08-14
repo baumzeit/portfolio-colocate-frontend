@@ -2,7 +2,7 @@ import { getSrcSet } from 'gatsby-plugin-image'
 import { useMemo } from 'react'
 
 import { GridCoordinate } from '../../common/hooks/use-jitter-grid'
-import { getImageData } from '../../common/utility/get-image-data'
+import { getStrapiImage } from '../../common/utility/get-image'
 import notEmpty from '../../common/utility/not-empty'
 import { Point } from '../viz/Voronoi/use-voronoi-model'
 
@@ -30,7 +30,7 @@ export const useProjectsChartData = ({
     () =>
       getGridCoordinates
         ? projects.map(({ coverImage, id, areas, title, slug }, idx) => {
-            const imageData = getImageData(coverImage)
+            const imageData = getStrapiImage(coverImage)
             return {
               x: getGridCoordinates(idx)[0],
               y: getGridCoordinates(idx)[1],

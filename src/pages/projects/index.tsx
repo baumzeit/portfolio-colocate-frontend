@@ -27,51 +27,51 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
   const breakpoint = useBreakpoint()
 
   return (
-    <QueryParamProvider
-      adapter={ReachAdapter}
-      options={{
-        enableBatching: true
-      }}
+    // <QueryParamProvider
+    //   adapter={ReachAdapter}
+    //   options={{
+    //     enableBatching: true
+    //   }}
+    // >
+    <Layout
+      navbar={
+        <Navbar>
+          <ProjectsNavContent areas={areas} />
+        </Navbar>
+      }
+      providerData={[
+        [areasAtom, areas],
+        [projectsAtom, projects]
+      ]}
     >
-      <Layout
-        navbar={
-          <Navbar>
-            <ProjectsNavContent areas={areas} />
-          </Navbar>
-        }
-        providerData={[
-          [areasAtom, areas],
-          [projectsAtom, projects]
-        ]}
-      >
-        <Main>
-          <Suspense
-            fallback={
-              <div className="flex items-center justify-center text-2xl font-light tracking-wide h-4/5 text-secondary">
-                <div>Loading ...</div>
-              </div>
-            }
+      <Main>
+        <Suspense
+          fallback={
+            <div className="flex items-center justify-center text-2xl font-light tracking-wide h-4/5 text-secondary">
+              <div>Loading ...</div>
+            </div>
+          }
+        >
+          <Transition
+            appear={!!breakpoint}
+            show={true}
+            enter="transition-opacity duration-600"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="transition-opacity duration-600"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
           >
-            <Transition
-              appear={!!breakpoint}
-              show={true}
-              enter="transition-opacity duration-600"
-              enterFrom="opacity-0"
-              enterTo="opacity-100"
-              leave="transition-opacity duration-600"
-              leaveFrom="opacity-100"
-              leaveTo="opacity-0"
-            >
-              {breakpoint.md ? (
-                <ProjectsMap projects={projects} areas={areas} />
-              ) : (
-                <ProjectsList projects={projects} areas={areas} />
-              )}
-            </Transition>
-          </Suspense>
-        </Main>
-      </Layout>
-    </QueryParamProvider>
+            {breakpoint.md ? (
+              <ProjectsMap projects={projects} areas={areas} />
+            ) : (
+              <ProjectsList projects={projects} areas={areas} />
+            )}
+          </Transition>
+        </Suspense>
+      </Main>
+    </Layout>
+    // </QueryParamProvider>
   )
 }
 

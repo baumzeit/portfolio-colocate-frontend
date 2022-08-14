@@ -64,7 +64,7 @@ export const query = graphql`
       ...ImageBase
       localFile {
         childImageSharp {
-          gatsbyImageData(width: 600, placeholder: BLURRED)
+          gatsbyImageData(placeholder: DOMINANT_COLOR, layout: FULL_WIDTH)
         }
       }
     }
@@ -90,7 +90,6 @@ export const query = graphql`
   fragment Profile on STRAPI__COMPONENT_SHARED_PROFILE {
     picture {
       ...ImageBase
-
       localFile {
         childImageSharp {
           gatsbyImageData(height: 200, placeholder: DOMINANT_COLOR)

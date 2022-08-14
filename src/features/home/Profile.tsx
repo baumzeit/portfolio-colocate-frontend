@@ -1,12 +1,12 @@
 import { GatsbyImage } from 'gatsby-plugin-image'
 import React from 'react'
 
-import { getImageData } from '../../common/utility/get-image-data'
+import { getStrapiImage } from '../../common/utility/get-image'
 import notEmpty from '../../common/utility/not-empty'
 
 type ProfileProps = { profile: Queries.ProfileFragment }
 export const Profile = ({ profile: { picture, qualities } }: ProfileProps) => {
-  const gatsbyImage = getImageData(picture)
+  const gatsbyImage = getStrapiImage(picture)
   return (
     <div className="flex flex-row justify-center gap-4 md:flex-col lg:flex-row">
       <div className="px-1 shrink-0">

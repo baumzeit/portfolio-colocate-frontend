@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react'
 
 import { RenderMd } from '../../common/components/RenderMd'
-import { getImageData } from '../../common/utility/get-image-data'
+import { getStrapiImage } from '../../common/utility/get-image'
 import notEmpty from '../../common/utility/not-empty'
 import { ImageContainer } from './ImageContainer'
 
@@ -34,7 +34,7 @@ export const DetailBody = ({
         {selectedImage && (
           <div className="z-10 col-start-1 min-h-[70vw] md:min-h-0">
             <ImageContainer
-              image={getImageData(selectedImage)}
+              image={getStrapiImage(selectedImage)}
               caption={selectedImage.caption || ''}
               alternativeText={selectedImage.alternativeText || ''}
               onClose={onClosePreview}

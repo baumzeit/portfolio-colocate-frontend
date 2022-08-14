@@ -35,13 +35,16 @@ module.exports = {
         primaryLayer: 'var(--bg-primary-layer)',
         secondary: 'var(--bg-secondary)'
       },
-      backgroundImage: {
-        'gradient-radial': 'radial-gradient(farthest-side, var(--tw-gradient-stops))',
-      },
       textColor: {
         primary: 'var(--text-primary)',
         secondary: 'var(--text-secondary)',
         tertiary: 'var(--text-tertiary)'
+      },
+      boxShadow: {
+        'glow': '0px 0px 16px -10px rgba(250,250,250,0.62)'
+      },
+      backgroundImage: {
+        'gradient-radial': 'radial-gradient(farthest-side, var(--tw-gradient-stops))',
       },
       fontFamily: {
         display: 'Rubik, sans-serif',
