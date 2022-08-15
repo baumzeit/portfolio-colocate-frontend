@@ -5,7 +5,6 @@ import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React, { lazy, Suspense, useMemo, useRef } from 'react'
 
 import Layout from '../../common/components/Layout'
-import { Main } from '../../common/components/Main'
 import { Navbar } from '../../common/components/Navbar'
 import { areasAtom, projectsAtom } from '../../common/contexts/atoms'
 import { assertAndExtractNodes } from '../../common/utility/assert-and-extract-nodes'
