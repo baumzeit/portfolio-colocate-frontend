@@ -7,7 +7,7 @@ import { useProjectsChartData } from '../../projects/use-projects-chart-data'
 import { VoronoiChart } from './VoronoiChart'
 
 type VoronoiContainerProps = {
-  projects: Queries.ProjectDetailFragment[]
+  projects: Queries.ProjectBaseFragment[]
   areas: Queries.AreaBaseFragment[]
 } & Required<UseJitterGridReturn>
 

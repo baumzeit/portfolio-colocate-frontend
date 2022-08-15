@@ -24,7 +24,7 @@ export function drawCell(selection: Selection<EnterElement, EnrichedDatum, SVGSV
     .append('xhtml:img')
     .classed('image', true)
     .attr('xmlns', 'http://www.w3.org/1999/xhtml')
-    .attr('srcSet', (d) => d.imageSrcSet)
+    .attr('src', (d) => d.imgSrc || '')
 
   base
     .append('path')

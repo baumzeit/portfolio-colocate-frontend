@@ -22,14 +22,14 @@ export const query = graphql`
     ...AreaBase
     projects {
       id
-      images {
-        ...ImageBase
-        localFile {
-          childImageSharp {
-            gatsbyImageData(height: 25, placeholder: BLURRED)
-          }
-        }
-      }
+      # images {
+      #   ...ImageBase
+      #   localFile {
+      #     childImageSharp {
+      #       gatsbyImageData(height: 25, placeholder: BLURRED)
+      #     }
+      #   }
+      # }
     }
     tags {
       id
@@ -40,6 +40,41 @@ export const query = graphql`
     id
     name
     link
+  }
+  fragment ProjectBase on STRAPI_PROJECT {
+    id
+    title
+    name
+    slug
+    description {
+      data {
+        description
+      }
+      # medias {
+      #   alternativeText
+      #   childImageSharp {
+      #     gatsbyImageData(width: 600, placeholder: BLURRED)
+      #   }
+      # }
+    }
+    coverImage {
+      ...ImageBase
+      localFile {
+        childImageSharp {
+          gatsbyImageData(width: 800)
+        }
+      }
+    }
+    tags {
+      id
+      name
+    }
+    areas {
+      ...AreaBase
+    }
+    links {
+      ...ExternalLink
+    }
   }
   fragment ProjectDetail on STRAPI_PROJECT {
     id

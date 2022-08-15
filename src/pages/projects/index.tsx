@@ -14,7 +14,7 @@ const ProjectsList = lazy(() => import('../../features/projects/ProjectsList'))
 const ProjectsMap = lazy(() => import('../../features/projects/ProjectsMap'))
 
 export type ProjectsAndAreas = {
-  projects: Queries.ProjectDetailFragment[]
+  projects: Queries.ProjectBaseFragment[]
   areas: Queries.AreaBaseFragment[]
 }
 
@@ -83,7 +83,7 @@ export const query = graphql`
       totalCount
       edges {
         node {
-          ...ProjectDetail
+          ...ProjectBase
         }
       }
     }

@@ -1,4 +1,4 @@
-import { getSrcSet } from 'gatsby-plugin-image'
+import { getSrc, getSrcSet } from 'gatsby-plugin-image'
 import { useMemo } from 'react'
 
 import { GridCoordinate } from '../../common/hooks/use-jitter-grid'
@@ -7,7 +7,7 @@ import notEmpty from '../../common/utility/not-empty'
 import { Point } from '../viz/Voronoi/use-voronoi-model'
 
 export type VoronoiChartDatum = Point & {
-  imageSrcSet: string
+  imgSrc: string | undefined
   id: string
   title: string
   slug: string
@@ -20,7 +20,7 @@ export type VoronoiChartDatum = Point & {
 }
 
 type UseProjectsChartDataProps = {
-  projects: Queries.ProjectDetailFragment[]
+  projects: Queries.ProjectBaseFragment[]
   getGridCoordinates: (idx: number) => GridCoordinate
 }
 export const useProjectsChartData = ({
@@ -35,9 +35,10 @@ export const useProjectsChartData = ({
             return {
               x: getGridCoordinates(idx)[0],
               y: getGridCoordinates(idx)[1],
-              imageSrcSet: imageData
-                ? getSrcSet(imageData) || 'https://picsum.photos/600/300'
-                : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
+              imgSrc: imageData ? getSrc(imageData) : '',
+              // imageSrcSet: imageData
+              //   ? getSrcSet(imageData) || 'https://picsum.photos/600/300'
+              //   : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
               id: id,
               index: idx,
               title: String(title),
