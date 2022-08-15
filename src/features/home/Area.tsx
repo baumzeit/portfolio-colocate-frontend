@@ -1,9 +1,9 @@
 import { ChevronRightIcon } from '@heroicons/react/outline'
 import { Link } from 'gatsby'
 import React from 'react'
+import useDarkMode from 'use-dark-mode'
 
 import { Tags } from '../../common/components/Tags'
-import { useTheme } from '../../common/components/ThemeContextProvider'
 import { PATH } from '../../common/constants/paths'
 import { SvgBlob } from '../blob/SvgBlob'
 
@@ -21,7 +21,7 @@ const blobOffset = {
 
 type AreaProps = { area: Queries.AreaDetailFragment; alignment: 'left' | 'center' | 'right' }
 export const Area = ({ area: { name, description, id, color: areaColor, tags, slug }, alignment }: AreaProps) => {
-  const { theme } = useTheme()
+  const { value: isDarkMode } = useDarkMode()
   return (
     <div className="relative group">
       <div className="relative z-10">
@@ -57,7 +57,7 @@ export const Area = ({ area: { name, description, id, color: areaColor, tags, sl
             <SvgBlob
               variant="solid"
               color={areaColor || ''}
-              isOutline={theme === 'light'}
+              isOutline={!isDarkMode}
               shapeProps={{ growth: 6, edges: 6 }}
               id={id}
             />

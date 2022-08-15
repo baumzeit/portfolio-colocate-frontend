@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
+body {
   --color-brand: #963d72;
   --color-brand-light: #ead8e3;
   --color-highlight: #e79e4f;
@@ -15,7 +15,7 @@
   --bg-primary-layer: rgba(249, 250, 251, 0.4);
   --bg-secondary: #fff;
 
-  &.dark {
+  &.dark-mode {
     --color-brand: #963d72;
     --color-brand-light: #3c182e;
     --color-highlight: #e79e4f;
@@ -28,9 +28,7 @@
     --bg-primary-layer: rgba(21, 21, 21, 0.4);
     --bg-secondary: #000;
   }
-}
 
-body {
   @apply transition-colors;
   @apply text-primary;
   @apply bg-primary;

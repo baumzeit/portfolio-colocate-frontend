@@ -3,8 +3,6 @@ import React from 'react'
 import { QueryParamProvider } from 'use-query-params'
 import { ReachAdapter } from 'use-query-params/adapters/reach'
 
-import { ThemeContextProvider } from './src/common/components/ThemeContextProvider'
-
 import './src/scss/index.scss'
 
 import '@fontsource/karla/200.css'
@@ -23,7 +21,7 @@ export const wrapRootElement = ({ element }: WrapRootElementNodeArgs | WrapRootE
         enableBatching: true
       }}
     >
-      <ThemeContextProvider>{element}</ThemeContextProvider>
+      {element}
     </QueryParamProvider>
   )
 }

@@ -38,6 +38,7 @@ module.exports = {
     'gatsby-transformer-sharp',
     'gatsby-plugin-postcss',
     'gatsby-plugin-sass',
+    'gatsby-plugin-use-dark-mode',
     {
       resolve: 'gatsby-plugin-breakpoints',
       options: {

@@ -8,7 +8,7 @@ module.exports = {
     'inset-0', 'text-left', 'text-center',
     'text-right'
   ],
-  darkMode: 'class',
+  darkMode: ['class', '.dark-mode'],
   mode: 'jit',
   theme: {
     screens: {

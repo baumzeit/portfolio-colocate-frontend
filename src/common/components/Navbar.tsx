@@ -1,10 +1,9 @@
 import { Listbox } from '@headlessui/react'
 import { graphql, Link, useStaticQuery } from 'gatsby'
 import { StaticImage } from 'gatsby-plugin-image'
-import React, { ReactNode, useContext } from 'react'
+import React, { ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
-
-import { ThemeContext } from './ThemeContextProvider'
+import useDarkMode from 'use-dark-mode'
 
 export const NAVBAR_HEIGHT = 56
 
@@ -45,15 +44,21 @@ export const Navbar = ({ children, className = '' }: NavbarProps) => {
   )
 }
 
+const themes = ['dark', 'light'] as const
+type Theme = typeof themes[number]
+
 const ThemeSelect = () => {
-  const { theme, setTheme } = useContext(ThemeContext)
+  // const { theme, setTheme } = useContext(ThemeContext)
+  const { value: isDark, enable, disable } = useDarkMode()
+
+  const theme: Theme = isDark ? 'dark' : 'light'
 
   return (
     <div>
-      <Listbox value={theme} onChange={(theme) => setTheme(theme)}>
+      <Listbox value={theme} onChange={(theme) => (theme === 'light' ? disable() : enable())}>
         <Listbox.Button className={`px-1.5 py-0.5 rounded text-brand`}>{theme}</Listbox.Button>
         <Listbox.Options>
-          {['dark', 'light']
+          {themes
             .filter((val) => val !== theme)
             .map((val, idx) => {
               const isActive = theme === val
