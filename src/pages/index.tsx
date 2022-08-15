@@ -43,38 +43,36 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<Queries.Hom
             </Navbar>
           }
         >
-          <Main className="pt-6 pb-20 overflow-x-hidden md:pt-10">
-            <Container>
-              <div className="grid grid-cols-8 gap-y-8">
-                <div className="col-start-1 col-end-9 md:col-end-5">
-                  <Intro title={title} text={introText} />
-                </div>
-                <div className="col-start-1 col-end-9 md:col-start-6 lg:mt-0">
-                  <Profile profile={profile} />
-                </div>
-                <div className="col-start-1 col-end-9 mt-6 mb-8 md:mt-10 md:mb-14 lg:mt-14 lg:mb-20">
-                  <AreasMap areas={displayAreas} />
-                </div>
-                {contact && (
-                  <>
-                    <div className="col-start-1 col-end-9 md:col-end-5">
-                      <div className="text-secondary">{contact.text}</div>
-                    </div>
-                    <div className="col-start-1 col-end-9 md:col-start-6 lg:mt-0">
-                      <a href={contact.button?.link || ''} target="_blank" rel="noreferrer">
-                        <button className="px-5 py-3 tracking-wide transition-colors ease-out border rounded border-highlight hover:bg-highlight hover:text-bg-primary">
-                          <div className="flex items-center gap-x-2">
-                            {contact.button?.label || contact.button?.link}
-                            <MailIcon className="w-4 h-4" />
-                          </div>
-                        </button>
-                      </a>
-                    </div>
-                  </>
-                )}
+          <Container className="pt-6 pb-20 overflow-x-hidden md:pt-10">
+            <div className="grid grid-cols-8 gap-y-8">
+              <div className="col-start-1 col-end-9 md:col-end-5">
+                <Intro title={title} text={introText} />
               </div>
-            </Container>
-          </Main>
+              <div className="col-start-1 col-end-9 md:col-start-6 lg:mt-0">
+                <Profile profile={profile} />
+              </div>
+              <div className="col-start-1 col-end-9 mt-6 mb-8 md:mt-10 md:mb-14 lg:mt-14 lg:mb-20">
+                <AreasMap areas={displayAreas} />
+              </div>
+              {contact && (
+                <>
+                  <div className="col-start-1 col-end-9 md:col-end-5">
+                    <div className="text-secondary">{contact.text}</div>
+                  </div>
+                  <div className="col-start-1 col-end-9 md:col-start-6 lg:mt-0">
+                    <a href={contact.button?.link || ''} target="_blank" rel="noreferrer">
+                      <button className="px-5 py-3 tracking-wide transition-colors ease-out border rounded border-highlight hover:bg-highlight hover:text-bg-primary">
+                        <div className="flex items-center gap-x-2">
+                          {contact.button?.label || contact.button?.link}
+                          <MailIcon className="w-4 h-4" />
+                        </div>
+                      </button>
+                    </a>
+                  </div>
+                </>
+              )}
+            </div>
+          </Container>
         </Layout>
       </>
     )

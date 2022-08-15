@@ -1,7 +1,8 @@
 import { Transition } from '@headlessui/react'
+import { ArrowSmUpIcon } from '@heroicons/react/solid'
 import { graphql, PageProps } from 'gatsby'
 import { useBreakpoint } from 'gatsby-plugin-breakpoints'
-import React, { lazy, Suspense, useMemo } from 'react'
+import React, { lazy, Suspense, useMemo, useRef } from 'react'
 
 import Layout from '../../common/components/Layout'
 import { Main } from '../../common/components/Main'
@@ -24,8 +25,11 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
 
   const breakpoint = useBreakpoint()
 
+  const main = useRef<HTMLDivElement>(null)
+
   return (
     <Layout
+      ref={main}
       navbar={
         <Navbar>
           <ProjectsNavContent areas={areas} />
@@ -36,32 +40,40 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
         [projectsAtom, projects]
       ]}
     >
-      <Main>
-        <Suspense
-          fallback={
-            <div className="flex items-center justify-center text-2xl font-light tracking-wide h-4/5 text-secondary">
-              <div>Loading ...</div>
-            </div>
-          }
+      <Suspense
+        fallback={
+          <div className="flex items-center justify-center text-2xl font-light tracking-wide h-4/5 text-secondary">
+            <div>Loading ...</div>
+          </div>
+        }
+      >
+        <Transition
+          appear={!!breakpoint}
+          show={true}
+          enter="transition-opacity duration-600"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="transition-opacity duration-600"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
         >
-          <Transition
-            appear={!!breakpoint}
-            show={true}
-            enter="transition-opacity duration-600"
-            enterFrom="opacity-0"
-            enterTo="opacity-100"
-            leave="transition-opacity duration-600"
-            leaveFrom="opacity-100"
-            leaveTo="opacity-0"
-          >
-            {breakpoint.md ? (
-              <ProjectsMap projects={projects} areas={areas} />
-            ) : (
+          {breakpoint.md ? (
+            <ProjectsMap projects={projects} areas={areas} />
+          ) : (
+            <>
               <ProjectsList projects={projects} areas={areas} />
-            )}
-          </Transition>
-        </Suspense>
-      </Main>
+              <div className="flex justify-center mb-2">
+                <button className="p-2 rounded-full" onClick={() => main.current?.scrollTo(0, 0)}>
+                  <div className="flex items-center gap-2">
+                    <div>Back to top</div>
+                    <ArrowSmUpIcon className="w-4 h-4" />
+                  </div>
+                </button>
+              </div>
+            </>
+          )}
+        </Transition>
+      </Suspense>
     </Layout>
   )
 }

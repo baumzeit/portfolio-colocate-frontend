@@ -63,10 +63,10 @@ export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
           </Listbox.Button>
           {highlightArea && (
             <button
-              className="absolute flex items-center h-full -right-9 top-0 p-1"
+              className="absolute top-0 bottom-0 flex items-center p-1 -right-9"
               onClick={() => setHighlightArea(null)}
             >
-              <XIcon className="w-5 h-5" />
+              <XIcon className="w-4 h-4" />
             </button>
           )}
         </div>

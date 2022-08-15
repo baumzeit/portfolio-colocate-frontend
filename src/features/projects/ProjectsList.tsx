@@ -10,7 +10,6 @@ export type DisplayProject = Queries.ProjectDetailFragment & { highlightColor?: 
 
 const ProjectsList = ({ projects }: ProjectsAndAreas) => {
   const [highlightArea] = useHighlightArea()
-
   const highlightAreaSlug = highlightArea?.slug
 
   const areaMatch = useCallback(
@@ -33,7 +32,7 @@ const ProjectsList = ({ projects }: ProjectsAndAreas) => {
 
   return (
     <>
-      <ul className="grid grid-cols-1 gap-3 mx-3 sm:grid-cols-2">
+      <ul className="grid grid-cols-1 gap-3 mx-3 mt-3 mb-2 sm:grid-cols-2">
         {displayProjects.map((project, idx) => {
           return (
             <li key={project.id} className="overflow-hidden rounded-sm">

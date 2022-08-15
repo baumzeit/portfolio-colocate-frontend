@@ -41,7 +41,7 @@ module.exports = {
         tertiary: 'var(--text-tertiary)'
       },
       boxShadow: {
-        'glow': '0px 0px 16px -10px rgba(250,250,250,0.62)'
+        'glow': '0px 0px 14px -10px rgba(250,250,250,0.62)'
       },
       backgroundImage: {
         'gradient-radial': 'radial-gradient(farthest-side, var(--tw-gradient-stops))',

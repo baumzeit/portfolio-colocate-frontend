@@ -1,5 +1,5 @@
 import React, { FC, ReactNode, useEffect } from 'react'
-import { useRemark, UseRemarkOptions } from 'react-remark'
+import { UseRemarkOptions, useRemarkSync } from 'react-remark'
 
 type FCWithChildren = FC & { children?: ReactNode }
 
@@ -36,12 +36,7 @@ type RenderMdProps = {
 }
 
 export const RenderMd = ({ content, className }: RenderMdProps) => {
-  const [reactContent, setMarkdownSource] = useRemark(remarkOptions)
+  const reactContent = useRemarkSync(content || '', remarkOptions)
 
-  useEffect(() => {
-    if (content) {
-      setMarkdownSource(content)
-    }
-  }, [content, setMarkdownSource])
   return <div className={`gap-y-0 lg:text-lg  ${className}`}>{reactContent}</div>
 }

@@ -14,7 +14,7 @@ export type VoronoiDrawProps = {
   data: EnrichedDatum[]
   options: VoronoiOptions
   voronoi: Voronoi<EnrichedDatum>
-  onHover: (id: string) => void
+  onHover: (slug: string) => void
   onClick: (slug: string) => void
   onMouseLeave: () => void
 }
@@ -84,7 +84,7 @@ export function drawVoronoi({ svg, data, options: opts, voronoi, onHover, onClic
 
   svg.selectAll<SVGPathElement, EnrichedDatum>('.hover-border').on('mouseenter', function (e: MouseEvent, d) {
     if (svg.selectAll('.cell.exposed').empty() && !svg.node()!.contains(document.activeElement)) {
-      onHover(d.id)
+      onHover(d.slug)
     }
   })
 
@@ -93,7 +93,7 @@ export function drawVoronoi({ svg, data, options: opts, voronoi, onHover, onClic
     if (!svg.selectAll('.exposed').empty()) {
       onClick(datum.slug)
     } else {
-      onHover(datum.id)
+      onHover(datum.slug)
     }
   })
 

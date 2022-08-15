@@ -1,5 +1,7 @@
 import { Atom, Provider } from 'jotai'
-import React, { ReactNode } from 'react'
+import React, { forwardRef, ReactNode } from 'react'
+
+import { Main } from './Main'
 
 type LayoutProps = {
   seo?: any
@@ -9,16 +11,16 @@ type LayoutProps = {
   children: ReactNode
 }
 
-const Layout = ({ children, navbar, providerData }: LayoutProps) => {
+const Layout = forwardRef<HTMLDivElement, LayoutProps>(({ children, navbar, providerData }, ref) => {
   return (
     <Provider initialValues={providerData}>
       <div className="grid h-screen bg-primary" style={{ gridTemplateRows: `auto 1fr` }}>
         {/* <Seo seo={seo} /> */}
         {navbar}
-        <div className="overflow-auto">{children}</div>
+        <Main ref={ref}>{children}</Main>
       </div>
     </Provider>
   )
-}
+})
 
 export default Layout

@@ -1,4 +1,5 @@
 import React, { forwardRef, PropsWithChildren } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 type MainProps = {
   className?: string
@@ -6,7 +7,7 @@ type MainProps = {
 
 export const Main = forwardRef<HTMLDivElement, PropsWithChildren<MainProps>>(({ children, className = '' }, ref) => {
   return (
-    <main className={`relative ${className}`} ref={ref}>
+    <main className={twMerge('relative overflow-auto', className)} ref={ref}>
       {children}
     </main>
   )

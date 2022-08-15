@@ -40,8 +40,7 @@ export const useVoronoiModel = <T extends Point = Point>({ width, height, data }
     () =>
       data.map((d, idx) => ({
         ...d,
-        path: voronoi.renderCell(idx),
-        index: idx
+        path: voronoi.renderCell(idx)
       })),
     [data, voronoi]
   )

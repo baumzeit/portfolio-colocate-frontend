@@ -75,16 +75,14 @@ export const VoronoiChart = memo(
     }, [highlightedAreaId, initialized, svgNode])
 
     return (
-      <>
-        <svg ref={onRefChange} width={width} height={height} className="voronoi cursor-pointer animate-fadeIn">
-          <defs>
-            <HatchPattern id="diagonalHatch" className="stroke-bg-secondary" />
-            {highlightPatternData.map(({ color, id }) => (
-              <HatchPattern key={id} stroke={color || 'black'} id={'diagonalHatchHighlight-' + id} />
-            ))}
-          </defs>
-        </svg>
-      </>
+      <svg ref={onRefChange} width={width} height={height} className="cursor-pointer voronoi animate-fadeIn">
+        <defs>
+          <HatchPattern id="diagonalHatch" className="stroke-bg-secondary" />
+          {highlightPatternData.map(({ color, id }) => (
+            <HatchPattern key={id} stroke={color || 'black'} id={'diagonalHatchHighlight-' + id} />
+          ))}
+        </defs>
+      </svg>
     )
   }
 )

@@ -1,5 +1,6 @@
 import { GatsbyImage } from 'gatsby-plugin-image'
 import React, { useState } from 'react'
+import { twMerge } from 'tailwind-merge'
 
 import { getStrapiImage } from '../../common/utility/get-image'
 import { DisplayProject } from '../projects/ProjectsList'
@@ -12,20 +13,21 @@ type ProjectBannerProps = {
   className?: string
 }
 export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, className = '' }: ProjectBannerProps) => {
-  const coverImage = project.coverImage
+  const { highlightColor, coverImage } = project
   const gatsbyImage = getStrapiImage(coverImage)
+  // const highlightColor = project.highlightColor
 
   const isEven = index % 2 === 0
 
   return (
-    <div className={`grid grid-rows-1 grid-cols-1 ${className} overflow-hidden`}>
+    <div className={twMerge('grid grid-rows-1 grid-cols-1 overflow-hidden', className)}>
       <div className="col-start-1 row-start-1">
         {gatsbyImage && (
           <GatsbyImage
             image={gatsbyImage}
             alt={coverImage?.alternativeText || ''}
             className={`object-cover aspect-video max-h-64 sm:aspect-square md:max-h-full object-center w-full h-full transition-all ease-out duration-700 ${
-              !hideOverlay ? 'opacity-90' : ''
+              !hideOverlay && !highlightColor ? 'opacity-90' : ''
             }`}
           />
         )}
@@ -34,9 +36,9 @@ export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, clas
       {!hideOverlay && (
         <div className="col-start-1 row-start-1">
           <div
-            style={{ color: project.highlightColor || '' }}
+            style={{ color: highlightColor || '' }}
             className={`z-10 h-full stripe-pattern  ${
-              project.highlightColor ? 'opacity-80' : 'opacity-10 bg-secondary'
+              highlightColor ? 'opacity-70' : 'opacity-5 bg-secondary'
             } transition-all ease-out duration-200`}
           />
         </div>
@@ -44,9 +46,9 @@ export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, clas
 
       {!hideTitle && (
         <div className={`row-start-1 col-start-1 flex ${isEven ? 'justify-start' : 'justify-end'} items-start`}>
-          <div className={`z-20 mt-[10%] ${isEven ? 'text-left' : 'text-right'}`}>
+          <div className={`z-20 mt-[10%] drop-shadow-md ${isEven ? 'text-left' : 'text-right'}`}>
             <h2
-              className="inline py-1 tracking-wide text-secondary xs:text-xl bg-white/95 dark:bg-black/90"
+              className="inline py-1 tracking-wide shadow-md text-secondary xs:text-xl bg-white/95 dark:bg-black/90 "
               style={{ boxShadow: '8px 0 0 var(--bg-primary), -8px 0 0 var(--bg-primary)' }}
             >
               {project.title}

@@ -1,9 +1,8 @@
 import { GatsbyImage } from 'gatsby-plugin-image'
-import React, { useRef } from 'react'
+import React from 'react'
 
 import { Container } from '../../common/components/Container'
 import { getStrapiImage } from '../../common/utility/get-image'
-import { useScrollShrink } from '../../common/utility/use-scroll-shrink'
 import { DetailContent } from './DetailContent'
 import { SliderControlProps, SliderControls } from './SliderControls'
 
@@ -23,7 +22,7 @@ export const ProjectDetail = ({ project, nextSlug, prevSlug }: ProjectDetailProp
             image={image}
             objectFit="cover"
             objectPosition="50% 30%"
-            className="w-full h-full dark:opacity-90 animate-fadeInVeryFast"
+            className="w-full h-full dark:opacity-90 "
             alt={project.coverImage?.alternativeText || ''}
           />
         )}

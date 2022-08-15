@@ -18,9 +18,9 @@ export const DetailContent = ({ project }: DetailContentProps) => {
   return (
     <>
       <div
-        className="py-0.5 sm:py-1 md:py-1 pl-3 -ml-2 pr-4 rounded-sm bg-text-primary
-        shadow-glow shadow-bg-primaryLayer
-        bg-gradient-to-l from-white/10 dark:from-black/10 via-transparent"
+        className="py-0.5 sm:py-1 md:py-1 pl-3 -ml-2 pr-4 rounded-sm 
+        shadow-glow shadow-white/30 dark:shadow-black/30
+        backdrop-blur-xl bg-gradient-to-br from-slate-800/95 dark:from-white/95 via:bg-slate-800/90 dark:via-white/90 to-slate-800/60 dark:to-white/60"
       >
         <h1 className="w-full text-xl text-bg-primary sm:text-2xl md:text-3xl md:w-auto">{title}</h1>
       </div>

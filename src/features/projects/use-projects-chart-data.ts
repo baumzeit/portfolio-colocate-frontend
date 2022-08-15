@@ -16,6 +16,7 @@ export type VoronoiChartDatum = Point & {
     name: string
     id: string
   }[]
+  index: number
 }
 
 type UseProjectsChartDataProps = {
@@ -38,6 +39,7 @@ export const useProjectsChartData = ({
                 ? getSrcSet(imageData) || 'https://picsum.photos/600/300'
                 : 'https://picsum.photos/600/' + (idx % 3 ? (idx % 2 ? '500' : '600') : '400'),
               id: id,
+              index: idx,
               title: String(title),
               slug: String(slug),
               areas:
