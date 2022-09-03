@@ -6,14 +6,14 @@ import { ProjectsAndAreas } from '../../pages/projects'
 import { ProjectBanner } from '../project/ProjectBanner'
 import { useHighlightArea } from '../project/use-highlight-area'
 
-export type DisplayProject = Queries.ProjectDetailFragment & { highlightColor?: string | null }
+export type DisplayProject = Queries.ProjectBaseFragment & { highlightColor?: string | null }
 
 const ProjectsList = ({ projects }: ProjectsAndAreas) => {
   const [highlightArea] = useHighlightArea()
   const highlightAreaSlug = highlightArea?.slug
 
   const areaMatch = useCallback(
-    (project: Queries.ProjectDetailFragment) =>
+    (project: Queries.ProjectBaseFragment) =>
       Boolean(!highlightAreaSlug || project.areas?.map((area) => area?.slug).includes(highlightAreaSlug)),
     [highlightAreaSlug]
   )

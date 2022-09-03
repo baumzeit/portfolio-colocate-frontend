@@ -46,7 +46,7 @@ export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, clas
 
       {!hideTitle && (
         <div className={`row-start-1 col-start-1 flex ${isEven ? 'justify-start' : 'justify-end'} items-start`}>
-          <div className={`z-20 mt-[10%] drop-shadow-md ${isEven ? 'text-left' : 'text-right'}`}>
+          <div className={`z-20 mt-[10%] ${isEven ? 'text-left' : 'text-right'}`}>
             <h2
               className="inline py-1 tracking-wide shadow-md text-secondary xs:text-xl bg-white/95 dark:bg-black/90 "
               style={{ boxShadow: '8px 0 0 var(--bg-primary), -8px 0 0 var(--bg-primary)' }}
