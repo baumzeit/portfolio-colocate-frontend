@@ -47,7 +47,7 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
         }
       >
         <Transition
-          appear={!!breakpoint}
+          appear={Object.keys(breakpoint).length > 0}
           show={true}
           enter="transition-opacity duration-600"
           enterFrom="opacity-0"
