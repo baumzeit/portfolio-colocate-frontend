@@ -82,6 +82,6 @@ module.exports = {
     extend: {}
   },
   plugins: [
-    require('./tailwind/twPluginAnimateDelay.js')
+    require('./tailwind/tw-plugin-animate-delay.js')
   ]
 }
