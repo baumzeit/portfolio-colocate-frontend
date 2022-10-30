@@ -43,7 +43,7 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<Queries.Hom
             </Navbar>
           }
         >
-          <Container className="pt-6 pb-20 overflow-x-hidden md:pt-10">
+          <Container className="pt-6 pb-20 md:pt-10">
             <div className="grid grid-cols-8 gap-y-8">
               <div className="col-start-1 col-end-9 md:col-end-5">
                 <Intro title={title} text={introText} />
