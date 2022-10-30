@@ -23,7 +23,6 @@ const strapiConfig = {
 }
 
 module.exports = {
-  pathPrefix: '/portfolio-colocate-gatsby',
   siteMetadata: {
     title: 'Philip Hradecsni',
     description: `Portfolio Page of Philip Hradecsni`,
