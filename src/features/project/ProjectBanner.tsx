@@ -22,15 +22,17 @@ export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, clas
   return (
     <div className={twMerge('grid grid-rows-1 grid-cols-1 overflow-hidden', className)}>
       <div className="col-start-1 row-start-1">
-        {gatsbyImage && (
-          <GatsbyImage
-            image={gatsbyImage}
-            alt={coverImage?.alternativeText || ''}
-            className={`object-cover aspect-video max-h-64 sm:aspect-square md:max-h-full object-center w-full h-full transition-all ease-out duration-700 ${
-              !hideOverlay && !highlightColor ? 'opacity-90' : ''
-            }`}
-          />
-        )}
+        <div className="aspect-video sm:aspect-square">
+          {gatsbyImage && (
+            <GatsbyImage
+              image={gatsbyImage}
+              alt={coverImage?.alternativeText || ''}
+              className={`object-cover object-center h-full transition-all ease-out duration-700 ${
+                !hideOverlay && !highlightColor ? 'opacity-90' : ''
+              }`}
+            />
+          )}
+        </div>
       </div>
 
       {!hideOverlay && (
@@ -49,7 +51,7 @@ export const ProjectBanner = ({ project, hideTitle, hideOverlay, index = 0, clas
           <div className={`z-20 mt-[10%] ${isEven ? 'text-left' : 'text-right'}`}>
             <h2
               className="inline py-1 tracking-wide shadow-md text-secondary xs:text-xl bg-white/95 dark:bg-black/90 "
-              style={{ boxShadow: '8px 0 0 var(--bg-primary), -8px 0 0 var(--bg-primary)' }}
+              // style={{ boxShadow: '8px 0 0 var(--bg-primary), -8px 0 0 var(--bg-primary)' }}
             >
               {project.title}
             </h2>
