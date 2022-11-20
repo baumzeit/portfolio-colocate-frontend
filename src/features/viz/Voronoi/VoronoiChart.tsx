@@ -1,14 +1,17 @@
 import * as d3 from 'd3-selection'
 import { Link } from 'gatsby'
-import React, { memo, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react'
+import { atom, useAtomValue, useSetAtom } from 'jotai'
+import React, { forwardRef, memo, SVGProps, useCallback, useEffect, useMemo, useRef, useState } from 'react'
 
 import './voronoi.scss'
 import { VoronoiChartDatum } from '../../projects/use-projects-chart-data'
-import { drawVoronoi } from './helpers/draw-voronoi'
+import { drawVoronoi, EnrichedDatum } from './helpers/draw-voronoi'
 import { highlightCellsByAreaId, hoverCell, restore, VoronoiOptions } from './helpers/voronoi-actions'
 import { useVoronoiModel } from './use-voronoi-model'
 
 type HighlightPatternDatum = { color?: string | null; id: string | number }
+
+const hoveredCellAtom = atom('')
 
 export type VoronoiChartProps = {
   data: VoronoiChartDatum[]
@@ -16,7 +19,7 @@ export type VoronoiChartProps = {
   width: number
   height: number
   imageSize: number
-  onClickCell: (slug: string) => void
+  onClickCell: (data: EnrichedDatum) => void
   highlightedAreaId?: string | null
 }
 
@@ -32,7 +35,7 @@ export const VoronoiChart = memo(
   }: VoronoiChartProps) => {
     const [svgNode, setSvgNode] = useState<SVGSVGElement | null>(null)
     const [initialized, setInitialized] = useState(false)
-    const [hoveredCell, setHoveredCell] = useState('')
+    const setHoveredCell = useSetAtom(hoveredCellAtom)
 
     const onRefChange = useCallback((node: SVGSVGElement | null) => {
       setSvgNode(node)
@@ -65,19 +68,19 @@ export const VoronoiChart = memo(
           data: enrichedData,
           options: voronoiOptions,
           onClick: onClickCell,
-          onHover: (slug) => {
+          onHover: (data) => {
             if (spanRef.current) {
-              setHoveredCell(slug)
+              setHoveredCell(data.slug)
               const mouseOverEvent = new MouseEvent('mouseover', { bubbles: true })
               spanRef.current?.dispatchEvent(mouseOverEvent)
             }
-            hoverCell(svgNode)(slug)
+            hoverCell(svgNode)(data.id)
           },
           onMouseLeave: restore(svgNode)
         })
         setInitialized(true)
       }
-    }, [enrichedData, initialized, onClickCell, svgNode, voronoi, voronoiOptions])
+    }, [enrichedData, initialized, onClickCell, setHoveredCell, svgNode, voronoi, voronoiOptions])
 
     useEffect(() => {
       if (initialized && svgNode) {
@@ -87,7 +90,7 @@ export const VoronoiChart = memo(
 
     return (
       <>
-        <Link ref={spanRef as any} key={hoveredCell} to={hoveredCell} style={{ display: 'none' }} />
+        <PreloadPageLink ref={spanRef as any} />
 
         <svg ref={onRefChange} width={width} height={height} className="cursor-pointer voronoi animate-fadeIn">
           <defs>
@@ -101,6 +104,11 @@ export const VoronoiChart = memo(
     )
   }
 )
+
+const PreloadPageLink = forwardRef((props, ref) => {
+  const hoveredCell = useAtomValue(hoveredCellAtom)
+  return <Link ref={ref as any} to={hoveredCell} style={{ display: 'none' }} />
+})
 
 const HatchPattern = ({ id, ...rest }: Pick<HighlightPatternDatum, 'id'> & SVGProps<SVGPathElement>) => {
   return (

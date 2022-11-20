@@ -25,9 +25,9 @@ export const restore = (svgNode: SVGSVGElement) => () => {
   }
 }
 
-export const hoverCell = (svgNode: SVGSVGElement) => (hoveredSlug: string) => {
+export const hoverCell = (svgNode: SVGSVGElement) => (hoveredId: string) => {
   const svg = d3.select(svgNode)
-  svg.selectAll<SVGPathElement, EnrichedDatum>(`.cell`).classed('hover-selected', (d) => d.slug === hoveredSlug)
+  svg.selectAll<SVGPathElement, EnrichedDatum>(`.cell`).classed('hover-selected', (d) => d.id === hoveredId)
 }
 
 export const highlightCellsByAreaId = (svgNode: SVGSVGElement) => (highlightId: string | null) => {
