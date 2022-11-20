@@ -11,9 +11,9 @@ body {
   --text-secondary: #374151;
   --text-tertiary: #9ca3af;
 
-  --bg-primary: #f7f7f7;
+  --bg-primary: rgb(247, 247, 247);
   --bg-primary-layer: rgba(249, 250, 251, 0.4);
-  --bg-secondary: #fff;
+  --bg-secondary: rgb(255, 255, 255);
 
   &.dark-mode {
     --color-brand: #963d72;
@@ -24,9 +24,9 @@ body {
     --text-secondary: #dadde2;
     --text-tertiary: #9ca3af;
 
-    --bg-primary: #151515;
+    --bg-primary: rgb(21, 21, 21);
     --bg-primary-layer: rgba(21, 21, 21, 0.4);
-    --bg-secondary: #000;
+    --bg-secondary: rgb(0, 0, 0);
   }
 
   @apply transition-colors;
