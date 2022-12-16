@@ -77,7 +77,7 @@
   &.highlight-view {
     .cell {
       .image {
-        transition: opacity 50ms ease-out;
+        transition: transform 250ms ease-out, opacity 50ms ease-out;
         @apply opacity-30 dark:opacity-20;
       }
 
@@ -88,7 +88,7 @@
 
       &.area-highlight {
         .image {
-          transition: opacity 50ms ease-out;
+          transition: transform 250ms ease-out, opacity 50ms ease-out;
           opacity: 1;
         }
         .highlight-pattern {
