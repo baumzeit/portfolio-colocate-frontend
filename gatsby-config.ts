@@ -2,6 +2,7 @@
 require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`
 })
+
 const config = require('./tailwind.config')
 
 const mediaQueries = Object.fromEntries(
@@ -25,10 +26,10 @@ const strapiConfig = {
 module.exports = {
   siteMetadata: {
     title: 'Philip Hradecsni',
-    description: `Portfolio Page of Philip Hradecsni`,
+    description: `Philip Hradecsni Homepage`,
     // twitterUsername: `@gatsbyjs`,
     // image: `/gatsby-icon.png`,
-    siteUrl: `https://philip.colocate.dev`
+    siteUrl: `https://philhradecs.com`
   },
   graphqlTypegen: { typesOutputPath: 'gatsby-types.d.ts' },
   trailingSlash: 'never',
