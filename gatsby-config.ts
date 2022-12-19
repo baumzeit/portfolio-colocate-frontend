@@ -3,12 +3,6 @@ require('dotenv').config({
   path: `.env.${process.env.NODE_ENV}`
 })
 
-const config = require('./tailwind.config')
-
-const mediaQueries = Object.fromEntries(
-  Object.entries(config.theme.screens).map(([bp, size]) => [bp, `(min-width: ${size})`])
-)
-
 const strapiConfig = {
   apiURL: process.env.STRAPI_API_URL,
   accessToken: process.env.STRAPI_TOKEN,
@@ -33,6 +27,10 @@ module.exports = {
   },
   graphqlTypegen: { typesOutputPath: 'gatsby-types.d.ts' },
   trailingSlash: 'never',
+  flags: {
+    DEV_SSR: true,
+    FAST_DEV: true
+  },
   plugins: [
     'gatsby-plugin-image',
     'gatsby-plugin-sharp',
@@ -40,13 +38,6 @@ module.exports = {
     'gatsby-plugin-postcss',
     'gatsby-plugin-sass',
     'gatsby-plugin-use-dark-mode',
-    {
-      resolve: 'gatsby-plugin-breakpoints',
-      options: {
-        queries: mediaQueries
-      }
-    },
-
     {
       resolve: 'gatsby-source-filesystem',
       options: {

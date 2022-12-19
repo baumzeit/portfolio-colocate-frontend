@@ -1,5 +1,5 @@
 import { Listbox } from '@headlessui/react'
-import { XIcon } from '@heroicons/react/outline'
+import { XMarkIcon } from '@heroicons/react/24/solid'
 import React, { useCallback } from 'react'
 
 import { useHighlightArea } from '../project/use-highlight-area'
@@ -52,6 +52,7 @@ export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
       <Listbox value={highlightArea} onChange={handleChange}>
         <div className="relative">
           <Listbox.Button
+            id="area-select"
             style={{
               backgroundColor: highlightArea?.color || 'transparent'
             }}
@@ -63,10 +64,10 @@ export const NavFilterAreasSelect = ({ areas }: NavFilterAreasProps) => {
           </Listbox.Button>
           {highlightArea && (
             <button
-              className="absolute top-0 bottom-0 flex items-center p-1 -right-9"
+              className="absolute top-0 bottom-0 flex items-center p-1 -right-8"
               onClick={() => setHighlightArea(null)}
             >
-              <XIcon className="w-4 h-4" />
+              <XMarkIcon className="w-4 h-4" />
             </button>
           )}
         </div>

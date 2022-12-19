@@ -1,9 +1,9 @@
-import { Listbox } from '@headlessui/react'
 import { graphql, Link, useStaticQuery } from 'gatsby'
 import { StaticImage } from 'gatsby-plugin-image'
-import React, { ReactNode } from 'react'
+import React, { ReactNode, Suspense } from 'react'
 import { twMerge } from 'tailwind-merge'
-import useDarkMode from 'use-dark-mode'
+
+import { ThemeSelect } from './ThemeSelect'
 
 export const NAVBAR_HEIGHT = 56
 
@@ -37,46 +37,12 @@ export const Navbar = ({ children, className = '' }: NavbarProps) => {
         </div>
       </div>
       {children}
-      <div className="flex-1 self-start flex justify-end mt-3.5">
-        <ThemeSelect />
+      <div className="flex-1 flex justify-end">
+        <Suspense>
+          <ThemeSelect />
+        </Suspense>
       </div>
     </nav>
-  )
-}
-
-const themes = ['dark', 'light'] as const
-type Theme = typeof themes[number]
-
-const ThemeSelect = () => {
-  // const { theme, setTheme } = useContext(ThemeContext)
-  const { value: isDark, enable, disable } = useDarkMode()
-
-  const theme: Theme = isDark ? 'dark' : 'light'
-
-  return (
-    <div>
-      <Listbox value={theme} onChange={(theme) => (theme === 'light' ? disable() : enable())}>
-        <Listbox.Button className={`px-1.5 py-0.5 rounded text-brand`}>{theme}</Listbox.Button>
-        <Listbox.Options>
-          {themes
-            .filter((val) => val !== theme)
-            .map((val, idx) => {
-              const isActive = theme === val
-              return (
-                <Listbox.Option key={val} value={val} className="text-bg-secondary">
-                  <div
-                    className={`inline-block px-1.5 py-0.5 rounded mt-1.5 animate-fadeInFast animate-delay-${
-                      50 * idx
-                    } cursor-pointer bg-primary ${isActive ? 'text-brand' : 'text-primary'} cursor-pointer`}
-                  >
-                    {val}
-                  </div>
-                </Listbox.Option>
-              )
-            })}
-        </Listbox.Options>
-      </Listbox>
-    </div>
   )
 }
 

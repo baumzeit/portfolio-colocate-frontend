@@ -27,10 +27,8 @@ type TagProps = {
 export const Tag = ({ label, color }: TagProps) => {
   return (
     <div
-      style={{
-        borderColor: color || ''
-      }}
-      className="px-1.5 md:px-2.5 py-0.5 text-xs md:text-sm border rounded-sm text-secondary"
+      style={color ? { borderColor: color } : undefined}
+      className={`px-1.5 md:px-2.5 py-0.5 text-xs md:text-sm border rounded-sm text-secondary`}
     >
       {label}
     </div>

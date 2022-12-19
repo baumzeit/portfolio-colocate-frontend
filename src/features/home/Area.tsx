@@ -1,4 +1,4 @@
-import { ChevronRightIcon } from '@heroicons/react/outline'
+import { ChevronRightIcon } from '@heroicons/react/24/solid'
 import { Link } from 'gatsby'
 import React from 'react'
 import useDarkMode from 'use-dark-mode'
@@ -22,6 +22,7 @@ const blobOffset = {
 type AreaProps = { area: Queries.AreaDetailFragment; alignment: 'left' | 'center' | 'right' }
 export const Area = ({ area: { name, description, id, color: areaColor, tags, slug }, alignment }: AreaProps) => {
   const { value: isDarkMode } = useDarkMode()
+
   return (
     <div className="relative group">
       <div className="relative z-10">

@@ -1,10 +1,9 @@
-import { MailIcon } from '@heroicons/react/solid'
+import { EnvelopeIcon } from '@heroicons/react/24/solid'
 import { graphql, PageProps } from 'gatsby'
 import React, { useMemo } from 'react'
 
 import { Container } from '../common/components/Container'
 import Layout from '../common/components/Layout'
-import { Main } from '../common/components/Main'
 import { Navbar } from '../common/components/Navbar'
 import { assertAndExtractNodes } from '../common/utility/assert-and-extract-nodes'
 import notEmpty from '../common/utility/not-empty'
@@ -64,7 +63,7 @@ const HomePage = ({ data: { strapiHome, allStrapiArea } }: PageProps<Queries.Hom
                       <button className="px-5 py-3 tracking-wide transition-colors ease-out border rounded border-highlight hover:bg-highlight hover:text-bg-primary">
                         <div className="flex items-center gap-x-2">
                           {contact.button?.label || contact.button?.link}
-                          <MailIcon className="w-4 h-4" />
+                          <EnvelopeIcon className="w-4 h-4" />
                         </div>
                       </button>
                     </a>
@@ -99,7 +98,7 @@ export const query = graphql`
         description
       }
     }
-    allStrapiArea(sort: { fields: name, order: DESC }) {
+    allStrapiArea(sort: { name: DESC }) {
       edges {
         node {
           projects {

@@ -1,4 +1,4 @@
-import { ExternalLinkIcon } from '@heroicons/react/solid'
+import { ArrowTopRightOnSquareIcon } from '@heroicons/react/20/solid'
 import React from 'react'
 
 type ExternalLinkProps = {
@@ -12,7 +12,7 @@ export const ExternalLink = ({ link, label }: ExternalLinkProps) => {
       <div className="flex items-center gap-1">
         <div className="break-words">{label}</div>
         <div className="">
-          <ExternalLinkIcon className="w-4 h-4 text-sky-600" />
+          <ArrowTopRightOnSquareIcon className="w-4 h-4 text-sky-600" />
         </div>
       </div>
     </a>

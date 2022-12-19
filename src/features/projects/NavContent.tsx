@@ -1,4 +1,3 @@
-import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import React from 'react'
 
 import { NavFilterAreas, NavFilterAreasSelect } from './NavFilterAreas'
@@ -6,14 +5,15 @@ import { NavFilterAreas, NavFilterAreasSelect } from './NavFilterAreas'
 type ProjectsNavContentProps = { areas: Queries.AreaBaseFragment[] }
 
 export const ProjectsNavContent = ({ areas }: ProjectsNavContentProps) => {
-  const breakpoints = useBreakpoint()
-
-  return breakpoints.lg ? (
-    <NavFilterAreas areas={areas} />
-  ) : (
-    <div className="self-start block mt-3.5 min-w-[180px] lg:hidden">
-      <NavFilterAreasSelect areas={areas} />
-    </div>
+  return (
+    <>
+      <div className="hidden lg:block">
+        <NavFilterAreas areas={areas} />
+      </div>
+      <div className="block lg:hidden self-start mt-3.5 min-w-[180px]">
+        <NavFilterAreasSelect areas={areas} />
+      </div>
+    </>
   )
 }
 

@@ -22,18 +22,16 @@ export const VoronoiContainer = ({
   const chartData = useProjectsChartData({ projects, getGridCoordinates })
 
   return (
-    <>
-      <div id="voronoiContainer">
-        <VoronoiChart
-          data={chartData}
-          width={width}
-          height={height}
-          onClickCell={(data) => navigate(data.slug)}
-          imageSize={Math.max(width / numCols, height / numRows) * 1.2}
-          highlightPatternData={areas}
-          highlightedAreaId={highlightArea?.id}
-        />
-      </div>
-    </>
+    <div>
+      <VoronoiChart
+        data={chartData}
+        width={width}
+        height={height}
+        onClickCell={(data) => navigate(data.slug)}
+        imageSize={Math.max(width / numCols, height / numRows) * 1.2}
+        highlightPatternData={areas}
+        highlightedAreaId={highlightArea?.id}
+      />
+    </div>
   )
 }

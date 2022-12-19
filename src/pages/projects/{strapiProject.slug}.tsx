@@ -36,18 +36,16 @@ const ProjectsDetailPage = ({ data: { project, allProjects } }: PageProps<Querie
   )
 }
 
-export const query = graphql`
-  query ProjectDetailPage($slug: String!) {
-    allProjects: allStrapiProject(sort: { fields: [createdAt], order: DESC }) {
-      nodes {
-        slug
-        createdAt
-      }
-    }
-    project: strapiProject(slug: { eq: $slug }) {
-      ...ProjectDetail
+export const query = graphql`query ProjectDetailPage($slug: String!) {
+  allProjects: allStrapiProject(sort: {createdAt: DESC}) {
+    nodes {
+      slug
+      createdAt
     }
   }
-`
+  project: strapiProject(slug: {eq: $slug}) {
+    ...ProjectDetail
+  }
+}`
 
 export default ProjectsDetailPage

@@ -1,17 +1,16 @@
 import { Transition } from '@headlessui/react'
-import { ArrowSmUpIcon } from '@heroicons/react/solid'
+import { ArrowSmallUpIcon } from '@heroicons/react/24/solid'
 import { graphql, PageProps } from 'gatsby'
-import { useBreakpoint } from 'gatsby-plugin-breakpoints'
-import React, { lazy, Suspense, useMemo, useRef } from 'react'
+import React, { Suspense, useMemo, useRef } from 'react'
+import { useBreakpoint } from 'use-breakpoint'
 
 import Layout from '../../common/components/Layout'
 import { Navbar } from '../../common/components/Navbar'
 import { areasAtom, projectsAtom } from '../../common/contexts/atoms'
 import { assertAndExtractNodes } from '../../common/utility/assert-and-extract-nodes'
 import { ProjectsNavContent } from '../../features/projects/NavContent'
-
-const ProjectsList = lazy(() => import('../../features/projects/ProjectsList'))
-const ProjectsMap = lazy(() => import('../../features/projects/ProjectsMap'))
+import ProjectsList from '../../features/projects/ProjectsList'
+import ProjectsMap from '../../features/projects/ProjectsMap'
 
 export type ProjectsAndAreas = {
   projects: Queries.ProjectBaseFragment[]
@@ -21,8 +20,6 @@ export type ProjectsAndAreas = {
 const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Queries.ProjectsPageDataQuery>) => {
   const areas = useMemo(() => assertAndExtractNodes(allStrapiArea), [allStrapiArea])
   const projects = useMemo(() => assertAndExtractNodes(allStrapiProject), [allStrapiProject])
-
-  const breakpoint = useBreakpoint()
 
   const main = useRef<HTMLDivElement>(null)
 
@@ -47,7 +44,7 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
         }
       >
         <Transition
-          appear={Object.keys(breakpoint).length > 0}
+          appear={true}
           show={true}
           enter="transition-opacity duration-600"
           enterFrom="opacity-0"
@@ -56,21 +53,20 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          {breakpoint.md ? (
+          <div className="hidden md:block">
             <ProjectsMap projects={projects} areas={areas} />
-          ) : (
-            <>
-              <ProjectsList projects={projects} areas={areas} />
-              <div className="flex justify-center mb-2">
-                <button className="p-2 rounded-full" onClick={() => main.current?.scrollTo(0, 0)}>
-                  <div className="flex items-center gap-2">
-                    <div>Back to top</div>
-                    <ArrowSmUpIcon className="w-4 h-4" />
-                  </div>
-                </button>
-              </div>
-            </>
-          )}
+          </div>
+          <div className="block md:hidden">
+            <ProjectsList projects={projects} areas={areas} />
+            <div className="flex justify-center mb-2">
+              <button className="p-2 rounded-full" onClick={() => main.current?.scrollTo(0, 0)}>
+                <div className="flex items-center gap-2">
+                  <div>Back to top</div>
+                  <ArrowSmallUpIcon className="w-4 h-4" />
+                </div>
+              </button>
+            </div>
+          </div>
         </Transition>
       </Suspense>
     </Layout>
@@ -79,7 +75,7 @@ const ProjectsPage = ({ data: { allStrapiArea, allStrapiProject } }: PageProps<Q
 
 export const query = graphql`
   query ProjectsPageData {
-    allStrapiProject(sort: { fields: [createdAt], order: DESC }) {
+    allStrapiProject(sort: { createdAt: DESC }) {
       totalCount
       edges {
         node {

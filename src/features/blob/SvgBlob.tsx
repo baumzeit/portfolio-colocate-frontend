@@ -9,7 +9,7 @@ export const SvgBlob = forwardRef<SVGSVGElement, SvgBlobProps>(function SvgBlob(
   const size = shapeProps?.size ?? 200
   const growth = shapeProps?.growth ?? 6
   const edges = shapeProps?.edges ?? 6
-  const seed = shapeProps?.seed // ?? 6
+  const seed = shapeProps?.seed ?? 2344
 
   const { path: svgPath } = useMemo(
     () =>

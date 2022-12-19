@@ -1,4 +1,3 @@
-import { useBreakpoint } from 'gatsby-plugin-breakpoints'
 import { GatsbyImage } from 'gatsby-plugin-image'
 import React from 'react'
 
@@ -11,7 +10,6 @@ export type ImagesPreviewProps = {
   onClosePreview: () => void
 }
 export const ImagesPreview = ({ images, selectedImageIdx = null, onClick, onClosePreview }: ImagesPreviewProps) => {
-  const breakpoint = useBreakpoint()
   return images ? (
     <>
       <div className="grid grid-cols-4 gap-3 sm:grid-cols-5 md:grid-cols-2 lg:grid-cols-3">
@@ -37,10 +35,12 @@ export const ImagesPreview = ({ images, selectedImageIdx = null, onClick, onClos
           ) : null
         })}
       </div>
-      {breakpoint.lg && selectedImageIdx !== null && (
-        <button onClick={onClosePreview} className="tracking-wide text-highlight py-2">
-          show description
-        </button>
+      {selectedImageIdx !== null && (
+        <div className="hidden lg:block">
+          <button onClick={onClosePreview} className="tracking-wide text-highlight py-2">
+            show description
+          </button>
+        </div>
       )}
     </>
   ) : null

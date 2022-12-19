@@ -1,5 +1,5 @@
 import { useWindowSize } from '@react-hook/window-size'
-import React from 'react'
+import React, { Suspense } from 'react'
 
 import { NAVBAR_HEIGHT } from '../../common/components/Navbar'
 import { useJitterGrid } from '../../common/hooks/use-jitter-grid'
@@ -21,7 +21,14 @@ const ProjectsMap = ({ projects, areas }: ProjectsAndAreas) => {
   })
 
   return gridSpecs && getGridCoordinates ? (
-    <VoronoiContainer projects={projects} areas={areas} gridSpecs={gridSpecs} getGridCoordinates={getGridCoordinates} />
+    <Suspense>
+      <VoronoiContainer
+        projects={projects}
+        areas={areas}
+        gridSpecs={gridSpecs}
+        getGridCoordinates={getGridCoordinates}
+      />
+    </Suspense>
   ) : null
 }
 
