@@ -21,14 +21,7 @@ const ProjectsMap = ({ projects, areas }: ProjectsAndAreas) => {
   })
 
   return gridSpecs && getGridCoordinates ? (
-    <Suspense>
-      <VoronoiContainer
-        projects={projects}
-        areas={areas}
-        gridSpecs={gridSpecs}
-        getGridCoordinates={getGridCoordinates}
-      />
-    </Suspense>
+    <VoronoiContainer projects={projects} areas={areas} gridSpecs={gridSpecs} getGridCoordinates={getGridCoordinates} />
   ) : null
 }
 

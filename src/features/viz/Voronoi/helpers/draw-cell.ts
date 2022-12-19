@@ -23,6 +23,7 @@ export function drawCell(selection: Selection<EnterElement, EnrichedDatum, SVGSV
     .attr('height', imageSize)
     .append('xhtml:img')
     .classed('image', true)
+    .attr('alt', (d) => d.title)
     .attr('xmlns', 'http://www.w3.org/1999/xhtml')
     .attr('src', (d) => d.imgSrc || '')
 

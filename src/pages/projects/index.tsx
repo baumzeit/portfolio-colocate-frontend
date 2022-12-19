@@ -2,7 +2,6 @@ import { Transition } from '@headlessui/react'
 import { ArrowSmallUpIcon } from '@heroicons/react/24/solid'
 import { graphql, PageProps } from 'gatsby'
 import React, { Suspense, useMemo, useRef } from 'react'
-import { useBreakpoint } from 'use-breakpoint'
 
 import Layout from '../../common/components/Layout'
 import { Navbar } from '../../common/components/Navbar'

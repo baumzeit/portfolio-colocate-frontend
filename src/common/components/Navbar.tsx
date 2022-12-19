@@ -1,6 +1,6 @@
 import { graphql, Link, useStaticQuery } from 'gatsby'
 import { StaticImage } from 'gatsby-plugin-image'
-import React, { ReactNode, Suspense } from 'react'
+import React, { ReactNode } from 'react'
 import { twMerge } from 'tailwind-merge'
 
 import { ThemeSelect } from './ThemeSelect'
@@ -38,9 +38,7 @@ export const Navbar = ({ children, className = '' }: NavbarProps) => {
       </div>
       {children}
       <div className="flex-1 flex justify-end">
-        <Suspense>
-          <ThemeSelect />
-        </Suspense>
+        <ThemeSelect />
       </div>
     </nav>
   )
